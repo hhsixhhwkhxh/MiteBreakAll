@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "minecraft:block/dark_oak_log_top",
+    "east": "minecraft:block/dark_oak_log",
+    "north": "minecraft:block/dark_oak_log",
+    "particle": "minecraft:block/crafting_table_front",
+    "south": "minecraft:block/dark_oak_log",
+    "up": "mite_break_all:block/craft_table/flint/top",
+    "west": "minecraft:block/dark_oak_log"
+  }
+}

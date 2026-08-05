@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "mite_break_all:item/wild_apple"
+  }
+}

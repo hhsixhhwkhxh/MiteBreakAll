@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "mite_break_all:block/flint_crafting_table",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "mite_break_all:block/flint_crafting_table"
+    },
+    "facing=south": {
+      "model": "mite_break_all:block/flint_crafting_table",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mite_break_all:block/flint_crafting_table",
+      "y": 270
+    }
+  }
+}
