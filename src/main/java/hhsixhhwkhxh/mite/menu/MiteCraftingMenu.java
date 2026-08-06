@@ -21,6 +21,9 @@ import net.minecraft.world.item.crafting.RecipeType;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class MiteCraftingMenu extends AbstractCraftingMenu {
     private final ContainerLevelAccess access;
@@ -36,10 +39,10 @@ public class MiteCraftingMenu extends AbstractCraftingMenu {
 
 
     public MiteCraftingMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, ContainerLevelAccess.NULL,new SimpleContainerData(4));
+        this(containerId, playerInventory, ContainerLevelAccess.NULL,new SimpleContainerData(4),null);
     }
 
-    public MiteCraftingMenu(int containerId, Inventory playerInventory, ContainerLevelAccess access,ContainerData data) {
+    public MiteCraftingMenu(int containerId, Inventory playerInventory, ContainerLevelAccess access, ContainerData data, AtomicReference<Supplier<Boolean>> onCraftFinishedSupplier) {
         super(ModMenuTypes.MITE_CRAFTING_MENU.get(), containerId, 3, 3);
 
         this.access = access;
@@ -68,6 +71,19 @@ public class MiteCraftingMenu extends AbstractCraftingMenu {
             });
         }
 
+        Supplier<Boolean> onCraftFinished = ()->{
+            ItemStack itemStack = this.quickMoveStack(player,0);
+
+            if(itemStack==ItemStack.EMPTY){
+                extendedResultSlot.setMayPickup(true);
+                super.clicked(0,0,ClickType.THROW,player);
+                return false;
+            }
+            return true;
+        };
+        if(onCraftFinishedSupplier!=null){
+            onCraftFinishedSupplier.set(onCraftFinished);
+        }
     }
 
 
@@ -96,6 +112,9 @@ public class MiteCraftingMenu extends AbstractCraftingMenu {
         resultSlots.setItem(0, itemstack);
         if(!itemstack.isEmpty()){
             data.set(IS_RESULT_LOCKED,1);
+        }else {
+            data.set(IS_CRAFTING,0);
+            data.set(CRAFT_TIME,0);
         }
 
         this.setRemoteSlot(0, itemstack);

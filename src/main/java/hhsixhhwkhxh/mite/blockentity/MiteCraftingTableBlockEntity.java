@@ -15,6 +15,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 public class MiteCraftingTableBlockEntity extends BlockEntity implements MenuProvider {
 
     int craftTime = 0,craftTimeTotal = 10,isCrafting = 0,isResultLocked = 1;
@@ -22,6 +26,7 @@ public class MiteCraftingTableBlockEntity extends BlockEntity implements MenuPro
     public static final int CRAFT_TIME_TOTAL = 1;
     public static final int IS_CRAFTING = 2;
     public static final int IS_RESULT_LOCKED = 3;
+    public AtomicReference<Supplier<Boolean>> onCraftFinishedSupplier = new AtomicReference<>();
 
     protected final ContainerData dataAccess = new ContainerData() {
         @Override
@@ -70,7 +75,7 @@ public class MiteCraftingTableBlockEntity extends BlockEntity implements MenuPro
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return new MiteCraftingMenu(containerId, playerInventory, ContainerLevelAccess.create(level, worldPosition),dataAccess);
+        return new MiteCraftingMenu(containerId, playerInventory, ContainerLevelAccess.create(level, worldPosition),dataAccess,onCraftFinishedSupplier);
     }
 
     public boolean isCrafting(){
@@ -86,8 +91,12 @@ public class MiteCraftingTableBlockEntity extends BlockEntity implements MenuPro
         if(craftTable.dataAccess.get(CRAFT_TIME) < craftTable.dataAccess.get(CRAFT_TIME_TOTAL)){
             return;
         }
-        craftTable.dataAccess.set(IS_CRAFTING,0);
+        //craftTable.dataAccess.set(IS_CRAFTING,0);
         craftTable.dataAccess.set(IS_RESULT_LOCKED,0);
         craftTable.dataAccess.set(CRAFT_TIME,0);
+
+        if(craftTable.onCraftFinishedSupplier.get()!=null){
+            craftTable.onCraftFinishedSupplier.get().get();
+        }
     }
 }

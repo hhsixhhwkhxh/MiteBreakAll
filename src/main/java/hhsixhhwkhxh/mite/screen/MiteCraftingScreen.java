@@ -1,7 +1,6 @@
-package hhsixhhwkhxh.mite.block;
+package hhsixhhwkhxh.mite.screen;
 
 
-import hhsixhhwkhxh.mite.ExtendedResultSlot;
 import hhsixhhwkhxh.mite.menu.MiteCraftingMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenPosition;
@@ -12,11 +11,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
+
 public class MiteCraftingScreen extends AbstractRecipeBookScreen<MiteCraftingMenu> {
     private static final ResourceLocation CRAFTING_TABLE_LOCATION = ResourceLocation.withDefaultNamespace("textures/gui/container/crafting_table.png");
     private static final ResourceLocation BURN_PROGRESS_SPRITE = ResourceLocation.withDefaultNamespace("container/furnace/burn_progress");

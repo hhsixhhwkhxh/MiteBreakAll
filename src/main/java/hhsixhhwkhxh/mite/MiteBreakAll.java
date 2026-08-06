@@ -1,7 +1,6 @@
 package hhsixhhwkhxh.mite;
 
-import hhsixhhwkhxh.mite.menu.MiteCraftingMenu;
-import hhsixhhwkhxh.mite.block.MiteCraftingScreen;
+import hhsixhhwkhxh.mite.screen.MiteCraftingScreen;
 import hhsixhhwkhxh.mite.block.ModBlocks;
 import hhsixhhwkhxh.mite.blockentity.ModBlockEntities;
 import hhsixhhwkhxh.mite.item.ModItems;
