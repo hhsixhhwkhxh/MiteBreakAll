@@ -1,6 +1,10 @@
 package hhsixhhwkhxh.mite.mixin;
 
+import hhsixhhwkhxh.mite.MiteBreakAll;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.*;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -11,11 +15,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.EnchantmentMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.EnchantmentInstance;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.item.enchantment.Enchantment;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,9 +26,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Mixin(EnchantmentMenu.class)
 public abstract class EnchantmentMenuMixin extends AbstractContainerMenu {
@@ -58,13 +60,27 @@ public abstract class EnchantmentMenuMixin extends AbstractContainerMenu {
         if (itemstack.getItem() != Items.GOLDEN_APPLE) {
             return;
         }
+
+        AtomicInteger overpoweredId = new AtomicInteger(1);
+        this.access.execute((p_344366_, p_344367_) -> {
+            RegistryAccess registryAccess = p_344366_.registryAccess();
+            Optional<Holder.Reference<Enchantment>> overpoweredOptional = registryAccess.lookupOrThrow(Registries.ENCHANTMENT).get(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"overpowered"));
+            if(overpoweredOptional.isEmpty()){
+                return;
+            }
+            Holder<Enchantment> overpowered = overpoweredOptional.get();
+            IdMap<Holder<Enchantment>> idmap = p_344366_.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).asHolderIdMap();
+            overpoweredId.set(idmap.getId(overpowered));
+        });
+
         for (int i = 0; i < 3; i++) {
             costs[i] = 200;
-            enchantClue[i] = 1;
+            enchantClue[i] = overpoweredId.get();
             levelClue[i] = 1;
         }
 
         ci.cancel();
+
     }
 
     @Inject(method = "clickMenuButton", at = @At(value = "INVOKE",target = "Lnet/minecraft/world/inventory/ContainerLevelAccess;execute(Ljava/util/function/BiConsumer;)V"), cancellable = true)

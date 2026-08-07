@@ -6,6 +6,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +24,7 @@ public class ModRecipesProvider extends RecipeProvider {
                 .define('X',Items.APPLE)
                 .pattern("###").pattern("#X#").pattern("###")
                 .unlockedBy("has_apple", this.has(Items.APPLE))
-                .save(output, MiteBreakAll.MODID+":golden_apple");
+                .save(output, ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"golden_apple").toString());
 
     }
 

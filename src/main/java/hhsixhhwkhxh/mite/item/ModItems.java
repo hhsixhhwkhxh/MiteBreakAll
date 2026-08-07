@@ -10,6 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
+import net.minecraft.world.item.enchantment.Enchantable;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -59,6 +60,7 @@ public class ModItems {
         eventBus.addListener((ModifyDefaultComponentsEvent event)->{
             event.modify(Items.GOLDEN_APPLE,(builder)->{
                 builder.set(DataComponents.CONSUMABLE,GAConsumable);
+                builder.set(DataComponents.ENCHANTABLE,new Enchantable(60));
             });
             event.modify(Items.ENCHANTED_GOLDEN_APPLE,(builder)->{
                 builder.set(DataComponents.CONSUMABLE,EGAConsumable);
