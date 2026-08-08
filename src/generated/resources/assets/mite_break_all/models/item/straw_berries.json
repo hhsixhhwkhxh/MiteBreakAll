@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "mite_break_all:item/food/wild_apple"
+    "layer0": "mite_break_all:item/food/straw_berries"
   }
 }

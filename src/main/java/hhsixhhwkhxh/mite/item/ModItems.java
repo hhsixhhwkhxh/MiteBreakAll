@@ -1,11 +1,11 @@
 package hhsixhhwkhxh.mite.item;
 
 import hhsixhhwkhxh.mite.MiteBreakAll;
-import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.Consumable;
@@ -26,8 +26,9 @@ public class ModItems {
     public static final DeferredItem<Item> WILD_APPLE = ITEMS.registerItem("wild_apple", Item::new,new Item.Properties().food(new FoodProperties.Builder()
             .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
 
-    //public static final DeferredItem<Item> SILVER_ORE = ITEMS.registerItem("silver_ore", Item::new,new Item.Properties());
-
+    public static final DeferredItem<Item> STRAW_BERRIES = ITEMS.registerItem(
+            "straw_berries", Item::new, new Item.Properties().food(Foods.SWEET_BERRIES)
+    );
 
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);//ENCHANTED_GOLDEN_APPLE

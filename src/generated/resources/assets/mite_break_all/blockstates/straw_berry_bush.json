@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "mite_break_all:block/straw_berry_bush_stage0"
+    },
+    "age=1": {
+      "model": "mite_break_all:block/straw_berry_bush_stage1"
+    },
+    "age=2": {
+      "model": "mite_break_all:block/straw_berry_bush_stage2"
+    }
+  }
+}
