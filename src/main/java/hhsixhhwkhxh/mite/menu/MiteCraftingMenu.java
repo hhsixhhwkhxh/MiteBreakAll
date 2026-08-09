@@ -1,7 +1,7 @@
 package hhsixhhwkhxh.mite.menu;
 
 
-import hhsixhhwkhxh.mite.ExtendedResultSlot;
+import hhsixhhwkhxh.mite.custom.ExtendedResultSlot;
 import hhsixhhwkhxh.mite.block.ModBlocks;
 import hhsixhhwkhxh.mite.blockentity.MiteCraftingTableBlockEntity;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
@@ -22,7 +22,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class MiteCraftingMenu extends AbstractCraftingMenu {

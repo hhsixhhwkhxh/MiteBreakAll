@@ -3,6 +3,7 @@
   "package": "hhsixhhwkhxh.mite.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AbstractSkeletonMixin",
     "EnchantmentMenuMixin",
     "RecipeManagerMixin"
   ],

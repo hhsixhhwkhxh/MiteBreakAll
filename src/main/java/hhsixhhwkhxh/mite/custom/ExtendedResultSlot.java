@@ -1,4 +1,4 @@
-package hhsixhhwkhxh.mite;
+package hhsixhhwkhxh.mite.custom;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
