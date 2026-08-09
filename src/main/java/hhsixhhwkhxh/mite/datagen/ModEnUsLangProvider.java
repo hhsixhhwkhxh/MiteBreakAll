@@ -17,6 +17,8 @@ public class ModEnUsLangProvider extends LanguageProvider {
         add(ModBlocks.SILVER_ORE.get(),"Silver Ore");
         add(ModBlocks.FLINT_CRAFTING_TABLE.get(), "Flint Crafting Table");
         add("craft_table.flint","Flint Crafting Table");
+        add(ModBlocks.STRAWBERRY_BUSH.get(), "StrawBerry Bush");
+        add(ModItems.STRAWBERRIES.get(), "StrawBerries");
 
         add("enchantment.mite_break_all.overpowered","Overpowered");
     }

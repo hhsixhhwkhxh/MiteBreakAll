@@ -17,6 +17,8 @@ public class ModZhCnLangProvider extends LanguageProvider {
         add(ModBlocks.SILVER_ORE.get(),"银矿");
         add(ModBlocks.FLINT_CRAFTING_TABLE.get(), "燧石工作台");
         add("craft_table.flint","燧石工作台");
+        add(ModBlocks.STRAWBERRY_BUSH.get(), "草莓丛");
+        add(ModItems.STRAWBERRIES.get(), "草莓");
 
         add("enchantment.mite_break_all.overpowered","君临天下");
     }

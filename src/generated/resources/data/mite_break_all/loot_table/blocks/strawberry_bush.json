@@ -10,17 +10,17 @@
       "bonus_rolls": 0.0,
       "conditions": [
         {
-          "block": "mite_break_all:straw_berry_bush",
+          "block": "mite_break_all:strawberry_bush",
           "condition": "minecraft:block_state_property",
           "properties": {
-            "age": "3"
+            "age": "2"
           }
         }
       ],
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "mite_break_all:straw_berries"
+          "name": "mite_break_all:strawberries"
         }
       ],
       "functions": [
@@ -48,17 +48,17 @@
       "bonus_rolls": 0.0,
       "conditions": [
         {
-          "block": "mite_break_all:straw_berry_bush",
+          "block": "mite_break_all:strawberry_bush",
           "condition": "minecraft:block_state_property",
           "properties": {
-            "age": "2"
+            "age": "1"
           }
         }
       ],
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "mite_break_all:straw_berries"
+          "name": "mite_break_all:strawberries"
         }
       ],
       "functions": [
@@ -83,5 +83,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "mite_break_all:blocks/straw_berry_bush"
+  "random_sequence": "mite_break_all:blocks/strawberry_bush"
 }

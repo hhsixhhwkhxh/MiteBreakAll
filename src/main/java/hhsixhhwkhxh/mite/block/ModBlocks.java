@@ -31,8 +31,8 @@ public class ModBlocks {
             BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).strength(2.5F).sound(SoundType.WOOD).ignitedByLava()
     );
 
-    public static final DeferredBlock<Block> STRAW_BERRY_BUSH = registerBlock(
-            "straw_berry_bush",
+    public static final DeferredBlock<Block> STRAWBERRY_BUSH = registerBlock(
+            "strawberry_bush",
             StrawBerryBushBlock::new,
             BlockBehaviour.Properties.of()
                     .mapColor(MapColor.PLANT)

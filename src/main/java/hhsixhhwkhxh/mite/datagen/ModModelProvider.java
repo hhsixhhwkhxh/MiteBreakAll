@@ -11,7 +11,6 @@ import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.*;
-import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -56,16 +55,18 @@ public class ModModelProvider extends ModelProvider {
     }
 
     public void createStrawBerryBush(BlockModelGenerators blockModels) {
-        //blockModels.registerSimpleFlatItemModel(ModItems.STRAW_BERRIES.get());
-        generateFlatItemEx(blockModels,ModItems.STRAW_BERRIES.get(),"food/",ModelTemplates.FLAT_ITEM);
+        //blockModels.registerSimpleFlatItemModel(ModItems.STRAWBERRIES.get());
+        generateFlatItemEx(blockModels,ModItems.STRAWBERRIES.get(),"food/",ModelTemplates.FLAT_ITEM);
+        //blockModels.registerSimpleFlatItemModel(ModBlocks.STRAWBERRY_BUSH.get());
+        generateFlatItemEx(blockModels,ModBlocks.STRAWBERRY_BUSH.asItem(),"food/",ModelTemplates.FLAT_ITEM);
         blockModels.blockStateOutput
                 .accept(
-                        MultiVariantGenerator.dispatch(ModBlocks.STRAW_BERRY_BUSH.get())
+                        MultiVariantGenerator.dispatch(ModBlocks.STRAWBERRY_BUSH.get())
                                 .with(
                                         PropertyDispatch.initial(BlockStateProperties.AGE_2)
                                                 .generate(
                                                         p_408965_ -> BlockModelGenerators.plainVariant(
-                                                                createSuffixedVariantEx(blockModels,ModBlocks.STRAW_BERRY_BUSH.get(), "bushes/","_stage" + p_408965_, ModelTemplates.CROSS.extend().renderType("cutout").build(), TextureMapping::cross)
+                                                                createSuffixedVariantEx(blockModels,ModBlocks.STRAWBERRY_BUSH.get(), "bushes/","_stage" + p_408965_, ModelTemplates.CROSS.extend().renderType("cutout").build(), TextureMapping::cross)
                                                         )
                                                 )
                                 )

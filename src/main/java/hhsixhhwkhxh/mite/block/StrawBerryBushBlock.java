@@ -42,12 +42,6 @@ public class StrawBerryBushBlock extends VegetationBlock implements Bonemealable
     }
 
     @Override
-    protected @NotNull ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
-        return new ItemStack(ModItems.STRAW_BERRIES.get());
-    }
-
-
-    @Override
     protected boolean isRandomlyTicking(BlockState state) {
         return state.getValue(AGE) < MAX_AGE;
     }
@@ -84,7 +78,7 @@ public class StrawBerryBushBlock extends VegetationBlock implements Bonemealable
         boolean flag = age == MAX_AGE;
         if (age > 0) {
             int baseBerriesCount = 1 + level.random.nextInt(2);
-            popResource(level, pos, new ItemStack(ModItems.STRAW_BERRIES.get(), baseBerriesCount + (flag ? 1 : 0)));
+            popResource(level, pos, new ItemStack(ModItems.STRAWBERRIES.get(), baseBerriesCount + (flag ? 1 : 0)));
             level.playSound(
                 null, pos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.random.nextFloat() * 0.4F
             );

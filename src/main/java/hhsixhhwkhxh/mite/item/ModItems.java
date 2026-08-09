@@ -26,8 +26,8 @@ public class ModItems {
     public static final DeferredItem<Item> WILD_APPLE = ITEMS.registerItem("wild_apple", Item::new,new Item.Properties().food(new FoodProperties.Builder()
             .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
 
-    public static final DeferredItem<Item> STRAW_BERRIES = ITEMS.registerItem(
-            "straw_berries", Item::new, new Item.Properties().food(Foods.SWEET_BERRIES)
+    public static final DeferredItem<Item> STRAWBERRIES = ITEMS.registerItem(
+            "strawberries", Item::new, new Item.Properties().food(Foods.SWEET_BERRIES)
     );
 
     public static void register(IEventBus eventBus){

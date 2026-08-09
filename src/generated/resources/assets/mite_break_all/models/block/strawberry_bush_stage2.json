@@ -2,6 +2,6 @@
   "parent": "minecraft:block/cross",
   "render_type": "minecraft:cutout",
   "textures": {
-    "cross": "mite_break_all:block/bushes/straw_berry_bush_stage2"
+    "cross": "mite_break_all:block/bushes/strawberry_bush_stage2"
   }
 }

@@ -33,27 +33,27 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         this.dropSelf(ModBlocks.FLINT_CRAFTING_TABLE.get());
 
         this.add(
-                ModBlocks.STRAW_BERRY_BUSH.get(), 
+                ModBlocks.STRAWBERRY_BUSH.get(),
                 p_249159_ -> this.applyExplosionDecay(
                         p_249159_,
                         LootTable.lootTable()
                                 .withPool(
                                         LootPool.lootPool()
                                                 .when(
-                                                        LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.STRAW_BERRY_BUSH.get())
-                                                                .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(SweetBerryBushBlock.AGE, 3))
+                                                        LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.STRAWBERRY_BUSH.get())
+                                                                .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(SweetBerryBushBlock.AGE, 2))
                                                 )
-                                                .add(LootItem.lootTableItem(ModItems.STRAW_BERRIES.get()))
+                                                .add(LootItem.lootTableItem(ModItems.STRAWBERRIES.get()))
                                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 3.0F)))
                                                 .apply(ApplyBonusCount.addUniformBonusCount(registries.getOrThrow(Enchantments.FORTUNE)))
                                 )
                                 .withPool(
                                         LootPool.lootPool()
                                                 .when(
-                                                        LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.STRAW_BERRY_BUSH.get())
-                                                                .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(SweetBerryBushBlock.AGE, 2))
+                                                        LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.STRAWBERRY_BUSH.get())
+                                                                .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(SweetBerryBushBlock.AGE, 1))
                                                 )
-                                                .add(LootItem.lootTableItem(ModItems.STRAW_BERRIES.get()))
+                                                .add(LootItem.lootTableItem(ModItems.STRAWBERRIES.get()))
                                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))
                                                 .apply(ApplyBonusCount.addUniformBonusCount(registries.getOrThrow(Enchantments.FORTUNE)))
                                 )

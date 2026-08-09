@@ -1,7 +1,9 @@
 {
   "block.mite_break_all.flint_crafting_table": "Flint Crafting Table",
   "block.mite_break_all.silver_ore": "Silver Ore",
+  "block.mite_break_all.strawberry_bush": "StrawBerry Bush",
   "craft_table.flint": "Flint Crafting Table",
   "enchantment.mite_break_all.overpowered": "Overpowered",
+  "item.mite_break_all.strawberries": "StrawBerries",
   "item.mite_break_all.wild_apple": "Wild Apple"
 }
