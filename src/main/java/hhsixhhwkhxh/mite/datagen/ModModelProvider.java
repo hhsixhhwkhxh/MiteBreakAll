@@ -39,6 +39,21 @@ public class ModModelProvider extends ModelProvider {
         generateFlatItemEx(blockModels,ModItems.WILD_APPLE.get(),"food/",ModelTemplates.FLAT_ITEM);
 
         createStrawBerryBush(blockModels);
+
+        generateFlatItemEx(blockModels,ModItems.FLINT_SHARD.get(),"shards/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.OBSIDIAN_SHARD.get(),"shards/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.DIAMOND_SHARD.get(),"shards/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.EMERALD_SHARD.get(),"shards/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.GLASS_SHARD.get(),"shards/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.QUARTZ_SHARD.get(),"shards/",ModelTemplates.FLAT_ITEM);
+
+        generateFlatItemEx(blockModels,ModItems.ADAMANTIUM_NUGGET.get(),"nuggets/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.ANCIENT_METAL_NUGGET.get(),"nuggets/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.HARD_NUGGET.get(),"nuggets/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.MERCURY_NUGGET.get(),"nuggets/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.MITHRIL_NUGGET.get(),"nuggets/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.SILVER_NUGGET.get(),"nuggets/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.COPPER_NUGGET.get(),"nuggets/",ModelTemplates.FLAT_ITEM);
     }
 
     public void createFlintCraftingTable(BlockModelGenerators blockModels,Block craftingTableBlock, Block craftingTableMaterialBlock) {

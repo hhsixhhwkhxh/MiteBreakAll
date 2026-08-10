@@ -69,7 +69,7 @@ public abstract class AbstractSkeletonMixin extends Monster implements RangedAtt
 
 
         double t = distance/(1.6F);
-        //MiteBreakAll.LOGGER.debug("t:"+t+" distance:"+distance);
+        MiteBreakAll.LOGGER.debug("t:"+t+" distance:"+distance);
         //Vec3 oldPos = ((RangedBowAttackGoalAccessor)bowGoal).getOldPos();
         Vec3 oldPos = ((ModRangedBowAttackGoal<AbstractSkeleton>)bowGoal).getOldPos();
 

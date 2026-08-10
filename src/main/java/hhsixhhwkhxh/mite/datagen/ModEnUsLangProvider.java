@@ -21,5 +21,20 @@ public class ModEnUsLangProvider extends LanguageProvider {
         add(ModItems.STRAWBERRIES.get(), "StrawBerries");
 
         add("enchantment.mite_break_all.overpowered","Overpowered");
+
+        add(ModItems.DIAMOND_SHARD.get(), "Diamond Shard");
+        add(ModItems.EMERALD_SHARD.get(), "Emerald Shard");
+        add(ModItems.FLINT_SHARD.get(), "Flint Shard");
+        add(ModItems.GLASS_SHARD.get(), "Glass Shard");
+        add(ModItems.OBSIDIAN_SHARD.get(), "Obsidian Shard");
+        add(ModItems.QUARTZ_SHARD.get(), "Quartz Shard");
+
+        add(ModItems.ADAMANTIUM_NUGGET.get(), "Adamantium Nugget");
+        add(ModItems.ANCIENT_METAL_NUGGET.get(), "Ancient Metal Nugget");
+        add(ModItems.HARD_NUGGET.get(), "Hard Nugget");
+        add(ModItems.MERCURY_NUGGET.get(), "Mercury Nugget");
+        add(ModItems.MITHRIL_NUGGET.get(), "Mithril Nugget");
+        add(ModItems.SILVER_NUGGET.get(), "Silver Nugget");
+        add(ModItems.COPPER_NUGGET.get(), "Copper Nugget");
     }
 }

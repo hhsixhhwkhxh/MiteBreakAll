@@ -73,10 +73,26 @@ public class MiteBreakAll {
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if(event.getTabKey()==CreativeModeTabs.FOOD_AND_DRINKS){
             event.accept(ModItems.WILD_APPLE);
+            event.accept(ModItems.STRAWBERRIES);
+            event.accept(ModBlocks.STRAWBERRY_BUSH);
         } else if (event.getTabKey()==CreativeModeTabs.NATURAL_BLOCKS) {
             event.accept(ModBlocks.SILVER_ORE);
         } else if(event.getTabKey()==CreativeModeTabs.FUNCTIONAL_BLOCKS){
             event.accept(ModBlocks.FLINT_CRAFTING_TABLE);
+        } else if(event.getTabKey()==CreativeModeTabs.INGREDIENTS){
+            event.accept(ModItems.FLINT_SHARD);
+            event.accept(ModItems.OBSIDIAN_SHARD);
+            event.accept(ModItems.DIAMOND_SHARD);
+            event.accept(ModItems.EMERALD_SHARD);
+            event.accept(ModItems.GLASS_SHARD);
+            event.accept(ModItems.QUARTZ_SHARD);
+
+            event.accept(ModItems.ADAMANTIUM_NUGGET);
+            event.accept(ModItems.ANCIENT_METAL_NUGGET);
+            event.accept(ModItems.HARD_NUGGET);
+            event.accept(ModItems.MERCURY_NUGGET);
+            event.accept(ModItems.MITHRIL_NUGGET);
+            event.accept(ModItems.SILVER_NUGGET);
         }
     }
 

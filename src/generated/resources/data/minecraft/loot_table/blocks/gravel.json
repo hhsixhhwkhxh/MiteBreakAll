@@ -1,0 +1,163 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "conditions": [
+                {
+                  "condition": "minecraft:match_tool",
+                  "predicate": {
+                    "predicates": {
+                      "minecraft:enchantments": [
+                        {
+                          "enchantments": "minecraft:silk_touch",
+                          "levels": {
+                            "min": 1
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "name": "minecraft:gravel"
+            },
+            {
+              "type": "minecraft:alternatives",
+              "children": [
+                {
+                  "type": "minecraft:item",
+                  "conditions": [
+                    {
+                      "chances": [
+                        0.75,
+                        0.7,
+                        0.625,
+                        0.5
+                      ],
+                      "condition": "minecraft:table_bonus",
+                      "enchantment": "minecraft:fortune"
+                    }
+                  ],
+                  "name": "minecraft:gravel"
+                },
+                {
+                  "type": "minecraft:item",
+                  "conditions": [
+                    {
+                      "chance": 0.12,
+                      "condition": "minecraft:random_chance"
+                    }
+                  ],
+                  "name": "mite_break_all:obsidian_shard"
+                },
+                {
+                  "type": "minecraft:item",
+                  "conditions": [
+                    {
+                      "chance": 0.041666,
+                      "condition": "minecraft:random_chance"
+                    }
+                  ],
+                  "name": "minecraft:flint"
+                },
+                {
+                  "type": "minecraft:item",
+                  "conditions": [
+                    {
+                      "chance": 0.625,
+                      "condition": "minecraft:random_chance"
+                    }
+                  ],
+                  "name": "mite_break_all:flint_shard"
+                },
+                {
+                  "type": "minecraft:item",
+                  "conditions": [
+                    {
+                      "chance": 0.666,
+                      "condition": "minecraft:random_chance"
+                    }
+                  ],
+                  "name": "mite_break_all:copper_nugget"
+                },
+                {
+                  "type": "minecraft:item",
+                  "conditions": [
+                    {
+                      "chance": 0.666,
+                      "condition": "minecraft:random_chance"
+                    }
+                  ],
+                  "name": "mite_break_all:silver_nugget"
+                },
+                {
+                  "type": "minecraft:item",
+                  "conditions": [
+                    {
+                      "chance": 0.666,
+                      "condition": "minecraft:random_chance"
+                    }
+                  ],
+                  "name": "minecraft:gold_nugget"
+                },
+                {
+                  "type": "minecraft:item",
+                  "conditions": [
+                    {
+                      "chance": 0.666,
+                      "condition": "minecraft:random_chance"
+                    }
+                  ],
+                  "name": "mite_break_all:hard_nugget"
+                },
+                {
+                  "type": "minecraft:item",
+                  "conditions": [
+                    {
+                      "chance": 0.666,
+                      "condition": "minecraft:random_chance"
+                    }
+                  ],
+                  "name": "mite_break_all:emerald_shard"
+                },
+                {
+                  "type": "minecraft:item",
+                  "conditions": [
+                    {
+                      "chance": 0.666,
+                      "condition": "minecraft:random_chance"
+                    }
+                  ],
+                  "name": "mite_break_all:diamond_shard"
+                },
+                {
+                  "type": "minecraft:item",
+                  "conditions": [
+                    {
+                      "chance": 0.666,
+                      "condition": "minecraft:random_chance"
+                    }
+                  ],
+                  "name": "mite_break_all:mithril_nugget"
+                },
+                {
+                  "type": "minecraft:item",
+                  "name": "mite_break_all:adamantium_nugget"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "minecraft:blocks/gravel"
+}

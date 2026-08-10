@@ -3,23 +3,35 @@ package hhsixhhwkhxh.mite.datagen;
 
 import hhsixhhwkhxh.mite.block.ModBlocks;
 import hhsixhhwkhxh.mite.item.ModItems;
-import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.predicates.DataComponentPredicates;
+import net.minecraft.core.component.predicates.EnchantmentsPredicate;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.SweetBerryBushBlock;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.AlternativesEntry;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
-import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
+import net.minecraft.world.level.storage.loot.predicates.*;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class ModBlockLootTablesProvider extends BlockLootSubProvider {
@@ -34,8 +46,8 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
 
         this.add(
                 ModBlocks.STRAWBERRY_BUSH.get(),
-                p_249159_ -> this.applyExplosionDecay(
-                        p_249159_,
+                block -> this.applyExplosionDecay(
+                        block,
                         LootTable.lootTable()
                                 .withPool(
                                         LootPool.lootPool()
@@ -59,10 +71,76 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
                                 )
                 )
         );
+
+        createGravelBlockLoot();
     }
 
     @Override
     protected @NotNull Iterable<Block> getKnownBlocks() {
-        return ModBlocks.BLOCKS.getEntries().stream().map(Holder::value)::iterator;
+        List<Block> blocks = new ArrayList<>(
+                ModBlocks.BLOCKS.getEntries().stream().map(Holder::value).toList()
+        );
+        blocks.add(Blocks.GRAVEL);
+        return blocks;
+    }
+
+
+
+    private void createGravelBlockLoot() {
+        /*
+        this.add(Blocks.GRAVEL,
+                block ->
+                        createSilkTouchDispatchTable(Blocks.GRAVEL,
+                                AlternativesEntry.alternatives(
+                                        List.of(0,1,2,3),
+                                        level -> level == 8
+                                                ? LootItem.lootTableItem(Blocks.SNOW_BLOCK)
+                                                : LootItem.lootTableItem(Blocks.SNOW)
+                                                .apply(SetItemCountFunction.setCount(ConstantValue.exactly(level.intValue())))
+                                                .when(hasEnchantment(Enchantments.EFFICIENCY,0))
+                                )
+                        )
+                );
+        */
+        this.add(Blocks.GRAVEL,
+                block ->
+                        createSilkTouchDispatchTable(Blocks.GRAVEL,
+                                AlternativesEntry.alternatives(
+                                        LootItem.lootTableItem(Items.GRAVEL).when(BonusLevelTableCondition.bonusLevelFlatChance(registries.getOrThrow(Enchantments.FORTUNE), 0.75F, 0.7F, 0.625F, 0.5F)),
+                                        LootItem.lootTableItem(ModItems.OBSIDIAN_SHARD).when(LootItemRandomChanceCondition.randomChance(0.12F)),
+                                        LootItem.lootTableItem(Items.FLINT).when(LootItemRandomChanceCondition.randomChance(0.041666F)),
+                                        LootItem.lootTableItem(ModItems.FLINT_SHARD).when(LootItemRandomChanceCondition.randomChance(0.625F)),
+                                        LootItem.lootTableItem(ModItems.COPPER_NUGGET).when(LootItemRandomChanceCondition.randomChance(0.666F)),
+                                        LootItem.lootTableItem(ModItems.SILVER_NUGGET).when(LootItemRandomChanceCondition.randomChance(0.666F)),
+                                        LootItem.lootTableItem(Items.GOLD_NUGGET).when(LootItemRandomChanceCondition.randomChance(0.666F)),
+                                        LootItem.lootTableItem(ModItems.HARD_NUGGET).when(LootItemRandomChanceCondition.randomChance(0.666F)),
+                                        LootItem.lootTableItem(ModItems.EMERALD_SHARD).when(LootItemRandomChanceCondition.randomChance(0.666F)),
+                                        LootItem.lootTableItem(ModItems.DIAMOND_SHARD).when(LootItemRandomChanceCondition.randomChance(0.666F)),
+                                        LootItem.lootTableItem(ModItems.MITHRIL_NUGGET).when(LootItemRandomChanceCondition.randomChance(0.666F)),
+                                        LootItem.lootTableItem(ModItems.ADAMANTIUM_NUGGET)
+                                        )
+                        )
+                );
+    }
+
+
+    protected LootItemCondition.Builder hasEnchantment(ResourceKey<Enchantment> enchantment,int level) {
+        return MatchTool.toolMatches(
+                ItemPredicate.Builder.item()
+                        .withComponents(
+                                DataComponentMatchers.Builder.components()
+                                        .partial(
+                                                DataComponentPredicates.ENCHANTMENTS,
+                                                EnchantmentsPredicate.enchantments(
+                                                        List.of(
+                                                                new EnchantmentPredicate(
+                                                                        this.registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment), MinMaxBounds.Ints.atLeast(level)
+                                                                )
+                                                        )
+                                                )
+                                        )
+                                        .build()
+                        )
+        );
     }
 }

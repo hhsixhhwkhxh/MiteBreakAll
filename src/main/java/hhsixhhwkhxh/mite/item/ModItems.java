@@ -26,9 +26,23 @@ public class ModItems {
     public static final DeferredItem<Item> WILD_APPLE = ITEMS.registerItem("wild_apple", Item::new,new Item.Properties().food(new FoodProperties.Builder()
             .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
 
-    public static final DeferredItem<Item> STRAWBERRIES = ITEMS.registerItem(
-            "strawberries", Item::new, new Item.Properties().food(Foods.SWEET_BERRIES)
-    );
+    public static final DeferredItem<Item> STRAWBERRIES = ITEMS.registerItem("strawberries", Item::new, new Item.Properties().food(Foods.SWEET_BERRIES));
+
+    public static final DeferredItem<Item> FLINT_SHARD = ITEMS.registerItem("flint_shard", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> OBSIDIAN_SHARD = ITEMS.registerItem("obsidian_shard", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> DIAMOND_SHARD = ITEMS.registerItem("diamond_shard", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> EMERALD_SHARD = ITEMS.registerItem("emerald_shard", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> GLASS_SHARD = ITEMS.registerItem("glass_shard", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> QUARTZ_SHARD = ITEMS.registerItem("quartz_shard", Item::new, new Item.Properties());
+
+    public static final DeferredItem<Item> ADAMANTIUM_NUGGET = ITEMS.registerItem("adamantium_nugget", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> ANCIENT_METAL_NUGGET = ITEMS.registerItem("ancient_metal_nugget", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> HARD_NUGGET = ITEMS.registerItem("hard_nugget", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> MERCURY_NUGGET = ITEMS.registerItem("mercury_nugget", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> MITHRIL_NUGGET = ITEMS.registerItem("mithril_nugget", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> SILVER_NUGGET = ITEMS.registerItem("silver_nugget", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> COPPER_NUGGET = ITEMS.registerItem("copper_nugget", Item::new, new Item.Properties());
+
 
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);//ENCHANTED_GOLDEN_APPLE
