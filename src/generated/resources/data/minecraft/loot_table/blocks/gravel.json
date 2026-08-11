@@ -58,24 +58,29 @@
                   "name": "mite_break_all:obsidian_shard"
                 },
                 {
-                  "type": "minecraft:item",
-                  "conditions": [
+                  "type": "minecraft:alternatives",
+                  "children": [
                     {
-                      "chance": 0.041666,
-                      "condition": "minecraft:random_chance"
+                      "type": "minecraft:item",
+                      "conditions": [
+                        {
+                          "chance": 0.0625,
+                          "condition": "minecraft:random_chance"
+                        }
+                      ],
+                      "name": "minecraft:flint"
+                    },
+                    {
+                      "type": "minecraft:item",
+                      "name": "mite_break_all:flint_shard"
                     }
                   ],
-                  "name": "minecraft:flint"
-                },
-                {
-                  "type": "minecraft:item",
                   "conditions": [
                     {
-                      "chance": 0.625,
+                      "chance": 0.666,
                       "condition": "minecraft:random_chance"
                     }
-                  ],
-                  "name": "mite_break_all:flint_shard"
+                  ]
                 },
                 {
                   "type": "minecraft:item",

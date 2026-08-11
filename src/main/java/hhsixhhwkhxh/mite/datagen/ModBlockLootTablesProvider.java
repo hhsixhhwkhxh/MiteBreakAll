@@ -87,29 +87,16 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
 
 
     private void createGravelBlockLoot() {
-        /*
-        this.add(Blocks.GRAVEL,
-                block ->
-                        createSilkTouchDispatchTable(Blocks.GRAVEL,
-                                AlternativesEntry.alternatives(
-                                        List.of(0,1,2,3),
-                                        level -> level == 8
-                                                ? LootItem.lootTableItem(Blocks.SNOW_BLOCK)
-                                                : LootItem.lootTableItem(Blocks.SNOW)
-                                                .apply(SetItemCountFunction.setCount(ConstantValue.exactly(level.intValue())))
-                                                .when(hasEnchantment(Enchantments.EFFICIENCY,0))
-                                )
-                        )
-                );
-        */
         this.add(Blocks.GRAVEL,
                 block ->
                         createSilkTouchDispatchTable(Blocks.GRAVEL,
                                 AlternativesEntry.alternatives(
                                         LootItem.lootTableItem(Items.GRAVEL).when(BonusLevelTableCondition.bonusLevelFlatChance(registries.getOrThrow(Enchantments.FORTUNE), 0.75F, 0.7F, 0.625F, 0.5F)),
                                         LootItem.lootTableItem(ModItems.OBSIDIAN_SHARD).when(LootItemRandomChanceCondition.randomChance(0.12F)),
-                                        LootItem.lootTableItem(Items.FLINT).when(LootItemRandomChanceCondition.randomChance(0.041666F)),
-                                        LootItem.lootTableItem(ModItems.FLINT_SHARD).when(LootItemRandomChanceCondition.randomChance(0.625F)),
+                                        AlternativesEntry.alternatives(
+                                                LootItem.lootTableItem(Items.FLINT).when(LootItemRandomChanceCondition.randomChance(0.0625F)),
+                                                LootItem.lootTableItem(ModItems.FLINT_SHARD)
+                                        ).when(LootItemRandomChanceCondition.randomChance(0.666F)),
                                         LootItem.lootTableItem(ModItems.COPPER_NUGGET).when(LootItemRandomChanceCondition.randomChance(0.666F)),
                                         LootItem.lootTableItem(ModItems.SILVER_NUGGET).when(LootItemRandomChanceCondition.randomChance(0.666F)),
                                         LootItem.lootTableItem(Items.GOLD_NUGGET).when(LootItemRandomChanceCondition.randomChance(0.666F)),
@@ -118,9 +105,9 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
                                         LootItem.lootTableItem(ModItems.DIAMOND_SHARD).when(LootItemRandomChanceCondition.randomChance(0.666F)),
                                         LootItem.lootTableItem(ModItems.MITHRIL_NUGGET).when(LootItemRandomChanceCondition.randomChance(0.666F)),
                                         LootItem.lootTableItem(ModItems.ADAMANTIUM_NUGGET)
-                                        )
+                                )
                         )
-                );
+        );
     }
 
 
