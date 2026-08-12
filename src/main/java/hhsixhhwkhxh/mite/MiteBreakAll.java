@@ -77,6 +77,11 @@ public class MiteBreakAll {
             event.accept(ModBlocks.STRAWBERRY_BUSH);
         } else if (event.getTabKey()==CreativeModeTabs.NATURAL_BLOCKS) {
             event.accept(ModBlocks.SILVER_ORE);
+            event.accept(ModBlocks.HARD_ORE);
+            event.accept(ModBlocks.MERCURY_ORE);
+            event.accept(ModBlocks.MITHRIL_ORE);
+            event.accept(ModBlocks.ADAMANTIUM_ORE);
+            event.accept(ModBlocks.TIN_ORE);
         } else if(event.getTabKey()==CreativeModeTabs.FUNCTIONAL_BLOCKS){
             event.accept(ModBlocks.FLINT_CRAFTING_TABLE);
         } else if(event.getTabKey()==CreativeModeTabs.INGREDIENTS){

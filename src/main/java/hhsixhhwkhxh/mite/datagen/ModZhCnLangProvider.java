@@ -14,7 +14,14 @@ public class ModZhCnLangProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         add(ModItems.WILD_APPLE.get(), "野果");
+
         add(ModBlocks.SILVER_ORE.get(),"银矿");
+        add(ModBlocks.HARD_ORE.get(),"硬石矿");
+        add(ModBlocks.MERCURY_ORE.get(),"汞矿");
+        add(ModBlocks.MITHRIL_ORE.get(),"秘银矿");
+        add(ModBlocks.ADAMANTIUM_ORE.get(),"艾德曼矿");
+        add(ModBlocks.TIN_ORE.get(),"锡矿");
+
         add(ModBlocks.FLINT_CRAFTING_TABLE.get(), "燧石工作台");
         add("craft_table.flint","燧石工作台");
         add(ModBlocks.STRAWBERRY_BUSH.get(), "草莓丛");

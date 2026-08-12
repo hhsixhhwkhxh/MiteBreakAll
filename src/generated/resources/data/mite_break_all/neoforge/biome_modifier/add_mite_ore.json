@@ -1,0 +1,22 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#c:is_overworld",
+  "features": [
+    "mite_break_all:copper_ore",
+    "mite_break_all:gravel",
+    "mite_break_all:coal_ore",
+    "mite_break_all:hard_ore",
+    "mite_break_all:silver_ore",
+    "mite_break_all:gold_ore",
+    "mite_break_all:iron_ore",
+    "mite_break_all:mithril_ore",
+    "mite_break_all:adamantium_ore",
+    "mite_break_all:redstone_ore",
+    "mite_break_all:diamond_ore",
+    "mite_break_all:lapis_ore",
+    "mite_break_all:silver_fish",
+    "mite_break_all:tin_ore",
+    "mite_break_all:mercury_ore"
+  ],
+  "step": "underground_ores"
+}

@@ -19,11 +19,14 @@ public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MiteBreakAll.MODID);
 
 
-    public static final DeferredBlock<Block> SILVER_ORE = registerBlock(
-            "silver_ore",
-            p_368251_ -> new DropExperienceBlock(ConstantInt.of(0), p_368251_),
-            BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(3.0F, 3.0F)
-    );
+    public static final DeferredBlock<Block> SILVER_ORE = registerOreBlock("silver_ore", 0,3.0F, 3.0F);
+    public static final DeferredBlock<Block> HARD_ORE = registerOreBlock("hard_ore", 0,3.0F, 3.0F);
+    public static final DeferredBlock<Block> MERCURY_ORE = registerOreBlock("mercury_ore", 0,3.0F, 3.0F);
+    public static final DeferredBlock<Block> MITHRIL_ORE = registerOreBlock("mithril_ore", 0,3.0F, 3.0F);
+    public static final DeferredBlock<Block> ADAMANTIUM_ORE = registerOreBlock("adamantium_ore", 0,3.0F, 3.0F);
+    public static final DeferredBlock<Block> TIN_ORE = registerOreBlock("tin_ore", 0,3.0F, 3.0F);
+
+
 
     public static final DeferredBlock<Block> FLINT_CRAFTING_TABLE = registerBlock(
             "flint_crafting_table",
@@ -46,6 +49,14 @@ public class ModBlocks {
         DeferredBlock<B> block = BLOCKS.registerBlock(name,func,props);;
         ModItems.ITEMS.registerSimpleBlockItem(name, block,new Item.Properties());
         return block;
+    }
+
+    private static DeferredBlock<Block> registerOreBlock(String name, int exp, float destroyTime, float explosionResistance){
+        return registerBlock(
+                name,
+                p_368251_ -> new DropExperienceBlock(ConstantInt.of(exp), p_368251_),
+                BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(destroyTime, explosionResistance)
+        );
     }
 
     public static void register(IEventBus eventBus){

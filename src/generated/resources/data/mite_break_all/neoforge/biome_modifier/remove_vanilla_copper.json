@@ -1,9 +1,0 @@
-{
-  "type": "neoforge:remove_features",
-  "biomes": "#c:is_overworld",
-  "features": "minecraft:ore_copper",
-  "steps": [
-    "local_modifications",
-    "underground_ores"
-  ]
-}

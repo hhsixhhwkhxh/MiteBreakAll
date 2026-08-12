@@ -1,7 +1,12 @@
 {
+  "block.mite_break_all.adamantium_ore": "艾德曼矿",
   "block.mite_break_all.flint_crafting_table": "燧石工作台",
+  "block.mite_break_all.hard_ore": "硬石矿",
+  "block.mite_break_all.mercury_ore": "汞矿",
+  "block.mite_break_all.mithril_ore": "秘银矿",
   "block.mite_break_all.silver_ore": "银矿",
   "block.mite_break_all.strawberry_bush": "草莓丛",
+  "block.mite_break_all.tin_ore": "锡矿",
   "craft_table.flint": "燧石工作台",
   "enchantment.mite_break_all.overpowered": "君临天下",
   "item.mite_break_all.adamantium_nugget": "艾德曼粒",

@@ -1,9 +1,9 @@
 {
-  "feature": "mite_break_all:copper_ore",
+  "feature": "mite_break_all:gravel",
   "placement": [
     {
       "type": "minecraft:count",
-      "count": 40
+      "count": 200
     },
     {
       "type": "minecraft:in_square"
@@ -16,7 +16,7 @@
           "absolute": 128
         },
         "min_inclusive": {
-          "absolute": 32
+          "absolute": 24
         }
       }
     }

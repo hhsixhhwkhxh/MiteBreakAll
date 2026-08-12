@@ -34,7 +34,13 @@ public class ModModelProvider extends ModelProvider {
     @Override
     protected void registerModels(@NotNull BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
         createFlintCraftingTable(blockModels,ModBlocks.FLINT_CRAFTING_TABLE.get(), Blocks.OAK_LOG);
-        blockModels.createTrivialCube(ModBlocks.SILVER_ORE.get());
+
+        createTrivialCubeEx(blockModels,ModBlocks.SILVER_ORE.get(),"ores/",TexturedModel.CUBE);
+        createTrivialCubeEx(blockModels,ModBlocks.HARD_ORE.get(),"ores/",TexturedModel.CUBE);
+        createTrivialCubeEx(blockModels,ModBlocks.MERCURY_ORE.get(),"ores/",TexturedModel.CUBE);
+        createTrivialCubeEx(blockModels,ModBlocks.MITHRIL_ORE.get(),"ores/",TexturedModel.CUBE);
+        createTrivialCubeEx(blockModels,ModBlocks.ADAMANTIUM_ORE.get(),"ores/",TexturedModel.CUBE);
+        createTrivialCubeEx(blockModels,ModBlocks.TIN_ORE.get(),"ores/",TexturedModel.CUBE);
 
         generateFlatItemEx(blockModels,ModItems.WILD_APPLE.get(),"food/",ModelTemplates.FLAT_ITEM);
 
@@ -108,4 +114,17 @@ public class ModModelProvider extends ModelProvider {
     ) {
         return modelTemplate.createWithSuffix(block, suffix, textureMappingGetter.apply(getBlockTextureWithPrefix(block, prefix, suffix)), blockModels.modelOutput);
     }
+
+    public void createTrivialCubeEx(BlockModelGenerators blockModels,Block block, String prefix,TexturedModel.Provider provider) {
+        TexturedModel texturedModel = provider.get(block);
+
+        Function<ResourceLocation, TextureMapping> textureMappingGetter = (TextureMapping::cube);
+
+        ResourceLocation resourceLocation = texturedModel.getTemplate().create(BuiltInRegistries.BLOCK.getKey(block).withPath(name -> "block/" + name), textureMappingGetter.apply(getBlockTextureWithPrefix(block, prefix,"")), blockModels.modelOutput);
+        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, BlockModelGenerators.plainVariant(resourceLocation)));
+
+
+    }
+
+
 }

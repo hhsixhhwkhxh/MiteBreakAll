@@ -14,7 +14,14 @@ public class ModEnUsLangProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         add(ModItems.WILD_APPLE.get(), "Wild Apple");
+
         add(ModBlocks.SILVER_ORE.get(),"Silver Ore");
+        add(ModBlocks.HARD_ORE.get(),"Hard Ore");
+        add(ModBlocks.MERCURY_ORE.get(),"Mercury Ore");
+        add(ModBlocks.MITHRIL_ORE.get(),"Mithril Ore");
+        add(ModBlocks.ADAMANTIUM_ORE.get(),"Adamantium Ore");
+        add(ModBlocks.TIN_ORE.get(),"Tin Ore");
+
         add(ModBlocks.FLINT_CRAFTING_TABLE.get(), "Flint Crafting Table");
         add("craft_table.flint","Flint Crafting Table");
         add(ModBlocks.STRAWBERRY_BUSH.get(), "StrawBerry Bush");

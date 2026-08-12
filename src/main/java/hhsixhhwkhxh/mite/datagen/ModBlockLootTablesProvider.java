@@ -42,6 +42,12 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
     @Override
     protected void generate() {
         this.dropSelf(ModBlocks.SILVER_ORE.get());
+        this.dropSelf(ModBlocks.HARD_ORE.get());
+        this.dropSelf(ModBlocks.MERCURY_ORE.get());
+        this.dropSelf(ModBlocks.MITHRIL_ORE.get());
+        this.dropSelf(ModBlocks.ADAMANTIUM_ORE.get());
+        this.dropSelf(ModBlocks.TIN_ORE.get());
+
         this.dropSelf(ModBlocks.FLINT_CRAFTING_TABLE.get());
 
         this.add(

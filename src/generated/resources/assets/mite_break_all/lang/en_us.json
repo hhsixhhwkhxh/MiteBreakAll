@@ -1,7 +1,12 @@
 {
+  "block.mite_break_all.adamantium_ore": "Adamantium Ore",
   "block.mite_break_all.flint_crafting_table": "Flint Crafting Table",
+  "block.mite_break_all.hard_ore": "Hard Ore",
+  "block.mite_break_all.mercury_ore": "Mercury Ore",
+  "block.mite_break_all.mithril_ore": "Mithril Ore",
   "block.mite_break_all.silver_ore": "Silver Ore",
   "block.mite_break_all.strawberry_bush": "StrawBerry Bush",
+  "block.mite_break_all.tin_ore": "Tin Ore",
   "craft_table.flint": "Flint Crafting Table",
   "enchantment.mite_break_all.overpowered": "Overpowered",
   "item.mite_break_all.adamantium_nugget": "Adamantium Nugget",

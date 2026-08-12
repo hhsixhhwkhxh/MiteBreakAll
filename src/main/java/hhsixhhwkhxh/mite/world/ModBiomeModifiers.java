@@ -19,9 +19,9 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import java.util.Set;
 
 public class ModBiomeModifiers {
-    public static final ResourceKey<BiomeModifier> ADD_COPPER_ORE = createResourceKey("add_copper_ore");
+    public static final ResourceKey<BiomeModifier> ADD_MITE_ORE = createResourceKey("add_mite_ore");
 
-    public static final ResourceKey<BiomeModifier> REMOVE_VANILLA_COPPER =createResourceKey("remove_vanilla_copper");
+    public static final ResourceKey<BiomeModifier> REMOVE_VANILLA_FEATURES =createResourceKey("remove_vanilla_features");
 
     public static void bootstrap(BootstrapContext<BiomeModifier> context) {
 
@@ -31,15 +31,55 @@ public class ModBiomeModifiers {
 
         HolderSet<Biome> overworldBiomes = biomes.getOrThrow(Tags.Biomes.IS_OVERWORLD);
 
-        context.register(ADD_COPPER_ORE, new BiomeModifiers.AddFeaturesBiomeModifier(overworldBiomes, HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.COPPER_ORE_PLACED_KEY)), GenerationStep.Decoration.UNDERGROUND_ORES));
+
+        context.register(ADD_MITE_ORE, new BiomeModifiers.AddFeaturesBiomeModifier(overworldBiomes, HolderSet.direct(
+                placedFeatures.getOrThrow(ModPlacedFeatures.COPPER_ORE_PLACED_KEY),
+                placedFeatures.getOrThrow(ModPlacedFeatures.GRAVEL_PLACED_KEY),
+                placedFeatures.getOrThrow(ModPlacedFeatures.COAL_ORE_PLACED_KEY),
+                placedFeatures.getOrThrow(ModPlacedFeatures.HARD_ORE_PLACED_KEY),
+                placedFeatures.getOrThrow(ModPlacedFeatures.SILVER_ORE_PLACED_KEY),
+                placedFeatures.getOrThrow(ModPlacedFeatures.GOLD_ORE_PLACED_KEY),
+                placedFeatures.getOrThrow(ModPlacedFeatures.IRON_ORE_PLACED_KEY),
+                placedFeatures.getOrThrow(ModPlacedFeatures.MITHRIL_ORE_PLACED_KEY),
+                placedFeatures.getOrThrow(ModPlacedFeatures.ADAMANTIUM_ORE_PLACED_KEY),
+                placedFeatures.getOrThrow(ModPlacedFeatures.REDSTONE_ORE_PLACED_KEY),
+                placedFeatures.getOrThrow(ModPlacedFeatures.DIAMOND_ORE_PLACED_KEY),
+                placedFeatures.getOrThrow(ModPlacedFeatures.LAPIS_ORE_PLACED_KEY),
+                placedFeatures.getOrThrow(ModPlacedFeatures.SILVER_FISH_PLACED_KEY),
+                placedFeatures.getOrThrow(ModPlacedFeatures.TIN_ORE_PLACED_KEY),
+                placedFeatures.getOrThrow(ModPlacedFeatures.MERCURY_ORE_PLACED_KEY)
+
+                ), GenerationStep.Decoration.UNDERGROUND_ORES));
 
 
-        context.register(REMOVE_VANILLA_COPPER,
+        context.register(REMOVE_VANILLA_FEATURES,
                 new BiomeModifiers.RemoveFeaturesBiomeModifier(
                         // The biome(s) to remove from
                         biomes.getOrThrow(Tags.Biomes.IS_OVERWORLD),
                         // The feature(s) to remove from the biomes
-                        HolderSet.direct(placedFeatures.getOrThrow(OrePlacements.ORE_COPPER)),
+                        HolderSet.direct(
+                                placedFeatures.getOrThrow(OrePlacements.ORE_COPPER),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_COPPER_LARGE),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_GRAVEL),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_COAL_UPPER),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_COAL_LOWER),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_IRON_UPPER),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_IRON_MIDDLE),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_IRON_SMALL),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_GOLD_EXTRA),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_GOLD_DELTAS),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_GOLD),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_GOLD_LOWER),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_REDSTONE),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_REDSTONE_LOWER),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_DIAMOND),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_DIAMOND_BURIED),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_DIAMOND_LARGE),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_DIAMOND_MEDIUM),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_EMERALD),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_LAPIS),
+                                placedFeatures.getOrThrow(OrePlacements.ORE_LAPIS_BURIED)
+                                ),
                         // The generation steps to remove from
                         Set.of(
                                 GenerationStep.Decoration.LOCAL_MODIFICATIONS,

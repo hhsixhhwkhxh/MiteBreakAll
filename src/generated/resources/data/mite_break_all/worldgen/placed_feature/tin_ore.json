@@ -1,5 +1,5 @@
 {
-  "feature": "mite_break_all:copper_ore",
+  "feature": "mite_break_all:tin_ore",
   "placement": [
     {
       "type": "minecraft:count",
@@ -16,7 +16,7 @@
           "absolute": 128
         },
         "min_inclusive": {
-          "absolute": 32
+          "above_bottom": 0
         }
       }
     }

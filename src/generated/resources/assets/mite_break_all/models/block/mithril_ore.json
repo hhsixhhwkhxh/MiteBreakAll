@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "mite_break_all:block/ores/silver_ore"
+    "all": "mite_break_all:block/ores/mithril_ore"
   }
 }
