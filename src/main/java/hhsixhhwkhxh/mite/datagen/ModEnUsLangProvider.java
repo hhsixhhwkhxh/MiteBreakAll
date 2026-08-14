@@ -43,5 +43,9 @@ public class ModEnUsLangProvider extends LanguageProvider {
         add(ModItems.MITHRIL_NUGGET.get(), "Mithril Nugget");
         add(ModItems.SILVER_NUGGET.get(), "Silver Nugget");
         add(ModItems.COPPER_NUGGET.get(), "Copper Nugget");
+
+        add(ModItems.MESH_LEATHER.get(), "Mesh Leather");
+        add(ModItems.MESH_STRING.get(), "Mesh String");
+        add(ModBlocks.SIEVE.get(), "Sieve");
     }
 }

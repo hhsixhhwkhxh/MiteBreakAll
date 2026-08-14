@@ -3,11 +3,14 @@ package hhsixhhwkhxh.mite.datagen;
 
 import hhsixhhwkhxh.mite.MiteBreakAll;
 import hhsixhhwkhxh.mite.block.ModBlocks;
+import hhsixhhwkhxh.mite.block.SieveBlock;
+import hhsixhhwkhxh.mite.custom.MeshType;
 import hhsixhhwkhxh.mite.item.ModItems;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.MultiVariant;
+import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.*;
@@ -23,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static net.minecraft.client.data.models.BlockModelGenerators.ROTATION_HORIZONTAL_FACING;
+
 
 
 public class ModModelProvider extends ModelProvider {
@@ -60,6 +63,12 @@ public class ModModelProvider extends ModelProvider {
         generateFlatItemEx(blockModels,ModItems.MITHRIL_NUGGET.get(),"nuggets/",ModelTemplates.FLAT_ITEM);
         generateFlatItemEx(blockModels,ModItems.SILVER_NUGGET.get(),"nuggets/",ModelTemplates.FLAT_ITEM);
         generateFlatItemEx(blockModels,ModItems.COPPER_NUGGET.get(),"nuggets/",ModelTemplates.FLAT_ITEM);
+
+        createSieve(blockModels);
+
+        itemModels.generateFlatItem(ModItems.MESH_LEATHER.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.MESH_STRING.get(), ModelTemplates.FLAT_ITEM);
+
     }
 
     public void createFlintCraftingTable(BlockModelGenerators blockModels,Block craftingTableBlock, Block craftingTableMaterialBlock) {
@@ -71,7 +80,7 @@ public class ModModelProvider extends ModelProvider {
 
         TextureMapping texturemapping = textureMappingGetter.apply(craftingTableBlock, craftingTableMaterialBlock);
         MultiVariant multivariant = BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ORIENTABLE_TOP_BOTTOM.create(craftingTableBlock, texturemapping,blockModels.modelOutput));
-        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(craftingTableBlock, multivariant).with(ROTATION_HORIZONTAL_FACING));
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(craftingTableBlock, multivariant).with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
 
     }
 
@@ -126,5 +135,36 @@ public class ModModelProvider extends ModelProvider {
 
     }
 
+    public void createSieve(BlockModelGenerators blockModels) {
+        registerSimpleItemModel(blockModels,ModBlocks.SIEVE.asItem(),ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/sieve"));
+        blockModels.blockStateOutput
+                .accept(
+                        MultiPartGenerator.multiPart(ModBlocks.SIEVE.get())
+                                .with(BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/sieve")))
+                                .with(
+                                        BlockModelGenerators.condition().term(SieveBlock.MESH_TYPE, MeshType.LEATHER), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/mesh_leather"))
+                                )
+                                .with(
+                                        BlockModelGenerators.condition().term(SieveBlock.MESH_TYPE, MeshType.STRING), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/mesh_string"))
+                                )
+                                .with(
+                                        BlockModelGenerators.condition().term(SieveBlock.LEVEL, 1), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/gravel_layer1"))
+                                )
+                                .with(
+                                        BlockModelGenerators.condition().term(SieveBlock.LEVEL, 2), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/gravel_layer2"))
+                                )
+                                .with(
+                                        BlockModelGenerators.condition().term(SieveBlock.LEVEL, 3), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/gravel_layer3"))
+                                )
+                                .with(
+                                        BlockModelGenerators.condition().term(SieveBlock.LEVEL, 4), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/gravel_layer4"))
+                                )
 
+                );
+
+    }
+
+    public void registerSimpleItemModel(BlockModelGenerators blockModels,Item item, ResourceLocation model) {
+        blockModels.itemModelOutput.accept(item, ItemModelUtils.plainModel(model));
+    }
 }

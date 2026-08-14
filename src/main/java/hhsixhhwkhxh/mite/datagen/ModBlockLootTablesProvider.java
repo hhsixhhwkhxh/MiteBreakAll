@@ -50,6 +50,9 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
 
         this.dropSelf(ModBlocks.FLINT_CRAFTING_TABLE.get());
 
+        this.dropSelf(ModBlocks.SIEVE.get());
+        //.dropSelf(ModBlocks.LAYERED_SIEVE.get());
+
         this.add(
                 ModBlocks.STRAWBERRY_BUSH.get(),
                 block -> this.applyExplosionDecay(

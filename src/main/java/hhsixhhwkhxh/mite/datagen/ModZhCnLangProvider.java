@@ -43,5 +43,9 @@ public class ModZhCnLangProvider extends LanguageProvider {
         add(ModItems.MITHRIL_NUGGET.get(), "秘银粒");
         add(ModItems.SILVER_NUGGET.get(), "银粒");
         add(ModItems.COPPER_NUGGET.get(), "铜粒");
+
+        add(ModItems.MESH_LEATHER.get(), "皮筛网");
+        add(ModItems.MESH_STRING.get(), "线筛网");
+        add(ModBlocks.SIEVE.get(), "木筛");
     }
 }

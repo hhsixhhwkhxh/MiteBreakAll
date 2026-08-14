@@ -1,0 +1,57 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "mite_break_all:block/sieve/sieve"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/sieve/mesh_leather"
+      },
+      "when": {
+        "type": "leather"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/sieve/mesh_string"
+      },
+      "when": {
+        "type": "string"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/sieve/gravel_layer1"
+      },
+      "when": {
+        "level": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/sieve/gravel_layer2"
+      },
+      "when": {
+        "level": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/sieve/gravel_layer3"
+      },
+      "when": {
+        "level": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/sieve/gravel_layer4"
+      },
+      "when": {
+        "level": "4"
+      }
+    }
+  ]
+}

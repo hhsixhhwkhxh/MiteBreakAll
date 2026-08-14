@@ -43,6 +43,9 @@ public class ModItems {
     public static final DeferredItem<Item> SILVER_NUGGET = ITEMS.registerItem("silver_nugget", Item::new, new Item.Properties());
     public static final DeferredItem<Item> COPPER_NUGGET = ITEMS.registerItem("copper_nugget", Item::new, new Item.Properties());
 
+    public static final DeferredItem<Item> MESH_STRING = ITEMS.registerItem("mesh_string", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> MESH_LEATHER = ITEMS.registerItem("mesh_leather", Item::new, new Item.Properties());
+
 
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);//ENCHANTED_GOLDEN_APPLE

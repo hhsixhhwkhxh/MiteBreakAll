@@ -26,6 +26,11 @@ public class ModBlocks {
     public static final DeferredBlock<Block> ADAMANTIUM_ORE = registerOreBlock("adamantium_ore", 0,3.0F, 3.0F);
     public static final DeferredBlock<Block> TIN_ORE = registerOreBlock("tin_ore", 0,3.0F, 3.0F);
 
+    public static final DeferredBlock<Block> SIEVE = registerBlock(
+            "sieve",
+            SieveBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).strength(0.6F).sound(SoundType.WOOD).ignitedByLava().noOcclusion()
+    );
 
 
     public static final DeferredBlock<Block> FLINT_CRAFTING_TABLE = registerBlock(
