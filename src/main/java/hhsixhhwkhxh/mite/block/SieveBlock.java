@@ -14,6 +14,7 @@ import net.minecraft.world.*;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
@@ -27,6 +28,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -42,8 +44,10 @@ import static net.minecraft.world.level.block.LevelEvent.COMPOSTER_FILL;
 
 public class SieveBlock extends Block {
     public static final MapCodec<SieveBlock> CODEC = simpleCodec(SieveBlock::new);
-    public static final IntegerProperty LEVEL = IntegerProperty.create("level", 0, 4);
-    public static final EnumProperty<MeshType> MESH_TYPE = EnumProperty.create("type", MeshType.class);
+    public static final IntegerProperty GRAVEL_LEVEL = IntegerProperty.create("gravel_level", 0, 4);
+    public static final EnumProperty<MeshType> MESH_TYPE = EnumProperty.create("mesh_type", MeshType.class);
+    public static final IntegerProperty MESH_DAMAGE = IntegerProperty.create("mesh_damage", 0, 15);
+
 
     private static final Map<ItemLike, Float> lootPool = Map.ofEntries(
             Map.entry(ModItems.OBSIDIAN_SHARD, 0.12F),
@@ -79,8 +83,9 @@ public class SieveBlock extends Block {
 
     public SieveBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(LEVEL, 0));
+        this.registerDefaultState(this.stateDefinition.any().setValue(GRAVEL_LEVEL, 0));
         this.registerDefaultState(this.stateDefinition.any().setValue(MESH_TYPE, MeshType.EMPTY));
+        this.registerDefaultState(this.stateDefinition.any().setValue(MESH_DAMAGE, 0));
     }
 
 
@@ -89,7 +94,7 @@ public class SieveBlock extends Block {
         if(state.getValue(MESH_TYPE)==MeshType.EMPTY){
             return EMPTY_SHAPE;
         }else{
-            return SHAPES[state.getValue(LEVEL)];
+            return SHAPES[state.getValue(GRAVEL_LEVEL)];
         }
     }
 
@@ -103,13 +108,13 @@ public class SieveBlock extends Block {
         if(state.getValue(MESH_TYPE)==MeshType.EMPTY){
             return EMPTY_SHAPE;
         }else{
-            return SHAPES[state.getValue(LEVEL)];
+            return SHAPES[state.getValue(GRAVEL_LEVEL)];
         }
     }
 
     @Override
     protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
-        if (state.getValue(LEVEL) == 7) {
+        if (state.getValue(GRAVEL_LEVEL) == 7) {
             level.scheduleTick(pos, state.getBlock(), 20);
         }
         // Neo: Invalidate composter capabilities when a composter is added
@@ -132,9 +137,9 @@ public class SieveBlock extends Block {
         if(state.getValue(MESH_TYPE)==MeshType.EMPTY){
             BlockState blockstate;
             if(ItemStack.isSameItem(stack, ModItems.MESH_STRING.toStack())){
-                blockstate = state.setValue(MESH_TYPE,MeshType.STRING);
+                blockstate = state.setValue(MESH_TYPE,MeshType.STRING).setValue(MESH_DAMAGE,stack.getDamageValue());
             }else if(ItemStack.isSameItem(stack, ModItems.MESH_LEATHER.toStack())){
-                blockstate = state.setValue(MESH_TYPE,MeshType.LEATHER);
+                blockstate = state.setValue(MESH_TYPE,MeshType.LEATHER).setValue(MESH_DAMAGE,stack.getDamageValue());
             }else{
                 return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
             }
@@ -143,84 +148,118 @@ public class SieveBlock extends Block {
                 return InteractionResult.SUCCESS;
             }
 
-            level.setBlock(pos, blockstate, UPDATE_ALL);
-            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, blockstate));
-
-            level.levelEvent(COMPOSTER_FILL, pos, state != blockstate ? 1 : 0);
-            player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
+            updateState(stack,state,blockstate,level,pos,player);
             stack.consume(1, player);
 
             return InteractionResult.SUCCESS;
         }else{
             if(!ItemStack.isSameItem(stack, Items.GRAVEL.getDefaultInstance())){
-                return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+                if(state.getValue(GRAVEL_LEVEL)!=0){
+                    return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+                }
+                removeMesh(state,level,pos,player);
+                return InteractionResult.SUCCESS;
             }
-            int gravelLevel = state.getValue(LEVEL);
+            int gravelLevel = state.getValue(GRAVEL_LEVEL);
 
             BlockState blockstate;
             if(gravelLevel!=0){
                 if(gravelLevel==1){
-                    extractProduce(player, state, level, pos);
+                    blockstate = extractProduce(player, state, level, pos,player);
+                }else{
+                    blockstate = state.setValue(GRAVEL_LEVEL,gravelLevel-1);
                 }
-                blockstate = state.setValue(LEVEL,gravelLevel-1);
             }else{
-                blockstate = state.setValue(LEVEL,4);
+                blockstate = state.setValue(GRAVEL_LEVEL,4);
                 stack.consume(1, player);
             }
 
-            level.setBlock(pos, blockstate, UPDATE_ALL);
-            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, blockstate));
-
-            level.levelEvent(COMPOSTER_FILL, pos, state != blockstate ? 1 : 0);
-            player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
-            //stack.consume(1, player);
+            updateState(stack,state,blockstate,level,pos,player);
 
             return InteractionResult.SUCCESS;
         }
+    }
+
+    private void removeMesh(BlockState state, Level level, BlockPos pos, Player player){
+        ItemStack meshItemStack = new ItemStack((ItemLike) ((state.getValue(MESH_TYPE)==MeshType.LEATHER)?ModItems.MESH_LEATHER:ModItems.MESH_STRING));
+        meshItemStack.setDamageValue(state.getValue(MESH_DAMAGE));
+        dropItem(meshItemStack,level,pos);
+
+        BlockState blockstate = state.setValue(MESH_TYPE,MeshType.EMPTY).setValue(MESH_DAMAGE,0);
+        updateState(null,state,blockstate,level,pos,player);
+    }
+
+    private static void updateState(ItemStack stack,BlockState oldState,BlockState newState, Level level, BlockPos pos, Player player){
+        level.setBlock(pos, newState, UPDATE_ALL);
+        level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, newState));
+
+        level.levelEvent(COMPOSTER_FILL, pos, oldState != newState ? 1 : 0);
+        if(stack!=null){
+            player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
+        }
+
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
 
 
-        int gravelLevel = state.getValue(LEVEL);
+        int gravelLevel = state.getValue(GRAVEL_LEVEL);
+
         if(gravelLevel==0){
-            return InteractionResult.PASS;
+            if(state.getValue(MESH_TYPE)==MeshType.EMPTY){
+                return InteractionResult.PASS;
+            }
+            removeMesh(state,level,pos,player);
         }
+        BlockState blockstate;
         if(gravelLevel==1){
-            extractProduce(player, state, level, pos);
+            blockstate = extractProduce(player, state, level, pos,player);
+        }else{
+            blockstate = state.setValue(GRAVEL_LEVEL,gravelLevel-1);
         }
-        BlockState blockstate =  state.setValue(LEVEL,gravelLevel-1);
 
-        level.setBlock(pos, blockstate, UPDATE_ALL);
-        level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, blockstate));
 
-        level.levelEvent(COMPOSTER_FILL, pos, state != blockstate ? 1 : 0);
+        updateState(null,state,blockstate,level,pos,player);
 
         return InteractionResult.SUCCESS;
     }
 
+    private static void dropItem(ItemStack itemStack, Level level, BlockPos pos){
+        Vec3 vec3 = Vec3.atLowerCornerWithOffset(pos, 0.5, 1.01, 0.5).offsetRandom(level.random, 0.7F);
+        ItemEntity itementity = new ItemEntity(level, vec3.x(), vec3.y(), vec3.z(), itemStack);
+        itementity.setDefaultPickUpDelay();
+        level.addFreshEntity(itementity);
+    }
 
+    public static BlockState extractProduce(Entity entity, BlockState state, Level level, BlockPos pos,Player player) {
+        BlockState blockState;
 
-    public static BlockState extractProduce(Entity entity, BlockState state, Level level, BlockPos pos) {
+        int meshDamage = state.getValue(MESH_DAMAGE);
+        int maxDamage = (state.getValue(MESH_TYPE)==MeshType.LEATHER)?7:15;
+        if(meshDamage>=maxDamage){
+            blockState = state.setValue(MESH_TYPE,MeshType.EMPTY);
+        }else{
+            blockState = state.setValue(MESH_DAMAGE,meshDamage+1);
+        }
+        blockState = blockState.setValue(GRAVEL_LEVEL, 0);
+
         if (!level.isClientSide) {
             ServerLevel serverLevel = (ServerLevel) level;
+
             if(shouldDropLoot(serverLevel)){
                 RandomSource random = serverLevel.getRandom();
                 List<ItemStack> resultList = selectItemCounts(selectItemKinds(random,random.nextInt(3)+1),random);
 
                 for(ItemStack itemStack:resultList){
-                    Vec3 vec3 = Vec3.atLowerCornerWithOffset(pos, 0.5, 1.01, 0.5).offsetRandom(level.random, 0.7F);
-                    ItemEntity itementity = new ItemEntity(level, vec3.x(), vec3.y(), vec3.z(), itemStack);
-                    itementity.setDefaultPickUpDelay();
-                    level.addFreshEntity(itementity);
+                    dropItem(itemStack,level,pos);
                 }
             }
         }
 
-        BlockState blockstate = empty(entity, state, level, pos);
+        //BlockState blockstate = empty(entity, state, level, pos);
         level.playSound(null, pos, SoundEvents.COMPOSTER_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-        return blockstate;
+        return blockState;
     }
 
     private static boolean shouldDropLoot(ServerLevel serverLevel){
@@ -295,7 +334,7 @@ public class SieveBlock extends Block {
     }
 
     static BlockState empty(@Nullable Entity entity, BlockState state, LevelAccessor level, BlockPos pos) {
-        BlockState blockstate = state.setValue(LEVEL, 0);
+        BlockState blockstate = state.setValue(GRAVEL_LEVEL, 0);
         level.setBlock(pos, blockstate, 3);
         level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(entity, blockstate));
         return blockstate;
@@ -305,8 +344,8 @@ public class SieveBlock extends Block {
 
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (state.getValue(LEVEL) == 7) {
-            level.setBlock(pos, state.cycle(LEVEL), 3);
+        if (state.getValue(GRAVEL_LEVEL) == 7) {
+            level.setBlock(pos, state.cycle(GRAVEL_LEVEL), 3);
             level.playSound(null, pos, SoundEvents.COMPOSTER_READY, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
     }
@@ -321,13 +360,14 @@ public class SieveBlock extends Block {
      */
     @Override
     protected int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos pos) {
-        return blockState.getValue(LEVEL);
+        return blockState.getValue(GRAVEL_LEVEL);
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(LEVEL);
+        builder.add(GRAVEL_LEVEL);
         builder.add(MESH_TYPE);
+        builder.add(MESH_DAMAGE);
     }
 
     @Override
@@ -335,5 +375,24 @@ public class SieveBlock extends Block {
         return false;
     }
 
-
+    @Override
+    protected List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
+        List<ItemStack> resultList = new ArrayList<>();
+        resultList.add(new ItemStack(ModBlocks.SIEVE));
+        ItemStack itemStack = null;
+        switch (state.getValue(MESH_TYPE)){
+            case MeshType.LEATHER:
+                itemStack = new ItemStack((ItemLike) ModItems.MESH_LEATHER);
+                itemStack.setDamageValue(state.getValue(MESH_DAMAGE));
+                break;
+            case MeshType.STRING:
+                itemStack = new ItemStack((ItemLike) ModItems.MESH_STRING);
+                itemStack.setDamageValue(state.getValue(MESH_DAMAGE));
+                break;
+        }
+        if(itemStack!=null){
+            resultList.add(itemStack);
+        }
+        return resultList;
+    }
 }

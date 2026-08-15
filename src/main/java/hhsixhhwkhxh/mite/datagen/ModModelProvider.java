@@ -148,16 +148,16 @@ public class ModModelProvider extends ModelProvider {
                                         BlockModelGenerators.condition().term(SieveBlock.MESH_TYPE, MeshType.STRING), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/mesh_string"))
                                 )
                                 .with(
-                                        BlockModelGenerators.condition().term(SieveBlock.LEVEL, 1), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/gravel_layer1"))
+                                        BlockModelGenerators.condition().term(SieveBlock.GRAVEL_LEVEL, 1), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/gravel_layer1"))
                                 )
                                 .with(
-                                        BlockModelGenerators.condition().term(SieveBlock.LEVEL, 2), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/gravel_layer2"))
+                                        BlockModelGenerators.condition().term(SieveBlock.GRAVEL_LEVEL, 2), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/gravel_layer2"))
                                 )
                                 .with(
-                                        BlockModelGenerators.condition().term(SieveBlock.LEVEL, 3), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/gravel_layer3"))
+                                        BlockModelGenerators.condition().term(SieveBlock.GRAVEL_LEVEL, 3), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/gravel_layer3"))
                                 )
                                 .with(
-                                        BlockModelGenerators.condition().term(SieveBlock.LEVEL, 4), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/gravel_layer4"))
+                                        BlockModelGenerators.condition().term(SieveBlock.GRAVEL_LEVEL, 4), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/gravel_layer4"))
                                 )
 
                 );

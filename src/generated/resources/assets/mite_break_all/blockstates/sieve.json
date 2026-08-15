@@ -10,7 +10,7 @@
         "model": "mite_break_all:block/sieve/mesh_leather"
       },
       "when": {
-        "type": "leather"
+        "mesh_type": "leather"
       }
     },
     {
@@ -18,7 +18,7 @@
         "model": "mite_break_all:block/sieve/mesh_string"
       },
       "when": {
-        "type": "string"
+        "mesh_type": "string"
       }
     },
     {
@@ -26,7 +26,7 @@
         "model": "mite_break_all:block/sieve/gravel_layer1"
       },
       "when": {
-        "level": "1"
+        "gravel_level": "1"
       }
     },
     {
@@ -34,7 +34,7 @@
         "model": "mite_break_all:block/sieve/gravel_layer2"
       },
       "when": {
-        "level": "2"
+        "gravel_level": "2"
       }
     },
     {
@@ -42,7 +42,7 @@
         "model": "mite_break_all:block/sieve/gravel_layer3"
       },
       "when": {
-        "level": "3"
+        "gravel_level": "3"
       }
     },
     {
@@ -50,7 +50,7 @@
         "model": "mite_break_all:block/sieve/gravel_layer4"
       },
       "when": {
-        "level": "4"
+        "gravel_level": "4"
       }
     }
   ]
