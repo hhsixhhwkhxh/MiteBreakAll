@@ -47,5 +47,60 @@ public class ModZhCnLangProvider extends LanguageProvider {
         add(ModItems.MESH_LEATHER.get(), "皮筛网");
         add(ModItems.MESH_STRING.get(), "线筛网");
         add(ModBlocks.SIEVE.get(), "木筛");
+
+        add("itemGroup.mite","MITE");
+
+        add(ModItems.ADAMANTIUM_INGOT.get(), "艾德曼锭");
+        add(ModItems.ANCIENT_METAL_INGOT.get(), "远古金属锭");
+        add(ModItems.HARD_INGOT.get(), "硬石锭");
+        add(ModItems.MERCURY_INGOT.get(), "汞锭");
+        add(ModItems.MITHRIL_INGOT.get(), "秘银锭");
+        add(ModItems.SILVER_INGOT.get(), "银锭");
+        add(ModItems.TIN_INGOT.get(), "锡锭");
+
+        add(ModItems.ADAMANTIUM_HELMET.get(),"艾德曼头盔");
+        add(ModItems.ADAMANTIUM_CHESTPLATE.get(),"艾德曼胸甲");
+        add(ModItems.ADAMANTIUM_LEGGINGS.get(),"艾德曼护腿");
+        add(ModItems.ADAMANTIUM_BOOTS.get(),"艾德曼靴子");
+
+        add(ModItems.ANCIENT_METAL_HELMET.get(),"远古金属头盔");
+        add(ModItems.ANCIENT_METAL_CHESTPLATE.get(),"远古金属胸甲");
+        add(ModItems.ANCIENT_METAL_LEGGINGS.get(),"远古金属护腿");
+        add(ModItems.ANCIENT_METAL_BOOTS.get(),"远古金属靴子");
+
+        add(ModItems.HARD_HELMET.get(),"硬石头盔");
+        add(ModItems.HARD_CHESTPLATE.get(),"硬石胸甲");
+        add(ModItems.HARD_LEGGINGS.get(),"硬石护腿");
+        add(ModItems.HARD_BOOTS.get(),"硬石靴子");
+
+        add(ModItems.MITHRIL_HELMET.get(),"秘银头盔");
+        add(ModItems.MITHRIL_CHESTPLATE.get(),"秘银胸甲");
+        add(ModItems.MITHRIL_LEGGINGS.get(),"秘银护腿");
+        add(ModItems.MITHRIL_BOOTS.get(),"秘银靴子");
+
+        add(ModItems.RUSTED_IRON_HELMET.get(),"锈铁头盔");
+        add(ModItems.RUSTED_IRON_CHESTPLATE.get(),"锈铁胸甲");
+        add(ModItems.RUSTED_IRON_LEGGINGS.get(),"锈铁护腿");
+        add(ModItems.RUSTED_IRON_BOOTS.get(),"锈铁靴子");
+
+        add(ModItems.SILVER_HELMET.get(),"银头盔");
+        add(ModItems.SILVER_CHESTPLATE.get(),"银胸甲");
+        add(ModItems.SILVER_LEGGINGS.get(),"银护腿");
+        add(ModItems.SILVER_BOOTS.get(),"银靴子");
+
+        add(ModItems.BRONZE_HELMET.get(),"青铜头盔");
+        add(ModItems.BRONZE_CHESTPLATE.get(),"青铜胸甲");
+        add(ModItems.BRONZE_LEGGINGS.get(),"青铜护腿");
+        add(ModItems.BRONZE_BOOTS.get(),"青铜靴子");
+
+        add(ModItems.HIGH_CARBON_STEEL_HELMET.get(),"高碳钢头盔");
+        add(ModItems.HIGH_CARBON_STEEL_CHESTPLATE.get(),"高碳钢胸甲");
+        add(ModItems.HIGH_CARBON_STEEL_LEGGINGS.get(),"高碳钢护腿");
+        add(ModItems.HIGH_CARBON_STEEL_BOOTS.get(),"高碳钢靴子");
+
+        add(ModItems.SILVER_COPPER_HELMET.get(),"银铜头盔");
+        add(ModItems.SILVER_COPPER_CHESTPLATE.get(),"银铜胸甲");
+        add(ModItems.SILVER_COPPER_LEGGINGS.get(),"银铜护腿");
+        add(ModItems.SILVER_COPPER_BOOTS.get(),"银铜靴子");
     }
 }

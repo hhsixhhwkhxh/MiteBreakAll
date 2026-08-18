@@ -16,8 +16,11 @@ import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -69,6 +72,60 @@ public class ModModelProvider extends ModelProvider {
         itemModels.generateFlatItem(ModItems.MESH_LEATHER.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.MESH_STRING.get(), ModelTemplates.FLAT_ITEM);
 
+
+        generateFlatItemEx(blockModels,ModItems.ADAMANTIUM_INGOT.get(),"ingots/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.ANCIENT_METAL_INGOT.get(),"ingots/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.HARD_INGOT.get(),"ingots/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.MERCURY_INGOT.get(),"ingots/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.MITHRIL_INGOT.get(),"ingots/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.SILVER_INGOT.get(),"ingots/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.TIN_INGOT.get(),"ingots/",ModelTemplates.FLAT_ITEM);
+
+
+        generateFlatItemEx(blockModels,ModItems.ADAMANTIUM_HELMET.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.ADAMANTIUM_CHESTPLATE.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.ADAMANTIUM_LEGGINGS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.ADAMANTIUM_BOOTS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+
+        generateFlatItemEx(blockModels,ModItems.ANCIENT_METAL_HELMET.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.ANCIENT_METAL_CHESTPLATE.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.ANCIENT_METAL_LEGGINGS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.ANCIENT_METAL_BOOTS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+
+        generateFlatItemEx(blockModels,ModItems.HARD_HELMET.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.HARD_CHESTPLATE.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.HARD_LEGGINGS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.HARD_BOOTS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+
+        generateFlatItemEx(blockModels,ModItems.MITHRIL_HELMET.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.MITHRIL_CHESTPLATE.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.MITHRIL_LEGGINGS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.MITHRIL_BOOTS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+
+        generateFlatItemEx(blockModels,ModItems.RUSTED_IRON_HELMET.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.RUSTED_IRON_CHESTPLATE.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.RUSTED_IRON_LEGGINGS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.RUSTED_IRON_BOOTS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+
+        generateFlatItemEx(blockModels,ModItems.SILVER_HELMET.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.SILVER_CHESTPLATE.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.SILVER_LEGGINGS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.SILVER_BOOTS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+
+        generateFlatItemEx(blockModels,ModItems.BRONZE_HELMET.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.BRONZE_CHESTPLATE.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.BRONZE_LEGGINGS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.BRONZE_BOOTS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+
+        generateFlatItemEx(blockModels,ModItems.HIGH_CARBON_STEEL_HELMET.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.HIGH_CARBON_STEEL_CHESTPLATE.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.HIGH_CARBON_STEEL_LEGGINGS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.HIGH_CARBON_STEEL_BOOTS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+
+        generateFlatItemEx(blockModels,ModItems.SILVER_COPPER_HELMET.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.SILVER_COPPER_CHESTPLATE.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.SILVER_COPPER_LEGGINGS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.SILVER_COPPER_BOOTS.get(),"armor/",ModelTemplates.FLAT_ITEM);
     }
 
     public void createFlintCraftingTable(BlockModelGenerators blockModels,Block craftingTableBlock, Block craftingTableMaterialBlock) {
@@ -167,4 +224,12 @@ public class ModModelProvider extends ModelProvider {
     public void registerSimpleItemModel(BlockModelGenerators blockModels,Item item, ResourceLocation model) {
         blockModels.itemModelOutput.accept(item, ItemModelUtils.plainModel(model));
     }
+
+    public static ResourceKey<EquipmentAsset> createEquipmentAssetId(String name) {
+        return ResourceKey.create(EquipmentAssets.ROOT_ID, ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,name));
+    }
+
+
+
+
 }

@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mite_break_all:high_carbon_steel"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mite_break_all:high_carbon_steel"
+      }
+    ]
+  }
+}

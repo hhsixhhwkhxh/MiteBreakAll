@@ -45,7 +45,7 @@ public class ModDataGenerator {
         event.addProvider(new ModBlockTagsProvider(packOutput,provider));
         event.createProvider(ModRecipesProvider.Runner::new);
         //event.createProvider(ModRecipePrioritiesProvider::new);
-
+        event.addProvider(new ModEquipmentInfoProvider(packOutput));
 
         event.addProvider(
                 new DatapackBuiltinEntriesProvider(

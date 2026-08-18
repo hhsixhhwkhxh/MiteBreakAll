@@ -1,5 +1,6 @@
 package hhsixhhwkhxh.mite;
 
+import hhsixhhwkhxh.mite.item.ModCreativeModeTabs;
 import hhsixhhwkhxh.mite.screen.MiteCraftingScreen;
 import hhsixhhwkhxh.mite.block.ModBlocks;
 import hhsixhhwkhxh.mite.blockentity.ModBlockEntities;
@@ -42,14 +43,13 @@ public class MiteBreakAll {
         ModBlocks.register(modEventBus);
         ModBlockEntities.register(modEventBus);
         ModMenuTypes.register(modEventBus);
+        ModCreativeModeTabs.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (MiteBreakAll) to respond directly to events.
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
         NeoForge.EVENT_BUS.register(this);
 
-        // Register the item to a creative tab
-        modEventBus.addListener(this::addCreative);
         modEventBus.addListener(this::onRegisterMenuScreens);
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
@@ -69,37 +69,7 @@ public class MiteBreakAll {
         Config.ITEM_STRINGS.get().forEach((item) -> LOGGER.info("ITEM >> {}", item));
     }
 
-    // Add the example block item to the building blocks tab
-    private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if(event.getTabKey()==CreativeModeTabs.FOOD_AND_DRINKS){
-            event.accept(ModItems.WILD_APPLE);
-            event.accept(ModItems.STRAWBERRIES);
-            event.accept(ModBlocks.STRAWBERRY_BUSH);
-        } else if (event.getTabKey()==CreativeModeTabs.NATURAL_BLOCKS) {
-            event.accept(ModBlocks.SILVER_ORE);
-            event.accept(ModBlocks.HARD_ORE);
-            event.accept(ModBlocks.MERCURY_ORE);
-            event.accept(ModBlocks.MITHRIL_ORE);
-            event.accept(ModBlocks.ADAMANTIUM_ORE);
-            event.accept(ModBlocks.TIN_ORE);
-        } else if(event.getTabKey()==CreativeModeTabs.FUNCTIONAL_BLOCKS){
-            event.accept(ModBlocks.FLINT_CRAFTING_TABLE);
-        } else if(event.getTabKey()==CreativeModeTabs.INGREDIENTS){
-            event.accept(ModItems.FLINT_SHARD);
-            event.accept(ModItems.OBSIDIAN_SHARD);
-            event.accept(ModItems.DIAMOND_SHARD);
-            event.accept(ModItems.EMERALD_SHARD);
-            event.accept(ModItems.GLASS_SHARD);
-            event.accept(ModItems.QUARTZ_SHARD);
 
-            event.accept(ModItems.ADAMANTIUM_NUGGET);
-            event.accept(ModItems.ANCIENT_METAL_NUGGET);
-            event.accept(ModItems.HARD_NUGGET);
-            event.accept(ModItems.MERCURY_NUGGET);
-            event.accept(ModItems.MITHRIL_NUGGET);
-            event.accept(ModItems.SILVER_NUGGET);
-        }
-    }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
