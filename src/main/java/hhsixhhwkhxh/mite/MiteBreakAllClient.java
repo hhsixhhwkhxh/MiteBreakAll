@@ -1,6 +1,7 @@
 package hhsixhhwkhxh.mite;
 
 import hhsixhhwkhxh.mite.custom.ModClientPayloadHandler;
+import hhsixhhwkhxh.mite.packet.ClientboundSetVitalStatMaxValuePacket;
 import hhsixhhwkhxh.mite.packet.ClientboundSetWaterLevelPacket;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
@@ -40,7 +41,12 @@ public class MiteBreakAllClient {
     static void register(RegisterClientPayloadHandlersEvent event) {
         event.register(
                 ClientboundSetWaterLevelPacket.TYPE,
-                ModClientPayloadHandler::handleDataOnMain
+                ModClientPayloadHandler::handleSetWaterLevelPacket
+        );
+
+        event.register(
+                ClientboundSetVitalStatMaxValuePacket.TYPE,
+                ModClientPayloadHandler::handleSetVitalStatMaxValuePacket
         );
     }
 }

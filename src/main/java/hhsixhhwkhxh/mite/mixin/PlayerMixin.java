@@ -2,14 +2,17 @@ package hhsixhhwkhxh.mite.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import hhsixhhwkhxh.mite.accessor.PlayerMixinAccessor;
+import hhsixhhwkhxh.mite.custom.ModFoodData;
 import hhsixhhwkhxh.mite.custom.PlayerWaterData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,8 +23,16 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerMixinAcc
     @Unique
     private final PlayerWaterData waterData = new PlayerWaterData();
 
+    @Shadow
+    protected FoodData foodData;
+
     protected PlayerMixin(EntityType<? extends LivingEntity> entityType, Level level) {
         super(entityType, level);
+    }
+
+    @Inject(method = "<init>",at = @At("TAIL"))
+    protected void init(CallbackInfo ci){
+        foodData = new ModFoodData();
     }
 
     @Inject(method = "readAdditionalSaveData",at = @At("TAIL"))
@@ -43,4 +54,6 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerMixinAcc
     public PlayerWaterData getWaterData() {
         return waterData;
     }
+
+
 }

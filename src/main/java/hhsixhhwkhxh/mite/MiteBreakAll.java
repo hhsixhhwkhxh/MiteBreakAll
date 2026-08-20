@@ -1,20 +1,29 @@
 package hhsixhhwkhxh.mite;
 
 import hhsixhhwkhxh.mite.accessor.PlayerMixinAccessor;
-import hhsixhhwkhxh.mite.custom.ModServerPayloadHandler;
+import hhsixhhwkhxh.mite.custom.ModFoodData;
+import hhsixhhwkhxh.mite.custom.PlayerWaterData;
 import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
 import hhsixhhwkhxh.mite.datacomponent.Moisture;
 import hhsixhhwkhxh.mite.item.ModCreativeModeTabs;
 import hhsixhhwkhxh.mite.packet.ClientboundSetWaterLevelPacket;
+import hhsixhhwkhxh.mite.packet.ClientboundSetVitalStatMaxValuePacket;
 import hhsixhhwkhxh.mite.screen.MiteCraftingScreen;
 import hhsixhhwkhxh.mite.block.ModBlocks;
 import hhsixhhwkhxh.mite.blockentity.ModBlockEntities;
 import hhsixhhwkhxh.mite.item.ModItems;
 import hhsixhhwkhxh.mite.menu.ModMenuTypes;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import org.slf4j.Logger;
@@ -22,7 +31,6 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -31,7 +39,6 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
@@ -103,7 +110,12 @@ public class MiteBreakAll {
         registrar.playBidirectional(
                 ClientboundSetWaterLevelPacket.TYPE,
                 ClientboundSetWaterLevelPacket.STREAM_CODEC,
-                ModServerPayloadHandler::handleDataOnMain
+                (packet,context)->{}
+        );
+        registrar.playBidirectional(
+                ClientboundSetVitalStatMaxValuePacket.TYPE,
+                ClientboundSetVitalStatMaxValuePacket.STREAM_CODEC,
+                (packet,context)->{}
         );
     }
 
@@ -127,4 +139,27 @@ public class MiteBreakAll {
         ((PlayerMixinAccessor) player).getWaterData().addWaterLevel(moisture.value());
     }
 
+
+
+    @SubscribeEvent
+    public void onLevelChange(PlayerXpEvent.LevelChange event){
+        var player = event.getEntity();
+        int vitalStatMaxValue = Utils.getVitalStatMaxValue(player.experienceLevel+event.getLevels());
+        
+        PlayerWaterData waterData = ((PlayerMixinAccessor)player).getWaterData();
+
+        if(waterData.getMaxWaterLevel()!=vitalStatMaxValue){
+            Utils.updateVitalStat(event.getEntity());
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerReborn(PlayerEvent.PlayerRespawnEvent event){
+        Utils.updateVitalStat(event.getEntity());
+    }
+
+    @SubscribeEvent
+    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event){
+        Utils.updateVitalStat(event.getEntity());
+    }
 }

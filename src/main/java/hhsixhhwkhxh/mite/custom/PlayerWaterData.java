@@ -10,26 +10,28 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public class PlayerWaterData {
-    private int waterLevel = 20;
+    private int waterLevel = 6;
+    private int maxWaterLevel = 6;
     private float exhaustionLevel;
     private int tickTimer;
     private boolean shouldUpdate = true;
 
     public void addWaterLevel(int waterLevel) {
-        this.waterLevel = Mth.clamp(waterLevel + this.waterLevel, 0, 20);
+        this.waterLevel = Mth.clamp(waterLevel + this.waterLevel, 0, maxWaterLevel);
     }
 
     public void readAdditionalSaveData(ValueInput input) {
-        this.waterLevel = input.getIntOr("waterLevel", 20);
         this.tickTimer = input.getIntOr("waterTickTimer", 0);
         this.exhaustionLevel = input.getFloatOr("waterExhaustionLevel", 0.0F);
-
+        this.maxWaterLevel = input.getIntOr("waterLevel", 6);
+        this.waterLevel = input.getIntOr("maxWaterLevel", maxWaterLevel);
     }
 
     public void addAdditionalSaveData(ValueOutput output) {
         output.putInt("waterLevel", this.waterLevel);
         output.putInt("waterTickTimer", this.tickTimer);
         output.putFloat("waterExhaustionLevel", this.exhaustionLevel);
+        output.putInt("maxWaterLevel", this.maxWaterLevel);
     }
 
     public int getWaterLevel() {
@@ -37,7 +39,7 @@ public class PlayerWaterData {
     }
 
     public boolean needsWater() {
-        return this.waterLevel < 20;
+        return this.waterLevel < maxWaterLevel;
     }
 
     public void addExhaustion(float exhaustion) {
@@ -47,6 +49,14 @@ public class PlayerWaterData {
 
     public void setWaterLevel(int waterLevel) {
         this.waterLevel = waterLevel;
+    }
+
+    public void setMaxWaterLevel(int maxWaterLevel) {
+        this.maxWaterLevel = maxWaterLevel;
+    }
+
+    public int getMaxWaterLevel(){
+        return this.maxWaterLevel;
     }
 
 
@@ -62,7 +72,7 @@ public class PlayerWaterData {
         }
 
 
-        if (this.waterLevel >= 18 && player.isHurt()) {
+        if (this.waterLevel >= maxWaterLevel*0.9 && player.isHurt()) {
             this.tickTimer++;
             if (this.tickTimer >= 80) {
                 this.addExhaustion(6.0F);
