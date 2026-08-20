@@ -1,12 +1,22 @@
 package hhsixhhwkhxh.mite;
 
+import hhsixhhwkhxh.mite.accessor.PlayerMixinAccessor;
+import hhsixhhwkhxh.mite.custom.ModServerPayloadHandler;
+import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
+import hhsixhhwkhxh.mite.datacomponent.Moisture;
 import hhsixhhwkhxh.mite.item.ModCreativeModeTabs;
+import hhsixhhwkhxh.mite.packet.ClientboundSetWaterLevelPacket;
 import hhsixhhwkhxh.mite.screen.MiteCraftingScreen;
 import hhsixhhwkhxh.mite.block.ModBlocks;
 import hhsixhhwkhxh.mite.blockentity.ModBlockEntities;
 import hhsixhhwkhxh.mite.item.ModItems;
 import hhsixhhwkhxh.mite.menu.ModMenuTypes;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -39,6 +49,7 @@ public class MiteBreakAll {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
+        ModDataComponents.register(modEventBus);
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModBlockEntities.register(modEventBus);
@@ -51,6 +62,7 @@ public class MiteBreakAll {
         NeoForge.EVENT_BUS.register(this);
 
         modEventBus.addListener(this::onRegisterMenuScreens);
+        modEventBus.addListener(this::registerPayloads);
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
@@ -86,5 +98,33 @@ public class MiteBreakAll {
         );
     }
 
-    
+    private void registerPayloads(RegisterPayloadHandlersEvent event) {
+        final PayloadRegistrar registrar = event.registrar("1");
+        registrar.playBidirectional(
+                ClientboundSetWaterLevelPacket.TYPE,
+                ClientboundSetWaterLevelPacket.STREAM_CODEC,
+                ModServerPayloadHandler::handleDataOnMain
+        );
+    }
+
+    @SubscribeEvent
+    public void onFoodEaten(LivingEntityUseItemEvent.Finish event) {
+        var player = event.getEntity();
+        if(!(player instanceof Player)){
+            return;
+        }
+        var stack = event.getItem();
+
+        if(!stack.has(DataComponents.FOOD)) {
+            return;
+        }
+
+        Moisture moisture;
+        if(!stack.getComponents().has(ModDataComponents.MOISTURE)||(moisture=stack.getComponents().get(ModDataComponents.MOISTURE))==null){
+            return;
+        }
+
+        ((PlayerMixinAccessor) player).getWaterData().addWaterLevel(moisture.value());
+    }
+
 }

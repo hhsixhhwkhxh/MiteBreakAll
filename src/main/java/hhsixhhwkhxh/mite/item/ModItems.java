@@ -1,6 +1,8 @@
 package hhsixhhwkhxh.mite.item;
 
 import hhsixhhwkhxh.mite.MiteBreakAll;
+import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
+import hhsixhhwkhxh.mite.datacomponent.Moisture;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -28,7 +30,7 @@ public class ModItems {
     public static final DeferredItem<Item> WILD_APPLE = ITEMS.registerItem("wild_apple", Item::new,new Item.Properties().food(new FoodProperties.Builder()
             .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
 
-    public static final DeferredItem<Item> STRAWBERRIES = ITEMS.registerItem("strawberries", Item::new, new Item.Properties().food(Foods.SWEET_BERRIES));
+    public static final DeferredItem<Item> STRAWBERRIES = ITEMS.registerItem("strawberries", properties ->  new Item(properties.food(Foods.SWEET_BERRIES).component(ModDataComponents.MOISTURE,new Moisture(2))));
 
     public static final DeferredItem<Item> FLINT_SHARD = ITEMS.registerItem("flint_shard", Item::new, new Item.Properties());
     public static final DeferredItem<Item> OBSIDIAN_SHARD = ITEMS.registerItem("obsidian_shard", Item::new, new Item.Properties());

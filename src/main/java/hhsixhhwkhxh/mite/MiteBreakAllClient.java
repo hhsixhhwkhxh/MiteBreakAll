@@ -1,5 +1,7 @@
 package hhsixhhwkhxh.mite;
 
+import hhsixhhwkhxh.mite.custom.ModClientPayloadHandler;
+import hhsixhhwkhxh.mite.packet.ClientboundSetWaterLevelPacket;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -9,6 +11,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 
 // This class will not load on dedicated servers. Accessing client side code from here is safe.
 @Mod(value = MiteBreakAll.MODID, dist = Dist.CLIENT)
@@ -33,5 +36,11 @@ public class MiteBreakAllClient {
 
     }
 
-
+    @SubscribeEvent
+    static void register(RegisterClientPayloadHandlersEvent event) {
+        event.register(
+                ClientboundSetWaterLevelPacket.TYPE,
+                ModClientPayloadHandler::handleDataOnMain
+        );
+    }
 }

@@ -5,6 +5,7 @@
   "mixins": [
     "AbstractSkeletonMixin",
     "EnchantmentMenuMixin",
+    "PlayerMixin",
     "RecipeManagerMixin"
   ],
   "injectors": {
@@ -12,5 +13,8 @@
   },
   "overwrites": {
     "requireAnnotations": true
-  }
+  },
+  "client": [
+    "GuiMixin"
+  ]
 }
