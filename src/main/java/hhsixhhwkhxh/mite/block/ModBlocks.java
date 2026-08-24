@@ -50,6 +50,16 @@ public class ModBlocks {
                     .pushReaction(PushReaction.DESTROY)
     );
 
+    public static final DeferredBlock<Block> ADAMANTIUM_ANVIL = registerAnvil("adamantium_anvil",MiteAnvilBlock.AnvilVariant.ADAMANTIUM);
+    public static final DeferredBlock<Block> ANCIENT_METAL_ANVIL = registerAnvil("ancient_metal_anvil",MiteAnvilBlock.AnvilVariant.ANCIENT_METAL);
+    public static final DeferredBlock<Block> COPPER_ANVIL = registerAnvil("copper_anvil",MiteAnvilBlock.AnvilVariant.COPPER);
+    public static final DeferredBlock<Block> GOLD_ANVIL = registerAnvil("gold_anvil",MiteAnvilBlock.AnvilVariant.GOLD);
+    public static final DeferredBlock<Block> HARD_ANVIL = registerAnvil("hard_anvil",MiteAnvilBlock.AnvilVariant.HARD);
+    public static final DeferredBlock<Block> IRON_ANVIL = registerAnvil("iron_anvil",MiteAnvilBlock.AnvilVariant.IRON);
+    public static final DeferredBlock<Block> MITHRIL_ANVIL = registerAnvil("mithril_anvil",MiteAnvilBlock.AnvilVariant.MITHRIL);
+    public static final DeferredBlock<Block> SILVER_ANVIL = registerAnvil("silver_anvil",MiteAnvilBlock.AnvilVariant.SILVER);
+
+
     public static <B extends Block> DeferredBlock<B> registerBlock(String name, Function<BlockBehaviour.Properties, ? extends B> func, BlockBehaviour.Properties props) {
         DeferredBlock<B> block = BLOCKS.registerBlock(name,func,props);;
         ModItems.ITEMS.registerSimpleBlockItem(name, block,new Item.Properties());
@@ -64,8 +74,20 @@ public class ModBlocks {
         );
     }
 
+    public static DeferredBlock<Block> registerAnvil(String name, MiteAnvilBlock.AnvilVariant anvilVariant){
+        return registerBlock(
+                name,
+                properties -> new MiteAnvilBlock(anvilVariant,properties),
+                BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
+                        .requiresCorrectToolForDrops()
+                        .strength(5.0F, 1200.0F)
+                        .sound(SoundType.ANVIL)
+                        .pushReaction(PushReaction.BLOCK)
+        );
+    }
+
     public static void register(IEventBus eventBus){
         BLOCKS.register(eventBus);
-
     }
 }

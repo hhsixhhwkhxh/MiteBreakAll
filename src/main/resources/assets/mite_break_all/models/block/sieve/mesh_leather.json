@@ -1,7 +1,8 @@
 {
 	"render_type": "minecraft:cutout",
 	"textures": {
-		"2": "mite_break_all:block/mesh_leather"
+		"2": "mite_break_all:block/mesh_leather",
+		"particle": "mite_break_all:block/sieve"
 	},
 	"elements": [
 		{

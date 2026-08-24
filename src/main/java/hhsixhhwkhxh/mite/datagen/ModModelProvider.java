@@ -1,9 +1,12 @@
 package hhsixhhwkhxh.mite.datagen;
 
 
+import com.google.gson.JsonObject;
 import hhsixhhwkhxh.mite.MiteBreakAll;
+import hhsixhhwkhxh.mite.block.MiteAnvilBlock;
 import hhsixhhwkhxh.mite.block.ModBlocks;
 import hhsixhhwkhxh.mite.block.SieveBlock;
+import hhsixhhwkhxh.mite.custom.AnvilItemState;
 import hhsixhhwkhxh.mite.custom.MeshType;
 import hhsixhhwkhxh.mite.item.ModItems;
 import net.minecraft.client.data.models.BlockModelGenerators;
@@ -14,18 +17,27 @@ import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.*;
+import net.minecraft.client.renderer.block.model.VariantMutator;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.renderer.item.properties.numeric.CrossbowPull;
+import net.minecraft.client.renderer.item.properties.select.Charge;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.neoforged.neoforge.registries.DeferredBlock;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -126,6 +138,15 @@ public class ModModelProvider extends ModelProvider {
         generateFlatItemEx(blockModels,ModItems.SILVER_COPPER_CHESTPLATE.get(),"armor/",ModelTemplates.FLAT_ITEM);
         generateFlatItemEx(blockModels,ModItems.SILVER_COPPER_LEGGINGS.get(),"armor/",ModelTemplates.FLAT_ITEM);
         generateFlatItemEx(blockModels,ModItems.SILVER_COPPER_BOOTS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+
+        createAnvil(blockModels,ModBlocks.ADAMANTIUM_ANVIL);
+        createAnvil(blockModels,ModBlocks.ANCIENT_METAL_ANVIL);
+        createAnvil(blockModels,ModBlocks.COPPER_ANVIL);
+        createAnvil(blockModels,ModBlocks.GOLD_ANVIL);
+        createAnvil(blockModels,ModBlocks.HARD_ANVIL);
+        createAnvil(blockModels,ModBlocks.IRON_ANVIL);
+        createAnvil(blockModels,ModBlocks.MITHRIL_ANVIL);
+        createAnvil(blockModels,ModBlocks.SILVER_ANVIL);
     }
 
     public void createFlintCraftingTable(BlockModelGenerators blockModels,Block craftingTableBlock, Block craftingTableMaterialBlock) {
@@ -230,6 +251,107 @@ public class ModModelProvider extends ModelProvider {
     }
 
 
+    public void createAnvil(BlockModelGenerators blockModels, DeferredBlock<Block> anvilBlock) {
+        final ModelTemplate ANVIL = ModelTemplates.create(MiteBreakAll.MODID+":anvils/template_anvil", TextureSlot.PARTICLE,TextureSlot.ALL);
+        final TexturedModel.Provider MITE_ANVIL = TexturedModel.createDefault(ModModelProvider::anvil, ANVIL);
+
+        ResourceLocation resourceLocationBase = MITE_ANVIL.create(anvilBlock.get(), blockModels.modelOutput);
+
+        ResourceLocation resourceLocationTop0 =
+                TexturedModel.createDefault(ModModelProvider::anvilTop,
+                        ModelTemplates.create(MiteBreakAll.MODID+":anvils/anvil_top_0", TextureSlot.ALL,TextureSlot.PARTICLE,TextureSlot.LAYER0,TextureSlot.LAYER1,TextureSlot.LAYER2)
+                ).createWithSuffix(anvilBlock.get(), "_top_0",blockModels.modelOutput);
+
+        ResourceLocation resourceLocationTop1 =
+                TexturedModel.createDefault(ModModelProvider::anvilTop,
+                        ModelTemplates.create(MiteBreakAll.MODID+":anvils/anvil_top_1", TextureSlot.ALL,TextureSlot.PARTICLE,TextureSlot.LAYER0,TextureSlot.LAYER1,TextureSlot.LAYER2)
+                ).createWithSuffix(anvilBlock.get(), "_top_1",blockModels.modelOutput);
+
+        ResourceLocation resourceLocationTop2 =
+                TexturedModel.createDefault(ModModelProvider::anvilTop,
+                        ModelTemplates.create(MiteBreakAll.MODID+":anvils/anvil_top_2", TextureSlot.ALL,TextureSlot.PARTICLE,TextureSlot.LAYER0,TextureSlot.LAYER1,TextureSlot.LAYER2)
+                ).createWithSuffix(anvilBlock.get(), "_top_2",blockModels.modelOutput);
+
+        MultiPartGenerator generator = MultiPartGenerator.multiPart(anvilBlock.get());
+
+        for (int i = 0;i < 4;i++) {
+            generator.with(BlockModelGenerators.condition()
+                            .term(BlockStateProperties.HORIZONTAL_FACING, Direction.from2DDataValue(i)),
+                    BlockModelGenerators.plainVariant(resourceLocationBase).with(getYRotVariantMutator(i)));
+
+            for (MiteAnvilBlock.AnvilStage stage : MiteAnvilBlock.AnvilStage.values()) {
+                ResourceLocation topLocation;
+                switch (stage) {
+                    case NORMAL -> topLocation = resourceLocationTop0;
+                    case CRACKED -> topLocation = resourceLocationTop1;
+                    case DAMAGED -> topLocation = resourceLocationTop2;
+                    default -> throw new IllegalStateException("Unexpected stage: " + stage);
+                }
+
+                generator.with(
+                        BlockModelGenerators.condition()
+                                .term(MiteAnvilBlock.ANVIL_STAGE, stage)
+                                .term(BlockStateProperties.HORIZONTAL_FACING, Direction.from2DDataValue(i)),
+
+                        BlockModelGenerators.plainVariant(topLocation)
+                                .with(getYRotVariantMutator(i))
+                );
+            }
+
+        }
+
+        blockModels.blockStateOutput.accept(generator);
+
+        ItemModel.Unbaked itemmodel$unbaked = ItemModelUtils.plainModel(resourceLocationBase);
+        ItemModel.Unbaked itemmodel$unbaked1 = ItemModelUtils.composite(ItemModelUtils.plainModel(resourceLocationTop0),itemmodel$unbaked);
+        ItemModel.Unbaked itemmodel$unbaked2 = ItemModelUtils.composite(ItemModelUtils.plainModel(resourceLocationTop1),itemmodel$unbaked);
+        ItemModel.Unbaked itemmodel$unbaked3 = ItemModelUtils.composite(ItemModelUtils.plainModel(resourceLocationTop2),itemmodel$unbaked);
 
 
+        blockModels.itemModelOutput
+                .accept(
+                        anvilBlock.asItem(),
+                        ItemModelUtils.select(
+                                new AnvilItemState(),
+                                ItemModelUtils.when(MiteAnvilBlock.AnvilStage.NORMAL, itemmodel$unbaked1),
+                                ItemModelUtils.when(MiteAnvilBlock.AnvilStage.CRACKED, itemmodel$unbaked2),
+                                ItemModelUtils.when(MiteAnvilBlock.AnvilStage.DAMAGED, itemmodel$unbaked3)
+                        )
+                );
+    }
+
+    public static TextureMapping anvil(Block block) {
+        return new TextureMapping()
+                .put(TextureSlot.PARTICLE, getBlockTextureWithPrefix(block, "anvils/","/base"))
+                .put(TextureSlot.ALL, getBlockTextureWithPrefix(block, "anvils/","/base"))
+                ;
+    }
+
+    public static TextureMapping anvilTop(Block block) {
+        return new TextureMapping()
+                .put(TextureSlot.LAYER0, getBlockTextureWithPrefix(block, "anvils/","/top_damaged_0"))
+                .put(TextureSlot.LAYER1, getBlockTextureWithPrefix(block, "anvils/","/top_damaged_1"))
+                .put(TextureSlot.LAYER2, getBlockTextureWithPrefix(block, "anvils/","/top_damaged_2"))
+                .put(TextureSlot.PARTICLE, getBlockTextureWithPrefix(block, "anvils/","/base"))
+                .put(TextureSlot.ALL, getBlockTextureWithPrefix(block, "anvils/","/base"))
+                ;
+    }
+
+    public static VariantMutator getYRotVariantMutator(int i){
+        switch (i){
+            case 0 -> {
+                return BlockModelGenerators.NOP;
+            }
+            case 1 -> {
+                return BlockModelGenerators.Y_ROT_90;
+            }
+            case 2 -> {
+                return BlockModelGenerators.Y_ROT_180;
+            }
+            case 3 -> {
+                return BlockModelGenerators.Y_ROT_270;
+            }
+        }
+        throw new IllegalStateException("i should be included in {0,1,2,3}");
+    }
 }

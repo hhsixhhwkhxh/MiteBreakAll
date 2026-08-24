@@ -1,0 +1,10 @@
+{
+  "parent": "mite_break_all:block/anvils/anvil_top_0",
+  "textures": {
+    "all": "mite_break_all:block/anvils/copper_anvil/base",
+    "layer0": "mite_break_all:block/anvils/copper_anvil/top_damaged_0",
+    "layer1": "mite_break_all:block/anvils/copper_anvil/top_damaged_1",
+    "layer2": "mite_break_all:block/anvils/copper_anvil/top_damaged_2",
+    "particle": "mite_break_all:block/anvils/copper_anvil/base"
+  }
+}

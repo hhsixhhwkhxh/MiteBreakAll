@@ -1,0 +1,24 @@
+{
+    "parent": "block/block",
+    "display": {
+        "fixed": {
+            "rotation": [ 0, 90, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.5, 0.5, 0.5 ]
+        }
+    },
+    "elements": [
+        {   "__comment": "Anvil top",
+            "from": [ 3, 10, 0 ],
+            "to": [ 13, 16, 16 ],
+            "faces": {
+                "down":  { "uv": [  3, 0, 13, 16 ], "texture": "#all", "rotation": 180 },
+                "up":    { "uv": [  3, 0, 13, 16 ], "texture": "#layer2","rotation": 180 },
+                "north": { "uv": [  3, 0, 13,  6 ], "texture": "#all" },
+                "south": { "uv": [  3, 0, 13,  6 ], "texture": "#all" },
+                "west":  { "uv": [ 10, 0, 16, 16 ], "texture": "#all", "rotation":  90 },
+                "east":  { "uv": [ 16, 0, 10, 16 ], "texture": "#all", "rotation": 270 }
+            }
+        }
+    ]
+}

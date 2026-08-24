@@ -1,6 +1,8 @@
 package hhsixhhwkhxh.mite.item;
 
 import hhsixhhwkhxh.mite.MiteBreakAll;
+import hhsixhhwkhxh.mite.custom.MaterialLevelType;
+import hhsixhhwkhxh.mite.datacomponent.MaterialLevel;
 import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
 import hhsixhhwkhxh.mite.datacomponent.Moisture;
 import net.minecraft.core.component.DataComponents;
@@ -58,48 +60,46 @@ public class ModItems {
     public static final DeferredItem<Item> SILVER_INGOT = ITEMS.registerItem("silver_ingot",Item::new,new Item.Properties());
     public static final DeferredItem<Item> TIN_INGOT = ITEMS.registerItem("tin_ingot",Item::new,new Item.Properties());
 
-    public static final DeferredItem<Item> ADAMANTIUM_HELMET = ITEMS.registerItem("adamantium_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.ADAMANTIUM, ArmorType.HELMET)));
-    
-    public static final DeferredItem<Item> ANCIENT_METAL_HELMET = ITEMS.registerItem("ancient_metal_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.ANCIENT_METAL, ArmorType.HELMET)));
-    public static final DeferredItem<Item> HARD_HELMET = ITEMS.registerItem("hard_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.HARD, ArmorType.HELMET)));
-    public static final DeferredItem<Item> MITHRIL_HELMET = ITEMS.registerItem("mithril_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.MITHRIL, ArmorType.HELMET)));
-    public static final DeferredItem<Item> SILVER_HELMET = ITEMS.registerItem("silver_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.SILVER, ArmorType.HELMET)));
-    public static final DeferredItem<Item> RUSTED_IRON_HELMET = ITEMS.registerItem("rusted_iron_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.RUSTED_IRON, ArmorType.HELMET)));
-    public static final DeferredItem<Item> BRONZE_HELMET = ITEMS.registerItem("bronze_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.BRONZE, ArmorType.HELMET)));
-    public static final DeferredItem<Item> HIGH_CARBON_STEEL_HELMET = ITEMS.registerItem("high_carbon_steel_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.HIGH_CARBON_STEEL, ArmorType.HELMET)));
-    public static final DeferredItem<Item> SILVER_COPPER_HELMET = ITEMS.registerItem("silver_copper_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.SILVER_COPPER, ArmorType.HELMET)));
+    public static final DeferredItem<Item> ADAMANTIUM_HELMET = ITEMS.registerItem("adamantium_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.ADAMANTIUM, ArmorType.HELMET).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.ADAMANTIUM.level))));
+    public static final DeferredItem<Item> ANCIENT_METAL_HELMET = ITEMS.registerItem("ancient_metal_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.ANCIENT_METAL, ArmorType.HELMET).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.ANCIENT_HARDENED_FAMILY.level))));
+    public static final DeferredItem<Item> HARD_HELMET = ITEMS.registerItem("hard_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.HARD, ArmorType.HELMET).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.ANCIENT_HARDENED_FAMILY.level))));
+    public static final DeferredItem<Item> MITHRIL_HELMET = ITEMS.registerItem("mithril_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.MITHRIL, ArmorType.HELMET).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.MITHRIL.level))));
+    public static final DeferredItem<Item> SILVER_HELMET = ITEMS.registerItem("silver_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.SILVER, ArmorType.HELMET).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.GOLD_COPPER_FAMILY.level))));
+    public static final DeferredItem<Item> RUSTED_IRON_HELMET = ITEMS.registerItem("rusted_iron_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.RUSTED_IRON, ArmorType.HELMET).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.IRON_STEEL_FAMILY.level))));
+    public static final DeferredItem<Item> BRONZE_HELMET = ITEMS.registerItem("bronze_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.BRONZE, ArmorType.HELMET).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.GOLD_COPPER_FAMILY.level))));
+    public static final DeferredItem<Item> HIGH_CARBON_STEEL_HELMET = ITEMS.registerItem("high_carbon_steel_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.HIGH_CARBON_STEEL, ArmorType.HELMET).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.IRON_STEEL_FAMILY.level))));
+    public static final DeferredItem<Item> SILVER_COPPER_HELMET = ITEMS.registerItem("silver_copper_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.SILVER_COPPER, ArmorType.HELMET).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.GOLD_COPPER_FAMILY.level))));
 
-    public static final DeferredItem<Item> ADAMANTIUM_CHESTPLATE = ITEMS.registerItem("adamantium_chestplate",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.ADAMANTIUM, ArmorType.CHESTPLATE)));
-    public static final DeferredItem<Item> ANCIENT_METAL_CHESTPLATE = ITEMS.registerItem("ancient_metal_chestplate",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.ANCIENT_METAL, ArmorType.CHESTPLATE)));
-    public static final DeferredItem<Item> HARD_CHESTPLATE = ITEMS.registerItem("hard_chestplate",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.HARD, ArmorType.CHESTPLATE)));
-    public static final DeferredItem<Item> MITHRIL_CHESTPLATE = ITEMS.registerItem("mithril_chestplate",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.MITHRIL, ArmorType.CHESTPLATE)));
-    public static final DeferredItem<Item> SILVER_CHESTPLATE = ITEMS.registerItem("silver_chestplate",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.SILVER, ArmorType.CHESTPLATE)));
-    public static final DeferredItem<Item> RUSTED_IRON_CHESTPLATE = ITEMS.registerItem("rusted_iron_chestplate",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.RUSTED_IRON, ArmorType.CHESTPLATE)));
-    public static final DeferredItem<Item> BRONZE_CHESTPLATE = ITEMS.registerItem("bronze_chestplate",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.BRONZE, ArmorType.CHESTPLATE)));
-    public static final DeferredItem<Item> HIGH_CARBON_STEEL_CHESTPLATE = ITEMS.registerItem("high_carbon_steel_chestplate",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.HIGH_CARBON_STEEL, ArmorType.CHESTPLATE)));
-    public static final DeferredItem<Item> SILVER_COPPER_CHESTPLATE = ITEMS.registerItem("silver_copper_chestplate",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.SILVER_COPPER, ArmorType.CHESTPLATE)));
+    public static final DeferredItem<Item> ADAMANTIUM_CHESTPLATE = ITEMS.registerItem("adamantium_chestplate",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.ADAMANTIUM, ArmorType.CHESTPLATE).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.ADAMANTIUM.level))));
+    public static final DeferredItem<Item> ANCIENT_METAL_CHESTPLATE = ITEMS.registerItem("ancient_metal_chestplate",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.ANCIENT_METAL, ArmorType.CHESTPLATE).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.ANCIENT_HARDENED_FAMILY.level))));
+    public static final DeferredItem<Item> HARD_CHESTPLATE = ITEMS.registerItem("hard_chestplate",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.HARD, ArmorType.CHESTPLATE).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.ANCIENT_HARDENED_FAMILY.level))));
+    public static final DeferredItem<Item> MITHRIL_CHESTPLATE = ITEMS.registerItem("mithril_chestplate",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.MITHRIL, ArmorType.CHESTPLATE).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.MITHRIL.level))));
+    public static final DeferredItem<Item> SILVER_CHESTPLATE = ITEMS.registerItem("silver_chestplate",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.SILVER, ArmorType.CHESTPLATE).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.GOLD_COPPER_FAMILY.level))));
+    public static final DeferredItem<Item> RUSTED_IRON_CHESTPLATE = ITEMS.registerItem("rusted_iron_chestplate",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.RUSTED_IRON, ArmorType.CHESTPLATE).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.IRON_STEEL_FAMILY.level))));
+    public static final DeferredItem<Item> BRONZE_CHESTPLATE = ITEMS.registerItem("bronze_chestplate",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.BRONZE, ArmorType.CHESTPLATE).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.GOLD_COPPER_FAMILY.level))));
+    public static final DeferredItem<Item> HIGH_CARBON_STEEL_CHESTPLATE = ITEMS.registerItem("high_carbon_steel_chestplate",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.HIGH_CARBON_STEEL, ArmorType.CHESTPLATE).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.IRON_STEEL_FAMILY.level))));
+    public static final DeferredItem<Item> SILVER_COPPER_CHESTPLATE = ITEMS.registerItem("silver_copper_chestplate",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.SILVER_COPPER, ArmorType.CHESTPLATE).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.GOLD_COPPER_FAMILY.level))));
 
-    public static final DeferredItem<Item> ADAMANTIUM_LEGGINGS = ITEMS.registerItem("adamantium_leggings",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.ADAMANTIUM, ArmorType.LEGGINGS)));
-    public static final DeferredItem<Item> ANCIENT_METAL_LEGGINGS = ITEMS.registerItem("ancient_metal_leggings",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.ANCIENT_METAL, ArmorType.LEGGINGS)));
-    public static final DeferredItem<Item> HARD_LEGGINGS = ITEMS.registerItem("hard_leggings",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.HARD, ArmorType.LEGGINGS)));
-    public static final DeferredItem<Item> MITHRIL_LEGGINGS = ITEMS.registerItem("mithril_leggings",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.MITHRIL, ArmorType.LEGGINGS)));
-    public static final DeferredItem<Item> SILVER_LEGGINGS = ITEMS.registerItem("silver_leggings",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.SILVER, ArmorType.LEGGINGS)));
-    public static final DeferredItem<Item> RUSTED_IRON_LEGGINGS = ITEMS.registerItem("rusted_iron_leggings",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.RUSTED_IRON, ArmorType.LEGGINGS)));
-    public static final DeferredItem<Item> BRONZE_LEGGINGS = ITEMS.registerItem("bronze_leggings",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.BRONZE, ArmorType.LEGGINGS)));
-    public static final DeferredItem<Item> HIGH_CARBON_STEEL_LEGGINGS = ITEMS.registerItem("high_carbon_steel_leggings",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.HIGH_CARBON_STEEL, ArmorType.LEGGINGS)));
-    public static final DeferredItem<Item> SILVER_COPPER_LEGGINGS = ITEMS.registerItem("silver_copper_leggings",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.SILVER_COPPER, ArmorType.LEGGINGS)));
+    public static final DeferredItem<Item> ADAMANTIUM_LEGGINGS = ITEMS.registerItem("adamantium_leggings",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.ADAMANTIUM, ArmorType.LEGGINGS).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.ADAMANTIUM.level))));
+    public static final DeferredItem<Item> ANCIENT_METAL_LEGGINGS = ITEMS.registerItem("ancient_metal_leggings",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.ANCIENT_METAL, ArmorType.LEGGINGS).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.ANCIENT_HARDENED_FAMILY.level))));
+    public static final DeferredItem<Item> HARD_LEGGINGS = ITEMS.registerItem("hard_leggings",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.HARD, ArmorType.LEGGINGS).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.ANCIENT_HARDENED_FAMILY.level))));
+    public static final DeferredItem<Item> MITHRIL_LEGGINGS = ITEMS.registerItem("mithril_leggings",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.MITHRIL, ArmorType.LEGGINGS).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.MITHRIL.level))));
+    public static final DeferredItem<Item> SILVER_LEGGINGS = ITEMS.registerItem("silver_leggings",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.SILVER, ArmorType.LEGGINGS).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.GOLD_COPPER_FAMILY.level))));
+    public static final DeferredItem<Item> RUSTED_IRON_LEGGINGS = ITEMS.registerItem("rusted_iron_leggings",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.RUSTED_IRON, ArmorType.LEGGINGS).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.IRON_STEEL_FAMILY.level))));
+    public static final DeferredItem<Item> BRONZE_LEGGINGS = ITEMS.registerItem("bronze_leggings",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.BRONZE, ArmorType.LEGGINGS).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.GOLD_COPPER_FAMILY.level))));
+    public static final DeferredItem<Item> HIGH_CARBON_STEEL_LEGGINGS = ITEMS.registerItem("high_carbon_steel_leggings",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.HIGH_CARBON_STEEL, ArmorType.LEGGINGS).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.IRON_STEEL_FAMILY.level))));
+    public static final DeferredItem<Item> SILVER_COPPER_LEGGINGS = ITEMS.registerItem("silver_copper_leggings",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.SILVER_COPPER, ArmorType.LEGGINGS).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.GOLD_COPPER_FAMILY.level))));
 
+    public static final DeferredItem<Item> ADAMANTIUM_BOOTS = ITEMS.registerItem("adamantium_boots",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.ADAMANTIUM, ArmorType.BOOTS).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.ADAMANTIUM.level))));
+    public static final DeferredItem<Item> ANCIENT_METAL_BOOTS = ITEMS.registerItem("ancient_metal_boots",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.ANCIENT_METAL, ArmorType.BOOTS).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.ANCIENT_HARDENED_FAMILY.level))));
+    public static final DeferredItem<Item> HARD_BOOTS = ITEMS.registerItem("hard_boots",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.HARD, ArmorType.BOOTS).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.ANCIENT_HARDENED_FAMILY.level))));
+    public static final DeferredItem<Item> MITHRIL_BOOTS = ITEMS.registerItem("mithril_boots",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.MITHRIL, ArmorType.BOOTS).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.MITHRIL.level))));
+    public static final DeferredItem<Item> SILVER_BOOTS = ITEMS.registerItem("silver_boots",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.SILVER, ArmorType.BOOTS).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.GOLD_COPPER_FAMILY.level))));
+    public static final DeferredItem<Item> RUSTED_IRON_BOOTS = ITEMS.registerItem("rusted_iron_boots",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.RUSTED_IRON, ArmorType.BOOTS).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.IRON_STEEL_FAMILY.level))));
+    public static final DeferredItem<Item> BRONZE_BOOTS = ITEMS.registerItem("bronze_boots",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.BRONZE, ArmorType.BOOTS).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.GOLD_COPPER_FAMILY.level))));
+    public static final DeferredItem<Item> HIGH_CARBON_STEEL_BOOTS = ITEMS.registerItem("high_carbon_steel_boots",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.HIGH_CARBON_STEEL, ArmorType.BOOTS).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.IRON_STEEL_FAMILY.level))));
+    public static final DeferredItem<Item> SILVER_COPPER_BOOTS = ITEMS.registerItem("silver_copper_boots",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.SILVER_COPPER, ArmorType.BOOTS).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialLevelType.GOLD_COPPER_FAMILY.level))));
 
-    public static final DeferredItem<Item> ADAMANTIUM_BOOTS = ITEMS.registerItem("adamantium_boots",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.ADAMANTIUM, ArmorType.BOOTS)));
-    public static final DeferredItem<Item> ANCIENT_METAL_BOOTS = ITEMS.registerItem("ancient_metal_boots",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.ANCIENT_METAL, ArmorType.BOOTS)));
-    public static final DeferredItem<Item> HARD_BOOTS = ITEMS.registerItem("hard_boots",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.HARD, ArmorType.BOOTS)));
-    public static final DeferredItem<Item> MITHRIL_BOOTS = ITEMS.registerItem("mithril_boots",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.MITHRIL, ArmorType.BOOTS)));
-    public static final DeferredItem<Item> SILVER_BOOTS = ITEMS.registerItem("silver_boots",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.SILVER, ArmorType.BOOTS)));
-    public static final DeferredItem<Item> RUSTED_IRON_BOOTS = ITEMS.registerItem("rusted_iron_boots",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.RUSTED_IRON, ArmorType.BOOTS)));
-    public static final DeferredItem<Item> BRONZE_BOOTS = ITEMS.registerItem("bronze_boots",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.BRONZE, ArmorType.BOOTS)));
-    public static final DeferredItem<Item> HIGH_CARBON_STEEL_BOOTS = ITEMS.registerItem("high_carbon_steel_boots",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.HIGH_CARBON_STEEL, ArmorType.BOOTS)));
-    public static final DeferredItem<Item> SILVER_COPPER_BOOTS = ITEMS.registerItem("silver_copper_boots",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.SILVER_COPPER, ArmorType.BOOTS)));
-    
 
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);

@@ -82,6 +82,16 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         );
 
         createGravelBlockLoot();
+
+        this.dropSelf(ModBlocks.ADAMANTIUM_ANVIL.get());
+        this.dropSelf(ModBlocks.ADAMANTIUM_ANVIL.get());
+        this.dropSelf(ModBlocks.ANCIENT_METAL_ANVIL.get());
+        this.dropSelf(ModBlocks.COPPER_ANVIL.get());
+        this.dropSelf(ModBlocks.GOLD_ANVIL.get());
+        this.dropSelf(ModBlocks.HARD_ANVIL.get());
+        this.dropSelf(ModBlocks.IRON_ANVIL.get());
+        this.dropSelf(ModBlocks.MITHRIL_ANVIL.get());
+        this.dropSelf(ModBlocks.SILVER_ANVIL.get());
     }
 
     @Override

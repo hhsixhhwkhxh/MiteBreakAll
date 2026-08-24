@@ -30,10 +30,10 @@ public final class Utils {
     }
 
     //server专属
-    public static void updateVitalStat(Player player){
+    public static void updateVitalStat(ServerPlayer player){
         int vitalStatMaxValue = Utils.getVitalStatMaxValue(player.experienceLevel);
 
         Utils.setVitalStatMaxValue(player,vitalStatMaxValue);
-        PacketDistributor.sendToPlayer((ServerPlayer) player, new ClientboundSetVitalStatMaxValuePacket(vitalStatMaxValue));
+        PacketDistributor.sendToPlayer( player, new ClientboundSetVitalStatMaxValuePacket(vitalStatMaxValue));
     }
 }

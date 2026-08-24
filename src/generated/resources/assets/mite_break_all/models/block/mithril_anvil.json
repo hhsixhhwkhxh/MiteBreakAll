@@ -1,0 +1,7 @@
+{
+  "parent": "mite_break_all:block/anvils/template_anvil",
+  "textures": {
+    "all": "mite_break_all:block/anvils/mithril_anvil/base",
+    "particle": "mite_break_all:block/anvils/mithril_anvil/base"
+  }
+}

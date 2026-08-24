@@ -82,9 +82,10 @@ public class SieveBlock extends Block {
 
     public SieveBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(GRAVEL_LEVEL, 0));
-        this.registerDefaultState(this.stateDefinition.any().setValue(MESH_TYPE, MeshType.EMPTY));
-        this.registerDefaultState(this.stateDefinition.any().setValue(MESH_DAMAGE, 0));
+        this.registerDefaultState(this.stateDefinition.any().setValue(GRAVEL_LEVEL, 0)
+                .setValue(MESH_TYPE, MeshType.EMPTY)
+                .setValue(MESH_DAMAGE, 0)
+        );
     }
 
 

@@ -1,6 +1,7 @@
 package hhsixhhwkhxh.mite;
 
 import hhsixhhwkhxh.mite.accessor.PlayerMixinAccessor;
+import hhsixhhwkhxh.mite.custom.AnvilItemState;
 import hhsixhhwkhxh.mite.custom.ModFoodData;
 import hhsixhhwkhxh.mite.custom.PlayerWaterData;
 import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
@@ -8,18 +9,22 @@ import hhsixhhwkhxh.mite.datacomponent.Moisture;
 import hhsixhhwkhxh.mite.item.ModCreativeModeTabs;
 import hhsixhhwkhxh.mite.packet.ClientboundSetWaterLevelPacket;
 import hhsixhhwkhxh.mite.packet.ClientboundSetVitalStatMaxValuePacket;
+import hhsixhhwkhxh.mite.screen.MiteAnvilScreen;
 import hhsixhhwkhxh.mite.screen.MiteCraftingScreen;
 import hhsixhhwkhxh.mite.block.ModBlocks;
 import hhsixhhwkhxh.mite.blockentity.ModBlockEntities;
 import hhsixhhwkhxh.mite.item.ModItems;
 import hhsixhhwkhxh.mite.menu.ModMenuTypes;
+import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
@@ -70,6 +75,7 @@ public class MiteBreakAll {
 
         modEventBus.addListener(this::onRegisterMenuScreens);
         modEventBus.addListener(this::registerPayloads);
+        modEventBus.addListener(this::registerSelectProperties);
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
@@ -102,6 +108,10 @@ public class MiteBreakAll {
         event.register(
                 ModMenuTypes.MITE_CRAFTING_MENU.get(),
                 MiteCraftingScreen::new
+        );
+        event.register(
+                ModMenuTypes.MITE_ANVIL_MENU.get(),
+                MiteAnvilScreen::new
         );
     }
 
@@ -144,22 +154,30 @@ public class MiteBreakAll {
     @SubscribeEvent
     public void onLevelChange(PlayerXpEvent.LevelChange event){
         var player = event.getEntity();
+
         int vitalStatMaxValue = Utils.getVitalStatMaxValue(player.experienceLevel+event.getLevels());
         
         PlayerWaterData waterData = ((PlayerMixinAccessor)player).getWaterData();
 
-        if(waterData.getMaxWaterLevel()!=vitalStatMaxValue){
-            Utils.updateVitalStat(event.getEntity());
+        if(player instanceof ServerPlayer serverPlayer &&waterData.getMaxWaterLevel()!=vitalStatMaxValue){
+            Utils.updateVitalStat(serverPlayer);
         }
     }
 
     @SubscribeEvent
     public void onPlayerReborn(PlayerEvent.PlayerRespawnEvent event){
-        Utils.updateVitalStat(event.getEntity());
+        Utils.updateVitalStat((ServerPlayer) event.getEntity());
     }
 
     @SubscribeEvent
     public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event){
-        Utils.updateVitalStat(event.getEntity());
+        Utils.updateVitalStat((ServerPlayer)event.getEntity());
+    }
+
+    public void registerSelectProperties(RegisterSelectItemModelPropertyEvent event) {
+        event.register(
+                ResourceLocation.fromNamespaceAndPath(MODID, "anvil_stage"),
+                AnvilItemState.TYPE
+        );
     }
 }

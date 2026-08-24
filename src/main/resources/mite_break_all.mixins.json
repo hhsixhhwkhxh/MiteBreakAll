@@ -6,7 +6,8 @@
     "AbstractSkeletonMixin",
     "EnchantmentMenuMixin",
     "PlayerMixin",
-    "RecipeManagerMixin"
+    "RecipeManagerMixin",
+    "ServerGamePacketListenerImplMixin"
   ],
   "injectors": {
     "defaultRequire": 1

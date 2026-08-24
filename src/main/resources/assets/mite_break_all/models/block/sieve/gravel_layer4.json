@@ -1,6 +1,7 @@
 {
 	"textures": {
-		"2": "block/gravel"
+		"2": "block/gravel",
+		"particle": "mite_break_all:block/sieve"
 	},
 	"elements": [
 		{

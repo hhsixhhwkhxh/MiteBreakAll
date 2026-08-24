@@ -1,0 +1,56 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "cases": [
+      {
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:model",
+              "model": "mite_break_all:block/silver_anvil_top_0"
+            },
+            {
+              "type": "minecraft:model",
+              "model": "mite_break_all:block/silver_anvil"
+            }
+          ]
+        },
+        "when": "normal"
+      },
+      {
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:model",
+              "model": "mite_break_all:block/silver_anvil_top_1"
+            },
+            {
+              "type": "minecraft:model",
+              "model": "mite_break_all:block/silver_anvil"
+            }
+          ]
+        },
+        "when": "cracked"
+      },
+      {
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:model",
+              "model": "mite_break_all:block/silver_anvil_top_2"
+            },
+            {
+              "type": "minecraft:model",
+              "model": "mite_break_all:block/silver_anvil"
+            }
+          ]
+        },
+        "when": "damaged"
+      }
+    ],
+    "property": "mite_break_all:anvil_stage"
+  }
+}

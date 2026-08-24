@@ -1,0 +1,156 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "mite_break_all:block/copper_anvil"
+      },
+      "when": {
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/copper_anvil_top_0"
+      },
+      "when": {
+        "facing": "south",
+        "normal": "normal"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/copper_anvil_top_1"
+      },
+      "when": {
+        "facing": "south",
+        "normal": "cracked"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/copper_anvil_top_2"
+      },
+      "when": {
+        "facing": "south",
+        "normal": "damaged"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/copper_anvil",
+        "y": 90
+      },
+      "when": {
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/copper_anvil_top_0",
+        "y": 90
+      },
+      "when": {
+        "facing": "west",
+        "normal": "normal"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/copper_anvil_top_1",
+        "y": 90
+      },
+      "when": {
+        "facing": "west",
+        "normal": "cracked"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/copper_anvil_top_2",
+        "y": 90
+      },
+      "when": {
+        "facing": "west",
+        "normal": "damaged"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/copper_anvil",
+        "y": 180
+      },
+      "when": {
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/copper_anvil_top_0",
+        "y": 180
+      },
+      "when": {
+        "facing": "north",
+        "normal": "normal"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/copper_anvil_top_1",
+        "y": 180
+      },
+      "when": {
+        "facing": "north",
+        "normal": "cracked"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/copper_anvil_top_2",
+        "y": 180
+      },
+      "when": {
+        "facing": "north",
+        "normal": "damaged"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/copper_anvil",
+        "y": 270
+      },
+      "when": {
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/copper_anvil_top_0",
+        "y": 270
+      },
+      "when": {
+        "facing": "east",
+        "normal": "normal"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/copper_anvil_top_1",
+        "y": 270
+      },
+      "when": {
+        "facing": "east",
+        "normal": "cracked"
+      }
+    },
+    {
+      "apply": {
+        "model": "mite_break_all:block/copper_anvil_top_2",
+        "y": 270
+      },
+      "when": {
+        "facing": "east",
+        "normal": "damaged"
+      }
+    }
+  ]
+}

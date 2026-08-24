@@ -22,6 +22,13 @@ public class ModDataComponents {
                     .networkSynchronized(Moisture.STREAM_CODEC)
     );
 
+    public static final Supplier<DataComponentType<MaterialLevel>> MATERIAL_LEVEL = DATACOMPONENTS.registerComponentType(
+            "material_level",
+            builder -> builder
+                    .persistent(MaterialLevel.CODEC)
+                    .networkSynchronized(MaterialLevel.STREAM_CODEC)
+    );
+
     public static void register(IEventBus bus){
         DATACOMPONENTS.register(bus);
     }
