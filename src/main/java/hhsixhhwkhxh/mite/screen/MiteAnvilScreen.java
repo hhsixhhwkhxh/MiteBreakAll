@@ -1,5 +1,6 @@
 package hhsixhhwkhxh.mite.screen;
 
+import hhsixhhwkhxh.mite.blockentity.MiteAnvilBlockEntity;
 import hhsixhhwkhxh.mite.menu.MiteAnvilMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -8,16 +9,16 @@ import net.minecraft.client.gui.screens.inventory.ItemCombinerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.protocol.game.ServerboundRenameItemPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.AnvilMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 
 public class MiteAnvilScreen extends ItemCombinerScreen<MiteAnvilMenu> {
@@ -104,29 +105,32 @@ public class MiteAnvilScreen extends ItemCombinerScreen<MiteAnvilMenu> {
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderLabels(guiGraphics, mouseX, mouseY);
-        int i = this.menu.getCost();
-        if (i > 0) {
-            int j = -8323296;
-            Component component;
-            if (i >= 40 && !this.minecraft.player.hasInfiniteMaterials()) {
-                component = TOO_EXPENSIVE_TEXT;
-                j = -40864;
-            } else if (!this.menu.getSlot(2).hasItem()) {
-                component = null;
-            } else {
-                component = Component.translatable("container.repair.cost", i);
-                if (!this.menu.getSlot(2).mayPickup(this.player)) {
-                    j = -40864;
-                }
-            }
 
-            if (component != null) {
-                int k = this.imageWidth - 8 - this.font.width(component) - 2;
-                int l = 69;
-                guiGraphics.fill(k - 2, 67, this.imageWidth - 8, 79, 1325400064);
-                guiGraphics.drawString(this.font, component, k, 69, j);
-            }
+        int greenColor = -8323296;
+        int redColor = -40864;
+
+        ContainerData dataAccess = this.menu.getDataAccess();
+
+        if(dataAccess.get(MiteAnvilBlockEntity.UNBREAKABLE)!=0){
+            return;
         }
+
+        int cost = this.menu.getCost();
+
+        MutableComponent component = Component.literal(String.valueOf(dataAccess.get(MiteAnvilBlockEntity.DURABILITY))).withColor(greenColor);
+
+        if(cost>0){
+            component = component.append(
+                    Component.literal("-"+cost).withColor(redColor)
+            );
+        }
+
+        component = component.append(Component.literal("/"+dataAccess.get(MiteAnvilBlockEntity.MAX_DAMAGE)).withColor(greenColor));
+
+        int x = this.imageWidth - 8 - this.font.width(component) - 2;
+
+        guiGraphics.fill(x - 2, 67, this.imageWidth - 8, 79, 1325400064);
+        guiGraphics.drawString(this.font, component, x, 69,-1,false);
     }
 
     @Override

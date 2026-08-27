@@ -1,7 +1,6 @@
 package hhsixhhwkhxh.mite.block;
 
 import com.mojang.serialization.MapCodec;
-import hhsixhhwkhxh.mite.custom.MeshType;
 import hhsixhhwkhxh.mite.item.ModItems;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -10,6 +9,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -34,6 +34,7 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -394,5 +395,23 @@ public class SieveBlock extends Block {
             resultList.add(itemStack);
         }
         return resultList;
+    }
+
+    public enum MeshType implements StringRepresentable {
+        EMPTY("empty"),
+        LEATHER("leather"),
+        STRING("string");
+
+        private final String name;
+
+        MeshType(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return this.name;
+        }
+
     }
 }

@@ -43,6 +43,7 @@ public class ModDataGenerator {
         event.addProvider(new ModZhCnLangProvider(packOutput));
         event.addProvider(new ModModelProvider(packOutput));
         event.addProvider(new ModBlockTagsProvider(packOutput,provider));
+        event.addProvider(new ModItemTagsProvider(packOutput,provider));
         event.createProvider(ModRecipesProvider.Runner::new);
         //event.createProvider(ModRecipePrioritiesProvider::new);
         event.addProvider(new ModEquipmentInfoProvider(packOutput));

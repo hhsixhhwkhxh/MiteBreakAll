@@ -101,6 +101,21 @@ public class ModCreativeModeTabs {
             output.accept(ModItems.SILVER_COPPER_CHESTPLATE);
             output.accept(ModItems.SILVER_COPPER_LEGGINGS);
             output.accept(ModItems.SILVER_COPPER_BOOTS);
+
+            output.accept(ModItems.COPPER_HELMET);
+            output.accept(ModItems.COPPER_CHESTPLATE);
+            output.accept(ModItems.COPPER_LEGGINGS);
+            output.accept(ModItems.COPPER_BOOTS);
+
+            output.accept(ModBlocks.ADAMANTIUM_ANVIL);
+            output.accept(ModBlocks.MITHRIL_ANVIL);
+            output.accept(ModBlocks.ANCIENT_METAL_ANVIL);
+            output.accept(ModBlocks.HARD_ANVIL);
+            output.accept(ModBlocks.IRON_ANVIL);
+            output.accept(ModBlocks.GOLD_ANVIL);
+            output.accept(ModBlocks.SILVER_ANVIL);
+            output.accept(ModBlocks.COPPER_ANVIL);
+
         }).build();
     });
 

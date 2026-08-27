@@ -1,13 +1,11 @@
 package hhsixhhwkhxh.mite.datagen;
 
 
-import com.google.gson.JsonObject;
 import hhsixhhwkhxh.mite.MiteBreakAll;
 import hhsixhhwkhxh.mite.block.MiteAnvilBlock;
 import hhsixhhwkhxh.mite.block.ModBlocks;
 import hhsixhhwkhxh.mite.block.SieveBlock;
 import hhsixhhwkhxh.mite.custom.AnvilItemState;
-import hhsixhhwkhxh.mite.custom.MeshType;
 import hhsixhhwkhxh.mite.item.ModItems;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -19,14 +17,11 @@ import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.*;
 import net.minecraft.client.renderer.block.model.VariantMutator;
 import net.minecraft.client.renderer.item.ItemModel;
-import net.minecraft.client.renderer.item.properties.numeric.CrossbowPull;
-import net.minecraft.client.renderer.item.properties.select.Charge;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.EquipmentAssets;
@@ -36,8 +31,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -139,6 +132,12 @@ public class ModModelProvider extends ModelProvider {
         generateFlatItemEx(blockModels,ModItems.SILVER_COPPER_LEGGINGS.get(),"armor/",ModelTemplates.FLAT_ITEM);
         generateFlatItemEx(blockModels,ModItems.SILVER_COPPER_BOOTS.get(),"armor/",ModelTemplates.FLAT_ITEM);
 
+        generateFlatItemEx(blockModels,ModItems.COPPER_HELMET.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.COPPER_CHESTPLATE.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.COPPER_LEGGINGS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+        generateFlatItemEx(blockModels,ModItems.COPPER_BOOTS.get(),"armor/",ModelTemplates.FLAT_ITEM);
+
+
         createAnvil(blockModels,ModBlocks.ADAMANTIUM_ANVIL);
         createAnvil(blockModels,ModBlocks.ANCIENT_METAL_ANVIL);
         createAnvil(blockModels,ModBlocks.COPPER_ANVIL);
@@ -220,10 +219,10 @@ public class ModModelProvider extends ModelProvider {
                         MultiPartGenerator.multiPart(ModBlocks.SIEVE.get())
                                 .with(BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/sieve")))
                                 .with(
-                                        BlockModelGenerators.condition().term(SieveBlock.MESH_TYPE, MeshType.LEATHER), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/mesh_leather"))
+                                        BlockModelGenerators.condition().term(SieveBlock.MESH_TYPE, SieveBlock.MeshType.LEATHER), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/mesh_leather"))
                                 )
                                 .with(
-                                        BlockModelGenerators.condition().term(SieveBlock.MESH_TYPE, MeshType.STRING), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/mesh_string"))
+                                        BlockModelGenerators.condition().term(SieveBlock.MESH_TYPE, SieveBlock.MeshType.STRING), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/mesh_string"))
                                 )
                                 .with(
                                         BlockModelGenerators.condition().term(SieveBlock.GRAVEL_LEVEL, 1), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/gravel_layer1"))

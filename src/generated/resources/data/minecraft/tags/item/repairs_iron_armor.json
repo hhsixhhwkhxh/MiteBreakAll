@@ -1,0 +1,8 @@
+{
+  "remove": [
+    "minecraft:iron_ingot"
+  ],
+  "values": [
+    "minecraft:iron_nugget"
+  ]
+}

@@ -103,5 +103,19 @@ public class ModEnUsLangProvider extends LanguageProvider {
         add(ModItems.SILVER_COPPER_CHESTPLATE.get(),"Silver Copper Chestplate");
         add(ModItems.SILVER_COPPER_LEGGINGS.get(),"Silver Copper Leggings");
         add(ModItems.SILVER_COPPER_BOOTS.get(),"Silver Copper Boots");
+
+        add(ModItems.COPPER_HELMET.get(),"Copper Helmet");
+        add(ModItems.COPPER_CHESTPLATE.get(),"Copper Chestplate");
+        add(ModItems.COPPER_LEGGINGS.get(),"Copper Leggings");
+        add(ModItems.COPPER_BOOTS.get(),"Copper Boots");
+
+        add(ModBlocks.ADAMANTIUM_ANVIL.get(),"Adamantium Anvil");
+        add(ModBlocks.ANCIENT_METAL_ANVIL.get(),"Ancient Metal Anvil");
+        add(ModBlocks.COPPER_ANVIL.get(),"Copper Anvil");
+        add(ModBlocks.GOLD_ANVIL.get(),"Gold Anvil");
+        add(ModBlocks.HARD_ANVIL.get(),"Hard Anvil");
+        add(ModBlocks.IRON_ANVIL.get(),"Iron Anvil");
+        add(ModBlocks.MITHRIL_ANVIL.get(),"Mithril Anvil");
+        add(ModBlocks.SILVER_ANVIL.get(),"Silver Anvil");
     }
 }

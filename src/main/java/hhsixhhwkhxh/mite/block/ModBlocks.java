@@ -50,14 +50,14 @@ public class ModBlocks {
                     .pushReaction(PushReaction.DESTROY)
     );
 
-    public static final DeferredBlock<Block> ADAMANTIUM_ANVIL = registerAnvil("adamantium_anvil",MiteAnvilBlock.AnvilVariant.ADAMANTIUM);
-    public static final DeferredBlock<Block> ANCIENT_METAL_ANVIL = registerAnvil("ancient_metal_anvil",MiteAnvilBlock.AnvilVariant.ANCIENT_METAL);
-    public static final DeferredBlock<Block> COPPER_ANVIL = registerAnvil("copper_anvil",MiteAnvilBlock.AnvilVariant.COPPER);
-    public static final DeferredBlock<Block> GOLD_ANVIL = registerAnvil("gold_anvil",MiteAnvilBlock.AnvilVariant.GOLD);
-    public static final DeferredBlock<Block> HARD_ANVIL = registerAnvil("hard_anvil",MiteAnvilBlock.AnvilVariant.HARD);
-    public static final DeferredBlock<Block> IRON_ANVIL = registerAnvil("iron_anvil",MiteAnvilBlock.AnvilVariant.IRON);
-    public static final DeferredBlock<Block> MITHRIL_ANVIL = registerAnvil("mithril_anvil",MiteAnvilBlock.AnvilVariant.MITHRIL);
-    public static final DeferredBlock<Block> SILVER_ANVIL = registerAnvil("silver_anvil",MiteAnvilBlock.AnvilVariant.SILVER);
+    public static final DeferredBlock<Block> ADAMANTIUM_ANVIL = registerAnvil("adamantium_anvil",MiteAnvilBlock.AnvilVariant.ADAMANTIUM,12697600);
+    public static final DeferredBlock<Block> ANCIENT_METAL_ANVIL = registerAnvil("ancient_metal_anvil",MiteAnvilBlock.AnvilVariant.ANCIENT_METAL,1388800);
+    public static final DeferredBlock<Block> COPPER_ANVIL = registerAnvil("copper_anvil",MiteAnvilBlock.AnvilVariant.COPPER,198400);
+    public static final DeferredBlock<Block> GOLD_ANVIL = registerAnvil("gold_anvil",MiteAnvilBlock.AnvilVariant.GOLD,198400);
+    public static final DeferredBlock<Block> HARD_ANVIL = registerAnvil("hard_anvil",MiteAnvilBlock.AnvilVariant.HARD,595200);
+    public static final DeferredBlock<Block> IRON_ANVIL = registerAnvil("iron_anvil",MiteAnvilBlock.AnvilVariant.IRON,396800);
+    public static final DeferredBlock<Block> MITHRIL_ANVIL = registerAnvil("mithril_anvil",MiteAnvilBlock.AnvilVariant.MITHRIL,9523200);
+    public static final DeferredBlock<Block> SILVER_ANVIL = registerAnvil("silver_anvil",MiteAnvilBlock.AnvilVariant.SILVER,198400);
 
 
     public static <B extends Block> DeferredBlock<B> registerBlock(String name, Function<BlockBehaviour.Properties, ? extends B> func, BlockBehaviour.Properties props) {
@@ -74,8 +74,8 @@ public class ModBlocks {
         );
     }
 
-    public static DeferredBlock<Block> registerAnvil(String name, MiteAnvilBlock.AnvilVariant anvilVariant){
-        return registerBlock(
+    public static DeferredBlock<Block> registerAnvil(String name, MiteAnvilBlock.AnvilVariant anvilVariant,int maxDamage){
+        DeferredBlock<Block> block =  BLOCKS.registerBlock(
                 name,
                 properties -> new MiteAnvilBlock(anvilVariant,properties),
                 BlockBehaviour.Properties.of()
@@ -85,6 +85,8 @@ public class ModBlocks {
                         .sound(SoundType.ANVIL)
                         .pushReaction(PushReaction.BLOCK)
         );
+        ModItems.ITEMS.registerSimpleBlockItem(name, block,new Item.Properties().durability(maxDamage));
+        return block;
     }
 
     public static void register(IEventBus eventBus){

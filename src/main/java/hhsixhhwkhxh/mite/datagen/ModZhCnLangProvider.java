@@ -102,5 +102,19 @@ public class ModZhCnLangProvider extends LanguageProvider {
         add(ModItems.SILVER_COPPER_CHESTPLATE.get(),"银铜胸甲");
         add(ModItems.SILVER_COPPER_LEGGINGS.get(),"银铜护腿");
         add(ModItems.SILVER_COPPER_BOOTS.get(),"银铜靴子");
+
+        add(ModItems.COPPER_HELMET.get(),"铜头盔");
+        add(ModItems.COPPER_CHESTPLATE.get(),"铜胸甲");
+        add(ModItems.COPPER_LEGGINGS.get(),"铜护腿");
+        add(ModItems.COPPER_BOOTS.get(),"铜靴子");
+
+        add(ModBlocks.ADAMANTIUM_ANVIL.get(),"艾德曼砧");
+        add(ModBlocks.ANCIENT_METAL_ANVIL.get(),"远古金属砧");
+        add(ModBlocks.COPPER_ANVIL.get(),"铜砧");
+        add(ModBlocks.GOLD_ANVIL.get(),"金砧");
+        add(ModBlocks.HARD_ANVIL.get(),"硬石砧");
+        add(ModBlocks.IRON_ANVIL.get(),"铁砧");
+        add(ModBlocks.MITHRIL_ANVIL.get(),"秘银砧");
+        add(ModBlocks.SILVER_ANVIL.get(),"银砧");
     }
 }

@@ -7,7 +7,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
-import net.minecraft.world.level.block.AnvilBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.slf4j.Logger;
 
@@ -28,13 +26,12 @@ public class MiteAnvilMenu extends ItemCombinerMenu {
     public static final int ADDITIONAL_SLOT = 1;
     public static final int RESULT_SLOT = 2;
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final boolean DEBUG_COST = false;
     public static final int MAX_NAME_LENGTH = 50;
     public int repairItemCountCost;
     @Nullable
     private String itemName;
     private final DataSlot cost = DataSlot.standalone();
-    private boolean onlyRenaming = false;
+    private boolean onlyRenaming;
     private static final int COST_FAIL = 0;
     private static final int COST_BASE = 1;
     private static final int COST_ADDED_BASE = 1;
@@ -47,20 +44,24 @@ public class MiteAnvilMenu extends ItemCombinerMenu {
     private static final int RESULT_SLOT_X_PLACEMENT = 134;
     private static final int SLOT_Y_PLACEMENT = 47;
 
+    private final ContainerData dataAccess;
+
     public MiteAnvilMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, ContainerLevelAccess.NULL);
+        this(containerId, playerInventory, ContainerLevelAccess.NULL,new SimpleContainerData(3));
     }
 
-    public MiteAnvilMenu(int containerId, Inventory playerInventory, ContainerLevelAccess access) {
+    public MiteAnvilMenu(int containerId, Inventory playerInventory, ContainerLevelAccess access,ContainerData dataAccess) {
         super(ModMenuTypes.MITE_ANVIL_MENU.get(), containerId, playerInventory, access, createInputSlotDefinitions());
         this.addDataSlot(this.cost);
+        this.addDataSlots(dataAccess);
+        this.dataAccess = dataAccess;
     }
 
     private static ItemCombinerMenuSlotDefinition createInputSlotDefinitions() {
         return ItemCombinerMenuSlotDefinition.create()
-            .withSlot(0, 27, 47, p_266635_ -> true)
-            .withSlot(1, 76, 47, p_266634_ -> true)
-            .withResultSlot(2, 134, 47)
+            .withSlot(INPUT_SLOT, INPUT_SLOT_X_PLACEMENT, SLOT_Y_PLACEMENT, p_266635_ -> true)
+            .withSlot(ADDITIONAL_SLOT, ADDITIONAL_SLOT_X_PLACEMENT, SLOT_Y_PLACEMENT, p_266634_ -> true)
+            .withResultSlot(RESULT_SLOT, RESULT_SLOT_X_PLACEMENT, SLOT_Y_PLACEMENT)
             .build();
     }
 
@@ -71,40 +72,54 @@ public class MiteAnvilMenu extends ItemCombinerMenu {
 
     @Override
     protected boolean mayPickup(Player player, boolean hasStack) {
-        return (player.hasInfiniteMaterials() || player.experienceLevel >= this.cost.get()) && this.cost.get() > 0;
+        return (player.hasInfiniteMaterials() || cost.get() > 0);
+    }
+
+    public ContainerData getDataAccess(){
+        return dataAccess;
     }
 
     @Override
     protected void onTake(Player player, ItemStack stack) {
 
-        if (!player.hasInfiniteMaterials()) {
-            player.giveExperienceLevels(-this.cost.get());
-        }
+        //if (!player.hasInfiniteMaterials()) {
+        //    player.giveExperienceLevels(-this.cost.get());
+        //}
+        int damage = cost.get();
 
         if (this.repairItemCountCost > 0) {
-            ItemStack itemstack = this.inputSlots.getItem(1);
+            ItemStack itemstack = this.inputSlots.getItem(ADDITIONAL_SLOT);
             if (!itemstack.isEmpty() && itemstack.getCount() > this.repairItemCountCost) {
                 itemstack.shrink(this.repairItemCountCost);
-                this.inputSlots.setItem(1, itemstack);
+                this.inputSlots.setItem(ADDITIONAL_SLOT, itemstack);
             } else {
-                this.inputSlots.setItem(1, ItemStack.EMPTY);
+                this.inputSlots.setItem(ADDITIONAL_SLOT, ItemStack.EMPTY);
             }
         } else if (!this.onlyRenaming) {
-            this.inputSlots.setItem(1, ItemStack.EMPTY);
+            this.inputSlots.setItem(ADDITIONAL_SLOT, ItemStack.EMPTY);
         }
 
-        this.cost.set(0);
+
+        //ItemStack itemstack = this.inputSlots.getItem(1);
+        //this.inputSlots.setItem(1, itemstack);
+
+
         if (player instanceof ServerPlayer serverplayer
             && !StringUtil.isBlank(this.itemName)
-            && !this.inputSlots.getItem(0).getHoverName().getString().equals(this.itemName)) {
+            && !this.inputSlots.getItem(INPUT_SLOT).getHoverName().getString().equals(this.itemName)) {
             serverplayer.getTextFilter().processStreamMessage(this.itemName);
         }
 
-        this.inputSlots.setItem(0, ItemStack.EMPTY);
+
+
+
+        this.inputSlots.setItem(INPUT_SLOT, ItemStack.EMPTY);
+
+
         this.access.execute((worldLevel, blockPos) -> {
             BlockState blockstate = worldLevel.getBlockState(blockPos);
-            if (!player.hasInfiniteMaterials() && player.getRandom().nextFloat() < 1F) {
-                BlockState blockstate1 = MiteAnvilBlock.damage(blockstate);
+            //if (!player.hasInfiniteMaterials()) {
+                BlockState blockstate1 = MiteAnvilBlock.damage(blockstate,dataAccess,damage);
                 if (blockstate1 == null) {
                     worldLevel.removeBlock(blockPos, false);
                     worldLevel.levelEvent(1029, blockPos, 0);
@@ -112,11 +127,12 @@ public class MiteAnvilMenu extends ItemCombinerMenu {
                     worldLevel.setBlock(blockPos, blockstate1, 2);
                     worldLevel.levelEvent(1030, blockPos, 0);
                 }
-            } else {
-                worldLevel.levelEvent(1030, blockPos, 0);
-            }
+            //} else {
+            //    worldLevel.levelEvent(1030, blockPos, 0);
+            //}
         });
 
+        this.cost.set(0);
         }
 
     @Override
@@ -135,175 +151,184 @@ public class MiteAnvilMenu extends ItemCombinerMenu {
      * @implNote This replacement exists so we can fire the AnvilUpdateEvent with the vanilla result, despite the multiple returns in the original method.
      */
     protected void createResultInternal() {
-        ItemStack itemstack = this.inputSlots.getItem(0);
+        ItemStack inputLeftStack = this.inputSlots.getItem(INPUT_SLOT);
         this.onlyRenaming = false;
-        this.cost.set(1);
-        int i = 0;
-        long j = 0L;
-        int k = 0;
-        if (!itemstack.isEmpty() && EnchantmentHelper.canStoreEnchantments(itemstack)) {
-            ItemStack itemstack1 = itemstack.copy();
-            ItemStack itemstack2 = this.inputSlots.getItem(1);
-            ItemEnchantments.Mutable itemenchantments$mutable = new ItemEnchantments.Mutable(EnchantmentHelper.getEnchantmentsForCrafting(itemstack1));
-            j += (long)itemstack.getOrDefault(DataComponents.REPAIR_COST, 0).intValue() + itemstack2.getOrDefault(DataComponents.REPAIR_COST, 0).intValue();
+        this.cost.set(COST_BASE);
+        int totalXpCost = 0;
+        long combinedRepairCostSum = 0L;
+        int renameXpCost = 0;
+
+        if (!inputLeftStack.isEmpty() && EnchantmentHelper.canStoreEnchantments(inputLeftStack)) {
+            ItemStack outputStack = inputLeftStack.copy();
+            ItemStack inputRightStack = this.inputSlots.getItem(ADDITIONAL_SLOT);
+            ItemEnchantments.Mutable itemenchantments$mutable = new ItemEnchantments.Mutable(EnchantmentHelper.getEnchantmentsForCrafting(outputStack));
+            combinedRepairCostSum += (long) inputLeftStack.getOrDefault(DataComponents.REPAIR_COST, 0).intValue() + inputRightStack.getOrDefault(DataComponents.REPAIR_COST, 0).intValue();
             this.repairItemCountCost = 0;
-            if (!itemstack2.isEmpty()) {
-                boolean flag = itemstack2.has(DataComponents.STORED_ENCHANTMENTS);
-                if (itemstack1.isDamageableItem() && itemstack.isValidRepairItem(itemstack2)) {
-                    int l2 = Math.min(itemstack1.getDamageValue(), itemstack1.getMaxDamage() / 4);
-                    if (l2 <= 0) {
-                        this.resultSlots.setItem(0, ItemStack.EMPTY);
-                        this.cost.set(0);
+            if (!inputRightStack.isEmpty()) {
+                boolean rightStackIsEnchantedBook = inputRightStack.has(DataComponents.STORED_ENCHANTMENTS);
+
+                //材料修补
+                if (outputStack.isDamageableItem() && inputLeftStack.isValidRepairItem(inputRightStack)) {
+                    int repairPerMaterial = Math.min(outputStack.getDamageValue(), outputStack.getMaxDamage() / 4);
+                    if (repairPerMaterial <= 0) {
+                        this.resultSlots.setItem(INPUT_SLOT, ItemStack.EMPTY);
+                        this.cost.set(COST_FAIL);
                         return;
                     }
 
-                    int j3;
-                    for (j3 = 0; l2 > 0 && j3 < itemstack2.getCount(); j3++) {
-                        int k3 = itemstack1.getDamageValue() - l2;
-                        itemstack1.setDamageValue(k3);
-                        i++;
-                        l2 = Math.min(itemstack1.getDamageValue(), itemstack1.getMaxDamage() / 4);
+                    int usedMaterialCount;
+                    for (usedMaterialCount = 0; repairPerMaterial > 0 && usedMaterialCount < inputRightStack.getCount(); usedMaterialCount++) {
+                        int k3 = outputStack.getDamageValue() - repairPerMaterial;
+                        outputStack.setDamageValue(k3);
+                        totalXpCost++;
+                        repairPerMaterial = Math.min(outputStack.getDamageValue(), outputStack.getMaxDamage() / 4);
                     }
 
-                    this.repairItemCountCost = j3;
+                    this.repairItemCountCost = usedMaterialCount;
                 } else {
-                    if (!flag && (!itemstack1.is(itemstack2.getItem()) || !itemstack1.isDamageableItem())) {
-                        this.resultSlots.setItem(0, ItemStack.EMPTY);
-                        this.cost.set(0);
+                    if (!rightStackIsEnchantedBook && (!outputStack.is(inputRightStack.getItem()) || !outputStack.isDamageableItem())) {
+                        this.resultSlots.setItem(INPUT_SLOT, ItemStack.EMPTY);
+                        this.cost.set(COST_FAIL);
                         return;
                     }
 
-                    if (itemstack1.isDamageableItem() && !flag) {
-                        int l = itemstack.getMaxDamage() - itemstack.getDamageValue();
-                        int i1 = itemstack2.getMaxDamage() - itemstack2.getDamageValue();
-                        int j1 = i1 + itemstack1.getMaxDamage() * 12 / 100;
-                        int k1 = l + j1;
-                        int l1 = itemstack1.getMaxDamage() - k1;
-                        if (l1 < 0) {
-                            l1 = 0;
+                    //合并
+                    if (outputStack.isDamageableItem() && !rightStackIsEnchantedBook) {
+                        int leftRemainingDurability = inputLeftStack.getMaxDamage() - inputLeftStack.getDamageValue();
+                        int rightRemainingDurability = inputRightStack.getMaxDamage() - inputRightStack.getDamageValue();
+                        int bonusDurability = rightRemainingDurability + outputStack.getMaxDamage() * 12 / 100;
+                        int totalDurabilityResult = leftRemainingDurability + bonusDurability;
+                        int finalDamageValue = outputStack.getMaxDamage() - totalDurabilityResult;
+                        if (finalDamageValue < 0) {
+                            finalDamageValue = 0;
                         }
 
-                        if (l1 < itemstack1.getDamageValue()) {
-                            itemstack1.setDamageValue(l1);
-                            i += 2;
+                        if (finalDamageValue < outputStack.getDamageValue()) {
+                            outputStack.setDamageValue(finalDamageValue);
+                            totalXpCost += 2;
                         }
                     }
 
-                    ItemEnchantments itemenchantments = EnchantmentHelper.getEnchantmentsForCrafting(itemstack2);
-                    boolean flag2 = false;
-                    boolean flag3 = false;
+                    ItemEnchantments itemenchantments = EnchantmentHelper.getEnchantmentsForCrafting(inputRightStack);
+                    boolean hasAnyValidEnchantMerge = false;
+                    boolean hasIncompatibleEnchantFound = false;
 
                     for (Entry<Holder<Enchantment>> entry : itemenchantments.entrySet()) {
                         Holder<Enchantment> holder = entry.getKey();
-                        int i2 = itemenchantments$mutable.getLevel(holder);
-                        int j2 = entry.getIntValue();
-                        j2 = i2 == j2 ? j2 + 1 : Math.max(j2, i2);
+                        int currentOutputLevel = itemenchantments$mutable.getLevel(holder);
+                        int incomingEnchantLevel = entry.getIntValue();
+                        incomingEnchantLevel = currentOutputLevel == incomingEnchantLevel ? incomingEnchantLevel + 1 : Math.max(incomingEnchantLevel, currentOutputLevel);
                         Enchantment enchantment = holder.value();
                         // Neo: Respect IItemExtension#supportsEnchantment - we also delegate the logic for Enchanted Books to this method.
                         // Though we still allow creative players to combine any item with any enchantment in the anvil here.
-                        boolean flag1 = itemstack.supportsEnchantment(holder);
+                        boolean canApplyEnchant = inputLeftStack.supportsEnchantment(holder);
                         if (this.player.getAbilities().instabuild) {
-                            flag1 = true;
+                            canApplyEnchant = true;
                         }
 
                         for (Holder<Enchantment> holder1 : itemenchantments$mutable.keySet()) {
                             if (!holder1.equals(holder) && !Enchantment.areCompatible(holder, holder1)) {
-                                flag1 = false;
-                                i++;
+                                canApplyEnchant = false;
+                                totalXpCost++;
                             }
                         }
 
-                        if (!flag1) {
-                            flag3 = true;
+                        if (!canApplyEnchant) {
+                            hasIncompatibleEnchantFound = true;
                         } else {
-                            flag2 = true;
-                            if (j2 > enchantment.getMaxLevel()) {
-                                j2 = enchantment.getMaxLevel();
+                            hasAnyValidEnchantMerge = true;
+                            if (incomingEnchantLevel > enchantment.getMaxLevel()) {
+                                incomingEnchantLevel = enchantment.getMaxLevel();
                             }
 
-                            itemenchantments$mutable.set(holder, j2);
-                            int l3 = enchantment.getAnvilCost();
-                            if (flag) {
-                                l3 = Math.max(1, l3 / 2);
+                            itemenchantments$mutable.set(holder, incomingEnchantLevel);
+                            int enchantXpCost = enchantment.getAnvilCost();
+                            if (rightStackIsEnchantedBook) {
+                                enchantXpCost = Math.max(1, enchantXpCost / 2);
                             }
 
-                            i += l3 * j2;
-                            if (itemstack.getCount() > 1) {
-                                i = 40;
+                            totalXpCost += enchantXpCost * incomingEnchantLevel;
+                            if (inputLeftStack.getCount() > 1) {
+                                //totalXpCost = 40;
+                                this.cost.set(COST_FAIL);
+                                this.resultSlots.setItem(INPUT_SLOT, ItemStack.EMPTY);
+                                return;
                             }
                         }
                     }
 
-                    if (flag3 && !flag2) {
-                        this.resultSlots.setItem(0, ItemStack.EMPTY);
-                        this.cost.set(0);
+                    if (hasIncompatibleEnchantFound && !hasAnyValidEnchantMerge) {
+                        this.resultSlots.setItem(INPUT_SLOT, ItemStack.EMPTY);
+                        this.cost.set(COST_FAIL);
                         return;
                     }
                 }
             }
 
             if (this.itemName != null && !StringUtil.isBlank(this.itemName)) {
-                if (!this.itemName.equals(itemstack.getHoverName().getString())) {
-                    k = 1;
-                    i += k;
-                    itemstack1.set(DataComponents.CUSTOM_NAME, Component.literal(this.itemName));
+                if (!this.itemName.equals(inputLeftStack.getHoverName().getString())) {
+                    renameXpCost = COST_RENAME;
+                    totalXpCost += renameXpCost;
+                    outputStack.set(DataComponents.CUSTOM_NAME, Component.literal(this.itemName));
                 }
-            } else if (itemstack.has(DataComponents.CUSTOM_NAME)) {
-                k = 1;
-                i += k;
-                itemstack1.remove(DataComponents.CUSTOM_NAME);
+            } else if (inputLeftStack.has(DataComponents.CUSTOM_NAME)) {
+                renameXpCost = COST_RENAME;
+                totalXpCost += renameXpCost;
+                outputStack.remove(DataComponents.CUSTOM_NAME);
             }
 
-            int k2 = i <= 0 ? 0 : (int)Mth.clamp(j + i, 0L, 2147483647L);
-            this.cost.set(k2);
-            if (i <= 0) {
-                itemstack1 = ItemStack.EMPTY;
+
+            int finalLevelCost = totalXpCost <= 0 ? 0 : (int) Mth.clamp(combinedRepairCostSum + totalXpCost, 0L, 2147483647L);
+            this.cost.set(finalLevelCost);
+            if (totalXpCost <= 0) {
+                outputStack = ItemStack.EMPTY;
             }
 
-            if (k == i && k > 0) {
-                if (this.cost.get() >= 40) {
-                    this.cost.set(39);
-                }
+            if (renameXpCost == totalXpCost && renameXpCost > 0) {
+                //if (this.cost.get() >= 40) {
+                //    this.cost.set(39);
+                //}
 
                 this.onlyRenaming = true;
             }
 
-            if (this.cost.get() >= 40 && !this.player.hasInfiniteMaterials()) {
-                itemstack1 = ItemStack.EMPTY;
-            }
+            //if (this.cost.get() >= 40 && !this.player.hasInfiniteMaterials()) {
+            //    outputStack = ItemStack.EMPTY;
+            //}
 
-            if (!itemstack1.isEmpty()) {
-                int i3 = itemstack1.getOrDefault(DataComponents.REPAIR_COST, 0);
-                if (i3 < itemstack2.getOrDefault(DataComponents.REPAIR_COST, 0)) {
-                    i3 = itemstack2.getOrDefault(DataComponents.REPAIR_COST, 0);
+
+            if (!outputStack.isEmpty()) {
+                int i3 = outputStack.getOrDefault(DataComponents.REPAIR_COST, 0);
+                if (i3 < inputRightStack.getOrDefault(DataComponents.REPAIR_COST, 0)) {
+                    i3 = inputRightStack.getOrDefault(DataComponents.REPAIR_COST, 0);
                 }
 
-                if (k != i || k == 0) {
+                if (renameXpCost != totalXpCost || renameXpCost == 0) {
                     i3 = calculateIncreasedRepairCost(i3);
                 }
 
-                itemstack1.set(DataComponents.REPAIR_COST, i3);
-                EnchantmentHelper.setEnchantments(itemstack1, itemenchantments$mutable.toImmutable());
+                outputStack.set(DataComponents.REPAIR_COST, i3);
+                EnchantmentHelper.setEnchantments(outputStack, itemenchantments$mutable.toImmutable());
             }
 
-            this.resultSlots.setItem(0, itemstack1);
+            this.resultSlots.setItem(INPUT_SLOT, outputStack);
             this.broadcastChanges();
         } else {
-            this.resultSlots.setItem(0, ItemStack.EMPTY);
-            this.cost.set(0);
+            this.resultSlots.setItem(INPUT_SLOT, ItemStack.EMPTY);
+            this.cost.set(COST_FAIL);
         }
     }
 
     public static int calculateIncreasedRepairCost(int oldRepairCost) {
-        return (int)Math.min(oldRepairCost * 2L + 1L, 2147483647L);
+        return (int)Math.min((long)oldRepairCost * 2L + 1L, 2147483647L);
     }
 
     public boolean setItemName(String itemName) {
         String s = validateName(itemName);
         if (s != null && !s.equals(this.itemName)) {
             this.itemName = s;
-            if (this.getSlot(2).hasItem()) {
-                ItemStack itemstack = this.getSlot(2).getItem();
+            if (this.getSlot(RESULT_SLOT).hasItem()) {
+                ItemStack itemstack = this.getSlot(RESULT_SLOT).getItem();
                 if (StringUtil.isBlank(s)) {
                     itemstack.remove(DataComponents.CUSTOM_NAME);
                 } else {
@@ -321,17 +346,12 @@ public class MiteAnvilMenu extends ItemCombinerMenu {
     @Nullable
     private static String validateName(String itemName) {
         String s = StringUtil.filterText(itemName);
-        return s.length() <= 50 ? s : null;
+        return s.length() <= MAX_NAME_LENGTH ? s : null;
     }
 
     public int getCost() {
-        return this.cost.get();
+        return cost.get();
     }
 
-    /**
-     * Neo: Sets the cost. Negative values are clamped to zero.
-     */
-    public void setCost(int value) {
-        this.cost.set(Math.max(0, value));
-     }
+
 }

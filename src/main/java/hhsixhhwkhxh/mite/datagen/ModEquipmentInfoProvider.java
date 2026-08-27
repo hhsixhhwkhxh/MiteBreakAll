@@ -21,7 +21,7 @@ public class ModEquipmentInfoProvider implements DataProvider {
     }
 
     private void add(BiConsumer<ResourceLocation, EquipmentClientInfo> registrar) {
-        String[] armorList = {"adamantium","ancient_metal","bronze","hard","high_carbon_steel","mithril","rusted_iron","silver_copper","silver"};
+        String[] armorList = {"adamantium","ancient_metal","bronze","hard","high_carbon_steel","mithril","rusted_iron","silver_copper","silver","copper"};
 
         for(String armorName:armorList){
             registrar.accept(
