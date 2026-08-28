@@ -16,6 +16,8 @@
   "block.mite_break_all.silver_ore": "银矿",
   "block.mite_break_all.strawberry_bush": "草莓丛",
   "block.mite_break_all.tin_ore": "锡矿",
+  "container.repair.higher_anvil": "需要更高级的砧",
+  "container.repair.unsupported_item": "该物品不支持此操作",
   "craft_table.flint": "燧石工作台",
   "enchantment.mite_break_all.overpowered": "君临天下",
   "item.mite_break_all.adamantium_boots": "艾德曼靴子",

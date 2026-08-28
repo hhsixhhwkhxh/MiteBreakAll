@@ -5,6 +5,8 @@ import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import hhsixhhwkhxh.mite.blockentity.MiteAnvilBlockEntity;
+import hhsixhhwkhxh.mite.custom.MaterialLevelType;
+import hhsixhhwkhxh.mite.datacomponent.MaterialLevel;
 import hhsixhhwkhxh.mite.item.ModItems;
 import hhsixhhwkhxh.mite.menu.MiteAnvilMenu;
 import net.minecraft.core.BlockPos;
@@ -51,6 +53,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -242,8 +245,13 @@ public class MiteAnvilBlock extends FallingBlock implements EntityBlock{
         return new MiteAnvilBlockEntity(pos,state);
     }
 
-    public enum AnvilVariant implements StringRepresentable {ANCIENT_METAL("ancient_metal"), ADAMANTIUM("adamantium"),  COPPER("copper"),GOLD("gold"),HARD("hard"),IRON("iron"),MITHRIL("mithril"),SILVER("silver");
+    public enum AnvilVariant implements StringRepresentable {
+        COPPER("copper"), GOLD("gold"), SILVER("silver"),
+        IRON("iron"),
+        ANCIENT_METAL("ancient_metal"), HARD("hard"),
+        MITHRIL("mithril"),ADAMANTIUM("adamantium");
         private final String name;
+
         AnvilVariant(String name) {
             this.name = name;
         }
@@ -251,6 +259,24 @@ public class MiteAnvilBlock extends FallingBlock implements EntityBlock{
         @Override
         public @NotNull String getSerializedName() {
             return name;
+        }
+
+        public static AnvilVariant byCode(int code){
+            return values()[code];
+        }
+
+        public boolean canProcessMaterial(int materialLevelType){
+            if(this.ordinal() <= SILVER.ordinal()){
+                return materialLevelType <= MaterialLevelType.GOLD_COPPER_FAMILY.level;
+            }else if(this == IRON){
+                return materialLevelType <= MaterialLevelType.IRON_STEEL_FAMILY.level;
+            }else if(this.ordinal() <= HARD.ordinal()){
+                return materialLevelType <= MaterialLevelType.ANCIENT_HARDENED_FAMILY.level;
+            }else if(this == MITHRIL){
+                return (materialLevelType != MaterialLevelType.ADAMANTIUM.level);
+            }else{
+                return true;
+            }
         }
     }
 

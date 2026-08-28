@@ -2,8 +2,13 @@ package hhsixhhwkhxh.mite.menu;
 
 import com.mojang.logging.LogUtils;
 import hhsixhhwkhxh.mite.block.MiteAnvilBlock;
+import hhsixhhwkhxh.mite.blockentity.MiteAnvilBlockEntity;
+import hhsixhhwkhxh.mite.custom.MaterialLevelType;
+import hhsixhhwkhxh.mite.datacomponent.MaterialLevel;
+import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -44,6 +49,10 @@ public class MiteAnvilMenu extends ItemCombinerMenu {
     private static final int RESULT_SLOT_X_PLACEMENT = 134;
     private static final int SLOT_Y_PLACEMENT = 47;
 
+    public static final int COST_TOO_EXPENSIVE = -1;
+    public static final int COST_REQUIRE_HIGHER_LEVEL_ANVIL = -2;
+    public static final int COST_ITEM_NOT_SUPPORTED = -3;
+
     private final ContainerData dataAccess;
 
     public MiteAnvilMenu(int containerId, Inventory playerInventory) {
@@ -72,7 +81,7 @@ public class MiteAnvilMenu extends ItemCombinerMenu {
 
     @Override
     protected boolean mayPickup(Player player, boolean hasStack) {
-        return (player.hasInfiniteMaterials() || cost.get() > 0);
+        return (this.cost.get() > 0);
     }
 
     public ContainerData getDataAccess(){
@@ -159,6 +168,20 @@ public class MiteAnvilMenu extends ItemCombinerMenu {
         int renameXpCost = 0;
 
         if (!inputLeftStack.isEmpty() && EnchantmentHelper.canStoreEnchantments(inputLeftStack)) {
+
+            DataComponentMap dataComponentMap = inputLeftStack.getComponents();
+            MaterialLevel materialLevel = dataComponentMap.get(ModDataComponents.MATERIAL_LEVEL);
+            if(materialLevel==null){
+                this.cost.set(COST_ITEM_NOT_SUPPORTED);
+                return;
+            }else{
+                MiteAnvilBlock.AnvilVariant anvilVariant = MiteAnvilBlock.AnvilVariant.byCode(dataAccess.get(MiteAnvilBlockEntity.VARIANTS));
+                if(!anvilVariant.canProcessMaterial(materialLevel.value())){
+                    this.cost.set(COST_REQUIRE_HIGHER_LEVEL_ANVIL);
+                    return;
+                }
+            }
+
             ItemStack outputStack = inputLeftStack.copy();
             ItemStack inputRightStack = this.inputSlots.getItem(ADDITIONAL_SLOT);
             ItemEnchantments.Mutable itemenchantments$mutable = new ItemEnchantments.Mutable(EnchantmentHelper.getEnchantmentsForCrafting(outputStack));
@@ -279,6 +302,13 @@ public class MiteAnvilMenu extends ItemCombinerMenu {
 
 
             int finalLevelCost = totalXpCost <= 0 ? 0 : (int) Mth.clamp(combinedRepairCostSum + totalXpCost, 0L, 2147483647L);
+
+            if(dataAccess.get(MiteAnvilBlockEntity.VARIANTS) != MiteAnvilBlock.AnvilVariant.ADAMANTIUM.ordinal()
+                    && finalLevelCost > dataAccess.get(MiteAnvilBlockEntity.DURABILITY)){
+
+                finalLevelCost = COST_TOO_EXPENSIVE;
+            }
+
             this.cost.set(finalLevelCost);
             if (totalXpCost <= 0) {
                 outputStack = ItemStack.EMPTY;

@@ -13,24 +13,22 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
 public class MiteAnvilBlockEntity extends BlockEntity implements Clearable, MenuProvider {
-    private int durability = -1,maxDamage,unbreakable = 0;
+    private int durability = -1,maxDamage, variants = 0;
     private final ContainerData dataAccess = new ContainerData() {
         @Override
         public int get(int index) {
             return switch (index){
                 case DURABILITY -> durability;
                 case MAX_DAMAGE -> maxDamage;
-                case UNBREAKABLE -> unbreakable;
+                case VARIANTS -> variants;
                 default -> throw new IllegalStateException("Unexpected index: " + index);
             };
         }
@@ -40,7 +38,7 @@ public class MiteAnvilBlockEntity extends BlockEntity implements Clearable, Menu
             switch (index){
                 case DURABILITY -> durability=value;
                 case MAX_DAMAGE -> maxDamage=value;
-                case UNBREAKABLE -> unbreakable=value;
+                case VARIANTS -> variants =value;
                 default -> throw new IllegalStateException("Unexpected index: " + index);
             };
         }
@@ -53,7 +51,7 @@ public class MiteAnvilBlockEntity extends BlockEntity implements Clearable, Menu
 
     public static final int DURABILITY = 0;
     public static final int MAX_DAMAGE = 1;
-    public static final int UNBREAKABLE = 2;
+    public static final int VARIANTS = 2;
 
     public MiteAnvilBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.MITE_ANVIL.get(), pos, blockState);
@@ -72,10 +70,7 @@ public class MiteAnvilBlockEntity extends BlockEntity implements Clearable, Menu
         DeferredBlock<Block> block;
         MiteAnvilBlock.AnvilVariant anvilVariant = level.getBlockState(worldPosition).getValue(MiteAnvilBlock.ANVIL_VARIANT);
         switch (anvilVariant){
-            case ADAMANTIUM -> {
-                block = ModBlocks.ADAMANTIUM_ANVIL;
-                dataAccess.set(UNBREAKABLE,1);
-            }
+            case ADAMANTIUM -> block = ModBlocks.ADAMANTIUM_ANVIL;
             case ANCIENT_METAL -> block = ModBlocks.ANCIENT_METAL_ANVIL;
             case COPPER -> block = ModBlocks.COPPER_ANVIL;
             case GOLD -> block = ModBlocks.GOLD_ANVIL;
@@ -88,6 +83,7 @@ public class MiteAnvilBlockEntity extends BlockEntity implements Clearable, Menu
 
         int maxDamage = new ItemStack(block.asItem()).getMaxDamage();
         dataAccess.set(MAX_DAMAGE,maxDamage);
+        dataAccess.set(VARIANTS,anvilVariant.ordinal());
 
         if(dataAccess.get(DURABILITY)<0){
             dataAccess.set(DURABILITY,maxDamage);

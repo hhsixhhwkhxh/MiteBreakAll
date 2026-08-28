@@ -1,5 +1,13 @@
 {
   "values": [
-    "mite_break_all:silver_ore"
+    "mite_break_all:silver_ore",
+    "mite_break_all:adamantium_anvil",
+    "mite_break_all:ancient_metal_anvil",
+    "mite_break_all:copper_anvil",
+    "mite_break_all:gold_anvil",
+    "mite_break_all:hard_anvil",
+    "mite_break_all:iron_anvil",
+    "mite_break_all:mithril_anvil",
+    "mite_break_all:silver_anvil"
   ]
 }

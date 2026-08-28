@@ -116,5 +116,8 @@ public class ModZhCnLangProvider extends LanguageProvider {
         add(ModBlocks.IRON_ANVIL.get(),"铁砧");
         add(ModBlocks.MITHRIL_ANVIL.get(),"秘银砧");
         add(ModBlocks.SILVER_ANVIL.get(),"银砧");
+
+        add("container.repair.higher_anvil","需要更高级的砧");
+        add("container.repair.unsupported_item","该物品不支持此操作");
     }
 }

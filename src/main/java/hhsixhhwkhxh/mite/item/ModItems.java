@@ -166,27 +166,28 @@ public class ModItems {
     }
 
     public static void modifyVanillaArmor(ModifyDefaultComponentsEvent event){
-        event.modify(Items.IRON_HELMET,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.IRON,ArmorType.HELMET));
-        event.modify(Items.IRON_CHESTPLATE,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.IRON,ArmorType.CHESTPLATE));
-        event.modify(Items.IRON_LEGGINGS,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.IRON,ArmorType.LEGGINGS));
-        event.modify(Items.IRON_BOOTS,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.IRON,ArmorType.BOOTS));
+        event.modify(Items.IRON_HELMET,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.IRON,ArmorType.HELMET,MaterialLevelType.IRON_STEEL_FAMILY));
+        event.modify(Items.IRON_CHESTPLATE,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.IRON,ArmorType.CHESTPLATE,MaterialLevelType.IRON_STEEL_FAMILY));
+        event.modify(Items.IRON_LEGGINGS,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.IRON,ArmorType.LEGGINGS,MaterialLevelType.IRON_STEEL_FAMILY));
+        event.modify(Items.IRON_BOOTS,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.IRON,ArmorType.BOOTS,MaterialLevelType.IRON_STEEL_FAMILY));
 
-        event.modify(Items.GOLDEN_HELMET,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.GOLD,ArmorType.HELMET));
-        event.modify(Items.GOLDEN_CHESTPLATE,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.GOLD,ArmorType.CHESTPLATE));
-        event.modify(Items.GOLDEN_LEGGINGS,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.GOLD,ArmorType.LEGGINGS));
-        event.modify(Items.GOLDEN_BOOTS,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.GOLD,ArmorType.BOOTS));
+        event.modify(Items.GOLDEN_HELMET,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.GOLD,ArmorType.HELMET,MaterialLevelType.GOLD_COPPER_FAMILY));
+        event.modify(Items.GOLDEN_CHESTPLATE,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.GOLD,ArmorType.CHESTPLATE,MaterialLevelType.GOLD_COPPER_FAMILY));
+        event.modify(Items.GOLDEN_LEGGINGS,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.GOLD,ArmorType.LEGGINGS,MaterialLevelType.GOLD_COPPER_FAMILY));
+        event.modify(Items.GOLDEN_BOOTS,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.GOLD,ArmorType.BOOTS,MaterialLevelType.GOLD_COPPER_FAMILY));
 
-        event.modify(Items.LEATHER_HELMET,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.LEATHER,ArmorType.HELMET));
-        event.modify(Items.LEATHER_CHESTPLATE,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.LEATHER,ArmorType.CHESTPLATE));
-        event.modify(Items.LEATHER_LEGGINGS,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.LEATHER,ArmorType.LEGGINGS));
-        event.modify(Items.LEATHER_BOOTS,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.LEATHER,ArmorType.BOOTS));
+        event.modify(Items.LEATHER_HELMET,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.LEATHER,ArmorType.HELMET,MaterialLevelType.RUBBISH));
+        event.modify(Items.LEATHER_CHESTPLATE,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.LEATHER,ArmorType.CHESTPLATE,MaterialLevelType.RUBBISH));
+        event.modify(Items.LEATHER_LEGGINGS,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.LEATHER,ArmorType.LEGGINGS,MaterialLevelType.RUBBISH));
+        event.modify(Items.LEATHER_BOOTS,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.LEATHER,ArmorType.BOOTS,MaterialLevelType.RUBBISH));
 
 
     }
 
-    public static void vanillaHumanoidArmor(DataComponentPatch.Builder builder, ModArmorMaterials.ModArmorMaterial material, ArmorType type) {
+    public static void vanillaHumanoidArmor(DataComponentPatch.Builder builder, ModArmorMaterials.ModArmorMaterial material, ArmorType type, MaterialLevelType materialLevelType) {
         builder.set(DataComponents.MAX_DAMAGE, type.getDurability(material.durability()));
         builder.set(DataComponents.ATTRIBUTE_MODIFIERS, material.createAttributes(type));
         builder.set(DataComponents.ENCHANTABLE, new Enchantable(material.enchantmentValue()));
+        builder.set(ModDataComponents.MATERIAL_LEVEL.get(), new MaterialLevel(materialLevelType.level));
     }
 }

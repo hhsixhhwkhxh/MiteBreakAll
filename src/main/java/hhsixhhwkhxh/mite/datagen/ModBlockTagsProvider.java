@@ -16,6 +16,14 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         this.tag(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE)
-                .add(ModBlocks.SILVER_ORE.get());
+                .add(ModBlocks.SILVER_ORE.get())
+                .add(ModBlocks.ADAMANTIUM_ANVIL.get())
+                .add(ModBlocks.ANCIENT_METAL_ANVIL.get())
+                .add(ModBlocks.COPPER_ANVIL.get())
+                .add(ModBlocks.GOLD_ANVIL.get())
+                .add(ModBlocks.HARD_ANVIL.get())
+                .add(ModBlocks.IRON_ANVIL.get())
+                .add(ModBlocks.MITHRIL_ANVIL.get())
+                .add(ModBlocks.SILVER_ANVIL.get());
     }
 }

@@ -1,5 +1,6 @@
 package hhsixhhwkhxh.mite.screen;
 
+import hhsixhhwkhxh.mite.block.MiteAnvilBlock;
 import hhsixhhwkhxh.mite.blockentity.MiteAnvilBlockEntity;
 import hhsixhhwkhxh.mite.menu.MiteAnvilMenu;
 import net.minecraft.client.Minecraft;
@@ -10,7 +11,6 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.protocol.game.ServerboundRenameItemPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,11 +22,19 @@ import net.minecraft.world.item.ItemStack;
 
 
 public class MiteAnvilScreen extends ItemCombinerScreen<MiteAnvilMenu> {
+
+    private static final int greenColor = -8323296;
+    private static final int redColor = -40864;
+
     private static final ResourceLocation TEXT_FIELD_SPRITE = ResourceLocation.withDefaultNamespace("container/anvil/text_field");
     private static final ResourceLocation TEXT_FIELD_DISABLED_SPRITE = ResourceLocation.withDefaultNamespace("container/anvil/text_field_disabled");
     private static final ResourceLocation ERROR_SPRITE = ResourceLocation.withDefaultNamespace("container/anvil/error");
     private static final ResourceLocation ANVIL_LOCATION = ResourceLocation.withDefaultNamespace("textures/gui/container/anvil.png");
-    private static final Component TOO_EXPENSIVE_TEXT = Component.translatable("container.repair.expensive");
+    private static final Component TOO_EXPENSIVE_TEXT = Component.translatable("container.repair.expensive").withColor(redColor);
+    private static final Component REQUIRE_HIGHER_LEVEL_ANVIL_TEXT = Component.translatable("container.repair.higher_anvil").withColor(redColor);
+    private static final Component ITEM_NOT_SUPPORTED_TEXT = Component.translatable("container.repair.unsupported_item").withColor(redColor);
+
+
     private EditBox name;
     private final Player player;
 
@@ -106,29 +114,37 @@ public class MiteAnvilScreen extends ItemCombinerScreen<MiteAnvilMenu> {
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderLabels(guiGraphics, mouseX, mouseY);
 
-        int greenColor = -8323296;
-        int redColor = -40864;
-
         ContainerData dataAccess = this.menu.getDataAccess();
 
-        if(dataAccess.get(MiteAnvilBlockEntity.UNBREAKABLE)!=0){
+        if(dataAccess.get(MiteAnvilBlockEntity.VARIANTS) == MiteAnvilBlock.AnvilVariant.ADAMANTIUM.ordinal()){
             return;
         }
 
         int cost = this.menu.getCost();
 
-        MutableComponent component = Component.literal(String.valueOf(dataAccess.get(MiteAnvilBlockEntity.DURABILITY))).withColor(greenColor);
+        Component component;
 
-        if(cost>0){
-            component = component.append(
-                    Component.literal("-"+cost).withColor(redColor)
-            );
+        if(cost>=0){
+            MutableComponent mutableComponent = Component.literal(String.valueOf(dataAccess.get(MiteAnvilBlockEntity.DURABILITY))).withColor(greenColor);
+
+            if(cost>0){
+                mutableComponent = mutableComponent.append(
+                        Component.literal("-"+cost).withColor(redColor)
+                );
+            }
+
+            mutableComponent = mutableComponent.append(Component.literal("/"+dataAccess.get(MiteAnvilBlockEntity.MAX_DAMAGE)).withColor(greenColor));
+            component = mutableComponent;
+        }else{
+            component = switch (cost){
+                case MiteAnvilMenu.COST_TOO_EXPENSIVE -> TOO_EXPENSIVE_TEXT;
+                case MiteAnvilMenu.COST_REQUIRE_HIGHER_LEVEL_ANVIL -> REQUIRE_HIGHER_LEVEL_ANVIL_TEXT;
+                case MiteAnvilMenu.COST_ITEM_NOT_SUPPORTED -> ITEM_NOT_SUPPORTED_TEXT;
+                default -> throw new IllegalStateException("Unexpected value: " + cost);
+            };
         }
 
-        component = component.append(Component.literal("/"+dataAccess.get(MiteAnvilBlockEntity.MAX_DAMAGE)).withColor(greenColor));
-
         int x = this.imageWidth - 8 - this.font.width(component) - 2;
-
         guiGraphics.fill(x - 2, 67, this.imageWidth - 8, 79, 1325400064);
         guiGraphics.drawString(this.font, component, x, 69,-1,false);
     }

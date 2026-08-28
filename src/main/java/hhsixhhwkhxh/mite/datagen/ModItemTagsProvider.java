@@ -36,11 +36,9 @@ public class ModItemTagsProvider extends ItemTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
 
-        replace(ItemTags.DIAMOND_TOOL_MATERIALS,Items.DIAMOND);
         replace(ItemTags.GOLD_TOOL_MATERIALS,Items.GOLD_INGOT);
         replace(ItemTags.IRON_TOOL_MATERIALS,Items.IRON_INGOT);
 
-        replace(ItemTags.REPAIRS_DIAMOND_ARMOR,Items.DIAMOND);
         replace(ItemTags.REPAIRS_IRON_ARMOR,Items.IRON_INGOT);
         replace(ItemTags.REPAIRS_GOLD_ARMOR,Items.GOLD_INGOT);
 
@@ -51,6 +49,14 @@ public class ModItemTagsProvider extends ItemTagsProvider {
         this.tag(ModItemTags.REPAIRS_MITHRIL_ARMOR).add(ModItems.MITHRIL_NUGGET.get());
         this.tag(ModItemTags.REPAIRS_SILVER_ARMOR).add(ModItems.SILVER_NUGGET.get());
         this.tag(ModItemTags.REPAIRS_SILVER_COPPER_ARMOR).add(ModItems.SILVER_NUGGET.get()).add(ModItems.COPPER_NUGGET.get());
+
+        this.tag(ModItemTags.ADAMANTIUM_TOOL_MATERIALS).addTag(ModItemTags.REPAIRS_ADAMANTIUM_ARMOR);
+        this.tag(ModItemTags.ANCIENT_METAL_TOOL_MATERIALS).addTag(ModItemTags.REPAIRS_ANCIENT_METAL_ARMOR);
+        this.tag(ModItemTags.COPPER_TOOL_MATERIALS).addTag(ModItemTags.REPAIRS_COPPER_ARMOR);
+        this.tag(ModItemTags.HARD_TOOL_MATERIALS).addTag(ModItemTags.REPAIRS_HARD_ARMOR);
+        this.tag(ModItemTags.MITHRIL_TOOL_MATERIALS).addTag(ModItemTags.REPAIRS_MITHRIL_ARMOR);
+        this.tag(ModItemTags.SILVER_TOOL_MATERIALS).addTag(ModItemTags.REPAIRS_SILVER_ARMOR);
+        this.tag(ModItemTags.SILVER_COPPER_TOOL_MATERIALS).addTag(ModItemTags.REPAIRS_SILVER_COPPER_ARMOR);
     }
 
     private void replace(TagKey<Item> key,Item oldMaterial){

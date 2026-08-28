@@ -16,6 +16,8 @@
   "block.mite_break_all.silver_ore": "Silver Ore",
   "block.mite_break_all.strawberry_bush": "StrawBerry Bush",
   "block.mite_break_all.tin_ore": "Tin Ore",
+  "container.repair.higher_anvil": "Require higher level anvil",
+  "container.repair.unsupported_item": "This item cannot be used here",
   "craft_table.flint": "Flint Crafting Table",
   "enchantment.mite_break_all.overpowered": "Overpowered",
   "item.mite_break_all.adamantium_boots": "Adamantium Boots",

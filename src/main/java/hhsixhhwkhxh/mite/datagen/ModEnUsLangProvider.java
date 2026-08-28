@@ -117,5 +117,8 @@ public class ModEnUsLangProvider extends LanguageProvider {
         add(ModBlocks.IRON_ANVIL.get(),"Iron Anvil");
         add(ModBlocks.MITHRIL_ANVIL.get(),"Mithril Anvil");
         add(ModBlocks.SILVER_ANVIL.get(),"Silver Anvil");
+
+        add("container.repair.higher_anvil","Require higher level anvil");
+        add("container.repair.unsupported_item","This item cannot be used here");
     }
 }

@@ -1,8 +1,0 @@
-{
-  "remove": [
-    "minecraft:diamond"
-  ],
-  "values": [
-    "mite_break_all:diamond_shard"
-  ]
-}

@@ -15,6 +15,15 @@ public class ModItemTags {
     public static final TagKey<Item> REPAIRS_MITHRIL_ARMOR = bind("repairs_mithril_armor");
     public static final TagKey<Item> REPAIRS_SILVER_ARMOR = bind("repairs_silver_armor");
     public static final TagKey<Item> REPAIRS_SILVER_COPPER_ARMOR = bind("repairs_silver_copper_armor");
+
+    public static final TagKey<Item> ADAMANTIUM_TOOL_MATERIALS = bind("adamantium_tool_materials");
+    public static final TagKey<Item> ANCIENT_METAL_TOOL_MATERIALS = bind("ancient_metal_tool_materials");
+    public static final TagKey<Item> COPPER_TOOL_MATERIALS = bind("copper_tool_materials");
+    public static final TagKey<Item> HARD_TOOL_MATERIALS = bind("hard_tool_materials");
+    public static final TagKey<Item> MITHRIL_TOOL_MATERIALS = bind("mithril_tool_materials");
+    public static final TagKey<Item> SILVER_TOOL_MATERIALS = bind("silver_tool_materials");
+    public static final TagKey<Item> SILVER_COPPER_TOOL_MATERIALS = bind("silver_copper_tool_materials");
+    
     public static final TagKey<Item> NULL = bind("null");
 
     private static TagKey<Item> bind(String name) {
