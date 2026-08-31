@@ -1,9 +1,12 @@
 package hhsixhhwkhxh.mite;
 
+import hhsixhhwkhxh.mite.datacomponent.DeprecatedMarker;
+import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
 import hhsixhhwkhxh.mite.packet.ModClientPayloadHandler;
 import hhsixhhwkhxh.mite.packet.ClientboundSetVitalStatMaxValuePacket;
 import hhsixhhwkhxh.mite.packet.ClientboundSetWaterLevelPacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -13,18 +16,23 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+
+import java.util.List;
 
 // This class will not load on dedicated servers. Accessing client side code from here is safe.
 @Mod(value = MiteBreakAll.MODID, dist = Dist.CLIENT)
 // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
 @EventBusSubscriber(modid = MiteBreakAll.MODID, value = Dist.CLIENT)
 public class MiteBreakAllClient {
+
+    private static final Component deprecatedTipComponent = Component.translatable("tooltip.item.deprecated").withColor(0XECFF1E);
+
     public MiteBreakAllClient(ModContainer container) {
         // Allows NeoForge to create a config screen for this mod's configs.
         // The config screen is accessed by going to the Mods screen > clicking on your mod > clicking on config.
         // Do not forget to add translations for your config options to the en_us.json file.
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-
 
     }
 
@@ -48,5 +56,17 @@ public class MiteBreakAllClient {
                 ClientboundSetVitalStatMaxValuePacket.TYPE,
                 ModClientPayloadHandler::handleSetVitalStatMaxValuePacket
         );
+    }
+
+    @SubscribeEvent
+    public static void onItemTooltip(ItemTooltipEvent event) {
+        DeprecatedMarker deprecatedMarker = event.getItemStack().getItem().components().get(ModDataComponents.DEPRECATED_MARKER);
+        if (deprecatedMarker == null || !deprecatedMarker.value()) {
+            return;
+        }
+        List<Component> tooltip = event.getToolTip();
+
+        tooltip.add(1,deprecatedTipComponent);
+
     }
 }

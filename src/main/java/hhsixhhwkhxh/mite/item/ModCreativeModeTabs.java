@@ -2,11 +2,9 @@ package hhsixhhwkhxh.mite.item;
 
 import hhsixhhwkhxh.mite.MiteBreakAll;
 import hhsixhhwkhxh.mite.block.ModBlocks;
-import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.IEventBus;
@@ -137,13 +135,13 @@ public class ModCreativeModeTabs {
             output.accept(ModItems.IRON_DAGGER);
             output.accept(ModItems.IRON_HATCHET);
 
-            output.accept(ModItems.GOLD_WAR_HAMMER);
-            output.accept(ModItems.GOLD_BATTLE_AXE);
-            output.accept(ModItems.GOLD_MATTOCK);
-            output.accept(ModItems.GOLD_SCYTHE);
-            output.accept(ModItems.GOLD_SHEARS);
-            output.accept(ModItems.GOLD_DAGGER);
-            output.accept(ModItems.GOLD_HATCHET);
+            output.accept(ModItems.GOLDEN_WAR_HAMMER);
+            output.accept(ModItems.GOLDEN_BATTLE_AXE);
+            output.accept(ModItems.GOLDEN_MATTOCK);
+            output.accept(ModItems.GOLDEN_SCYTHE);
+            output.accept(ModItems.GOLDEN_SHEARS);
+            output.accept(ModItems.GOLDEN_DAGGER);
+            output.accept(ModItems.GOLDEN_HATCHET);
 
             output.accept(ModItems.COPPER_WAR_HAMMER);
             output.accept(ModItems.COPPER_BATTLE_AXE);

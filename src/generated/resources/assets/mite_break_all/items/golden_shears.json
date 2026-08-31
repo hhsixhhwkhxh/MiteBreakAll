@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mite_break_all:item/gold_shears"
+    "model": "mite_break_all:item/golden_shears"
   }
 }

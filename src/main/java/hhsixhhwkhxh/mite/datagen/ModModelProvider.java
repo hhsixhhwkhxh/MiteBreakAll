@@ -152,29 +152,27 @@ public class ModModelProvider extends ModelProvider {
         generateSimpleFlatItem(blockModels,ModItems.FLINT_PICKAXE.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.FLINT_SHOVEL.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.FLINT_AXE.get(),FolderType.TOOLS);
-
         generateSimpleFlatItem(blockModels,ModItems.FLINT_HATCHET.get(),FolderType.TOOLS);
 
         generateSimpleFlatItem(blockModels,ModItems.OBSIDIAN_SHOVEL.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.OBSIDIAN_AXE.get(),FolderType.TOOLS);
-
         generateSimpleFlatItem(blockModels,ModItems.OBSIDIAN_HATCHET.get(),FolderType.TOOLS);
 
         generateSimpleFlatItem(blockModels,ModItems.IRON_WAR_HAMMER.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.IRON_BATTLE_AXE.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.IRON_MATTOCK.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.IRON_SCYTHE.get(),FolderType.TOOLS);
-        generateSimpleFlatItem(blockModels,ModItems.IRON_SHEARS.get(),FolderType.TOOLS);
+        useVanillaItemModel(blockModels,ModItems.IRON_SHEARS.get(),Items.SHEARS);
         generateSimpleFlatItem(blockModels,ModItems.IRON_DAGGER.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.IRON_HATCHET.get(),FolderType.TOOLS);
 
-        generateSimpleFlatItem(blockModels,ModItems.GOLD_WAR_HAMMER.get(),FolderType.TOOLS);
-        generateSimpleFlatItem(blockModels,ModItems.GOLD_BATTLE_AXE.get(),FolderType.TOOLS);
-        generateSimpleFlatItem(blockModels,ModItems.GOLD_MATTOCK.get(),FolderType.TOOLS);
-        generateSimpleFlatItem(blockModels,ModItems.GOLD_SCYTHE.get(),FolderType.TOOLS);
-        generateSimpleFlatItem(blockModels,ModItems.GOLD_SHEARS.get(),FolderType.TOOLS);
-        generateSimpleFlatItem(blockModels,ModItems.GOLD_DAGGER.get(),FolderType.TOOLS);
-        generateSimpleFlatItem(blockModels,ModItems.GOLD_HATCHET.get(),FolderType.TOOLS);
+        generateSimpleFlatItem(blockModels,ModItems.GOLDEN_WAR_HAMMER.get(),FolderType.TOOLS);
+        generateSimpleFlatItem(blockModels,ModItems.GOLDEN_BATTLE_AXE.get(),FolderType.TOOLS);
+        generateSimpleFlatItem(blockModels,ModItems.GOLDEN_MATTOCK.get(),FolderType.TOOLS);
+        generateSimpleFlatItem(blockModels,ModItems.GOLDEN_SCYTHE.get(),FolderType.TOOLS);
+        generateSimpleFlatItem(blockModels,ModItems.GOLDEN_SHEARS.get(),FolderType.TOOLS);
+        generateSimpleFlatItem(blockModels,ModItems.GOLDEN_DAGGER.get(),FolderType.TOOLS);
+        generateSimpleFlatItem(blockModels,ModItems.GOLDEN_HATCHET.get(),FolderType.TOOLS);
 
         generateSimpleFlatItem(blockModels,ModItems.COPPER_WAR_HAMMER.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.COPPER_BATTLE_AXE.get(),FolderType.TOOLS);
@@ -183,18 +181,21 @@ public class ModModelProvider extends ModelProvider {
         generateSimpleFlatItem(blockModels,ModItems.COPPER_SHEARS.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.COPPER_DAGGER.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.COPPER_HATCHET.get(),FolderType.TOOLS);
+
         generateSimpleFlatItem(blockModels,ModItems.BRONZE_SWORD.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.BRONZE_PICKAXE.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.BRONZE_SHOVEL.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.BRONZE_AXE.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.BRONZE_WAR_HAMMER.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.BRONZE_BATTLE_AXE.get(),FolderType.TOOLS);
+
         generateSimpleFlatItem(blockModels,ModItems.SILVER_COPPER_SWORD.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.SILVER_COPPER_PICKAXE.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.SILVER_COPPER_SHOVEL.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.SILVER_COPPER_AXE.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.SILVER_COPPER_WAR_HAMMER.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.SILVER_COPPER_BATTLE_AXE.get(),FolderType.TOOLS);
+
         generateSimpleFlatItem(blockModels,ModItems.SILVER_SWORD.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.SILVER_PICKAXE.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.SILVER_SHOVEL.get(),FolderType.TOOLS);
@@ -207,6 +208,7 @@ public class ModModelProvider extends ModelProvider {
         generateSimpleFlatItem(blockModels,ModItems.SILVER_SHEARS.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.SILVER_DAGGER.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.SILVER_HATCHET.get(),FolderType.TOOLS);
+
         generateSimpleFlatItem(blockModels,ModItems.RUSTED_IRON_SWORD.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.RUSTED_IRON_PICKAXE.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.RUSTED_IRON_SHOVEL.get(),FolderType.TOOLS);
@@ -219,6 +221,7 @@ public class ModModelProvider extends ModelProvider {
         generateSimpleFlatItem(blockModels,ModItems.RUSTED_IRON_SHEARS.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.RUSTED_IRON_DAGGER.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.RUSTED_IRON_HATCHET.get(),FolderType.TOOLS);
+
         generateSimpleFlatItem(blockModels,ModItems.HIGH_CARBON_STEEL_SWORD.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.HIGH_CARBON_STEEL_PICKAXE.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.HIGH_CARBON_STEEL_SHOVEL.get(),FolderType.TOOLS);
@@ -231,6 +234,7 @@ public class ModModelProvider extends ModelProvider {
         generateSimpleFlatItem(blockModels,ModItems.HIGH_CARBON_STEEL_SHEARS.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.HIGH_CARBON_STEEL_DAGGER.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.HIGH_CARBON_STEEL_HATCHET.get(),FolderType.TOOLS);
+
         generateSimpleFlatItem(blockModels,ModItems.HARD_SWORD.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.HARD_PICKAXE.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.HARD_SHOVEL.get(),FolderType.TOOLS);
@@ -243,6 +247,7 @@ public class ModModelProvider extends ModelProvider {
         generateSimpleFlatItem(blockModels,ModItems.HARD_SHEARS.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.HARD_DAGGER.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.HARD_HATCHET.get(),FolderType.TOOLS);
+
         generateSimpleFlatItem(blockModels,ModItems.ANCIENT_METAL_SWORD.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.ANCIENT_METAL_PICKAXE.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.ANCIENT_METAL_SHOVEL.get(),FolderType.TOOLS);
@@ -255,6 +260,7 @@ public class ModModelProvider extends ModelProvider {
         generateSimpleFlatItem(blockModels,ModItems.ANCIENT_METAL_SHEARS.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.ANCIENT_METAL_DAGGER.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.ANCIENT_METAL_HATCHET.get(),FolderType.TOOLS);
+
         generateSimpleFlatItem(blockModels,ModItems.MITHRIL_SWORD.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.MITHRIL_PICKAXE.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.MITHRIL_SHOVEL.get(),FolderType.TOOLS);
@@ -267,6 +273,7 @@ public class ModModelProvider extends ModelProvider {
         generateSimpleFlatItem(blockModels,ModItems.MITHRIL_SHEARS.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.MITHRIL_DAGGER.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.MITHRIL_HATCHET.get(),FolderType.TOOLS);
+
         generateSimpleFlatItem(blockModels,ModItems.ADAMANTIUM_SWORD.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.ADAMANTIUM_PICKAXE.get(),FolderType.TOOLS);
         generateSimpleFlatItem(blockModels,ModItems.ADAMANTIUM_SHOVEL.get(),FolderType.TOOLS);
@@ -347,13 +354,11 @@ public class ModModelProvider extends ModelProvider {
 
 
     public void createProxyItemModel(BlockModelGenerators blockModels){
-        ModItems.proxyItemMap.forEach((item,deferredItem)->{
-            //blockModels.createFlatItemModel(deferredItem.get());
-            //generateFlatItemEx(blockModels,deferredItem.get(),"",ModelTemplates.FLAT_ITEM);
-            //ResourceLocation resourceLocation = ModelTemplates.FLAT_ITEM.create(ModelLocationUtils.getModelLocation(Items.BARRIER), new TextureMapping().put(TextureSlot.LAYER0, getItemTextureWithPrefix(item,"")), blockModels.modelOutput);
+        ModItems.proxyItemMap.forEach((item,deferredItem)-> useVanillaItemModel(blockModels,deferredItem.get(),Items.BARRIER));
+    }
 
-            blockModels.itemModelOutput.accept(deferredItem.get(), ItemModelUtils.plainModel(ModelLocationUtils.getModelLocation(Items.BARRIER)));
-        });
+    public void useVanillaItemModel(BlockModelGenerators blockModels,Item modItem,Item vanillaItem){
+        blockModels.itemModelOutput.accept(modItem, ItemModelUtils.plainModel(ModelLocationUtils.getModelLocation(vanillaItem)));
     }
 
     public static ResourceLocation getBlockTextureWithPrefix(Block block, String prefix,String suffix) {

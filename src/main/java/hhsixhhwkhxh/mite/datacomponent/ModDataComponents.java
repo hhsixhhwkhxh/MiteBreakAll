@@ -36,6 +36,12 @@ public class ModDataComponents {
                     .networkSynchronized(ReachBonus.STREAM_CODEC)
     );
 
+    public static final Supplier<DataComponentType<DeprecatedMarker>> DEPRECATED_MARKER = DATACOMPONENTS.registerComponentType(
+            "deprecated_marker",
+            builder -> builder
+                    .persistent(DeprecatedMarker.CODEC)
+                    .networkSynchronized(DeprecatedMarker.STREAM_CODEC)
+    );
 
     public static void register(IEventBus bus){
         DATACOMPONENTS.register(bus);

@@ -2,6 +2,7 @@ package hhsixhhwkhxh.mite.item;
 
 import hhsixhhwkhxh.mite.MiteBreakAll;
 import hhsixhhwkhxh.mite.custom.MaterialFamilyType;
+import hhsixhhwkhxh.mite.datacomponent.DeprecatedMarker;
 import hhsixhhwkhxh.mite.datacomponent.MaterialLevel;
 import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
 import hhsixhhwkhxh.mite.datacomponent.Moisture;
@@ -19,6 +20,7 @@ import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.item.enchantment.Enchantable;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.Equippable;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -130,13 +132,13 @@ public class ModItems {
     public static final DeferredItem<Item> IRON_DAGGER = ITEMS.registerItem("iron_dagger",(props)-> new Item(ModToolMaterials.dagger(props,ModToolMaterials.IRON)));
     public static final DeferredItem<Item> IRON_HATCHET = ITEMS.registerItem("iron_hatchet",(props)-> new Item(ModToolMaterials.hatchet(props,ModToolMaterials.IRON)));
 
-    public static final DeferredItem<Item> GOLD_WAR_HAMMER = ITEMS.registerItem("gold_war_hammer",(props)-> new Item(ModToolMaterials.warHammer(props,ModToolMaterials.GOLD)));
-    public static final DeferredItem<Item> GOLD_BATTLE_AXE = ITEMS.registerItem("gold_battle_axe",(props)-> new Item(ModToolMaterials.battleAxe(props,ModToolMaterials.GOLD)));
-    public static final DeferredItem<Item> GOLD_MATTOCK = ITEMS.registerItem("gold_mattock",(props)-> new Item(ModToolMaterials.mattock(props,ModToolMaterials.GOLD)));
-    public static final DeferredItem<Item> GOLD_SCYTHE = ITEMS.registerItem("gold_scythe",(props)-> new Item(ModToolMaterials.scythe(props,ModToolMaterials.GOLD)));
-    public static final DeferredItem<Item> GOLD_SHEARS = ITEMS.registerItem("gold_shears",(props)-> new Item(ModToolMaterials.shears(props,ModToolMaterials.GOLD)));
-    public static final DeferredItem<Item> GOLD_DAGGER = ITEMS.registerItem("gold_dagger",(props)-> new Item(ModToolMaterials.dagger(props,ModToolMaterials.GOLD)));
-    public static final DeferredItem<Item> GOLD_HATCHET = ITEMS.registerItem("gold_hatchet",(props)-> new Item(ModToolMaterials.hatchet(props,ModToolMaterials.GOLD)));
+    public static final DeferredItem<Item> GOLDEN_WAR_HAMMER = ITEMS.registerItem("golden_war_hammer",(props)-> new Item(ModToolMaterials.warHammer(props,ModToolMaterials.GOLD)));
+    public static final DeferredItem<Item> GOLDEN_BATTLE_AXE = ITEMS.registerItem("golden_battle_axe",(props)-> new Item(ModToolMaterials.battleAxe(props,ModToolMaterials.GOLD)));
+    public static final DeferredItem<Item> GOLDEN_MATTOCK = ITEMS.registerItem("golden_mattock",(props)-> new Item(ModToolMaterials.mattock(props,ModToolMaterials.GOLD)));
+    public static final DeferredItem<Item> GOLDEN_SCYTHE = ITEMS.registerItem("golden_scythe",(props)-> new Item(ModToolMaterials.scythe(props,ModToolMaterials.GOLD)));
+    public static final DeferredItem<Item> GOLDEN_SHEARS = ITEMS.registerItem("golden_shears",(props)-> new Item(ModToolMaterials.shears(props,ModToolMaterials.GOLD)));
+    public static final DeferredItem<Item> GOLDEN_DAGGER = ITEMS.registerItem("golden_dagger",(props)-> new Item(ModToolMaterials.dagger(props,ModToolMaterials.GOLD)));
+    public static final DeferredItem<Item> GOLDEN_HATCHET = ITEMS.registerItem("golden_hatchet",(props)-> new Item(ModToolMaterials.hatchet(props,ModToolMaterials.GOLD)));
 
     public static final DeferredItem<Item> COPPER_WAR_HAMMER = ITEMS.registerItem("copper_war_hammer",(props)-> new Item(ModToolMaterials.warHammer(props,ModToolMaterials.COPPER)));
     public static final DeferredItem<Item> COPPER_BATTLE_AXE = ITEMS.registerItem("copper_battle_axe",(props)-> new Item(ModToolMaterials.battleAxe(props,ModToolMaterials.COPPER)));
@@ -287,9 +289,17 @@ public class ModItems {
             )
     );
 
+    public static final List<Item> deprecatedItemList = List.of(
+            Items.WOODEN_AXE,Items.WOODEN_HOE,Items.WOODEN_PICKAXE,Items.WOODEN_SWORD,
+            Items.DIAMOND_AXE,Items.DIAMOND_HOE,Items.DIAMOND_PICKAXE,Items.DIAMOND_SWORD,Items.DIAMOND_SHOVEL,
+            Blocks.CRAFTING_TABLE.asItem(),Blocks.ANVIL.asItem(),
+            Items.DIAMOND_HELMET,Items.DIAMOND_CHESTPLATE,Items.DIAMOND_LEGGINGS,Items.DIAMOND_BOOTS,
+            Items.STONE_SWORD,Items.STONE_SHOVEL,Items.STONE_PICKAXE,Items.STONE_AXE,Items.STONE_HOE
+    );
+
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);
-
+        
         modifyVanillaItem(eventBus);
     }
 
@@ -320,11 +330,18 @@ public class ModItems {
                 builder.set(DataComponents.CONSUMABLE,GAConsumable);
                 builder.set(DataComponents.ENCHANTABLE,new Enchantable(60));
             });
-            event.modify(Items.ENCHANTED_GOLDEN_APPLE,(builder)->{
-                builder.set(DataComponents.CONSUMABLE,EGAConsumable);
-            });
+            event.modify(Items.ENCHANTED_GOLDEN_APPLE,(builder)-> builder.set(DataComponents.CONSUMABLE,EGAConsumable));
 
             modifyVanillaArmor(event);
+            proxyItemMap.forEach((item,deferredItem)-> {
+                    event.modify(item, builder-> copyProperties(builder,item));
+                    event.modify(deferredItem.get(), builder-> builder.set(ModDataComponents.DEPRECATED_MARKER.get(), new DeprecatedMarker(true)));
+                }
+            );
+
+            deprecatedItemList.forEach(item -> {
+                event.modify(item, builder-> builder.set(ModDataComponents.DEPRECATED_MARKER.get(), new DeprecatedMarker(true)));
+            });
         });
     }
     public static Item.Properties humanoidArmor(Item.Properties properties, ModArmorMaterials.ModArmorMaterial material, ArmorType type) {
@@ -353,10 +370,6 @@ public class ModItems {
         event.modify(Items.LEATHER_CHESTPLATE,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.LEATHER,ArmorType.CHESTPLATE, MaterialFamilyType.RUBBISH));
         event.modify(Items.LEATHER_LEGGINGS,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.LEATHER,ArmorType.LEGGINGS, MaterialFamilyType.RUBBISH));
         event.modify(Items.LEATHER_BOOTS,builder -> vanillaHumanoidArmor(builder,ModArmorMaterials.LEATHER,ArmorType.BOOTS, MaterialFamilyType.RUBBISH));
-
-        proxyItemMap.forEach((item,deferredItem)->{
-            event.modify(item,builder-> copyProperties(builder,item));
-        });
 
     }
 
