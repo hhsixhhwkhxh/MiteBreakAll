@@ -22,7 +22,9 @@ public abstract class RecipeManagerMixin extends SimplePreparableReloadListener<
     private static List<String> banList = List.of(
             "golden_apple","crafting_table",
             "diamond_helmet","diamond_chestplate","diamond_leggings","diamond_boots",
-            "diamond_sword","diamond_shovel","diamond_pickaxe","diamond_axe","diamond_hoe"
+            "diamond_sword","diamond_shovel","diamond_pickaxe","diamond_axe","diamond_hoe",
+            "wooden_sword","wooden_pickaxe","wooden_axe","wooden_hoe",
+            "stone_sword","stone_shovel","stone_pickaxe","stone_axe","stone_hoe"
     );
 
     @Inject(method = "prepare(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)Lnet/minecraft/world/item/crafting/RecipeMap;",

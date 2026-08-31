@@ -6,6 +6,7 @@ import hhsixhhwkhxh.mite.custom.ModFoodData;
 import hhsixhhwkhxh.mite.custom.PlayerWaterData;
 import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
 import hhsixhhwkhxh.mite.datacomponent.Moisture;
+import hhsixhhwkhxh.mite.datacomponent.ReachBonus;
 import hhsixhhwkhxh.mite.item.ModCreativeModeTabs;
 import hhsixhhwkhxh.mite.packet.ClientboundSetWaterLevelPacket;
 import hhsixhhwkhxh.mite.packet.ClientboundSetVitalStatMaxValuePacket;
@@ -20,11 +21,15 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterSelectItemModelPropertyEvent;
+import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
@@ -45,6 +50,8 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+
+import java.util.UUID;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(MiteBreakAll.MODID)
@@ -178,6 +185,24 @@ public class MiteBreakAll {
         event.register(
                 ResourceLocation.fromNamespaceAndPath(MODID, "anvil_stage"),
                 AnvilItemState.TYPE
+        );
+    }
+
+    @SubscribeEvent
+    public void onItemAttributeModifier(ItemAttributeModifierEvent event) {
+        ItemStack stack = event.getItemStack();
+        ReachBonus reachBonus = stack.getComponents().get(ModDataComponents.REACH_BONUS);
+
+        if (reachBonus==null) {
+            return;
+        }
+        event.addModifier(Attributes.BLOCK_INTERACTION_RANGE,
+                new AttributeModifier(
+                        ResourceLocation.fromNamespaceAndPath(MODID,"dynamic_reach_bonus"),
+                        reachBonus.value(),
+                        AttributeModifier.Operation.ADD_VALUE
+                ),
+                EquipmentSlotGroup.MAINHAND
         );
     }
 }

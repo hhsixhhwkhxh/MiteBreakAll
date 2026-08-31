@@ -1,34 +1,22 @@
 package hhsixhhwkhxh.mite.block;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import hhsixhhwkhxh.mite.blockentity.MiteAnvilBlockEntity;
-import hhsixhhwkhxh.mite.custom.MaterialLevelType;
-import hhsixhhwkhxh.mite.datacomponent.MaterialLevel;
-import hhsixhhwkhxh.mite.item.ModItems;
-import hhsixhhwkhxh.mite.menu.MiteAnvilMenu;
+import hhsixhhwkhxh.mite.custom.MaterialFamilyType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.BlockItemStateProperties;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -36,7 +24,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -47,13 +34,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredItem;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -246,14 +229,15 @@ public class MiteAnvilBlock extends FallingBlock implements EntityBlock{
     }
 
     public enum AnvilVariant implements StringRepresentable {
-        COPPER("copper"), GOLD("gold"), SILVER("silver"),
-        IRON("iron"),
-        ANCIENT_METAL("ancient_metal"), HARD("hard"),
-        MITHRIL("mithril"),ADAMANTIUM("adamantium");
+        COPPER("copper", MaterialFamilyType.GOLD_COPPER_FAMILY), GOLD("gold", MaterialFamilyType.GOLD_COPPER_FAMILY), SILVER("silver", MaterialFamilyType.GOLD_COPPER_FAMILY),
+        IRON("iron", MaterialFamilyType.IRON_STEEL_FAMILY),
+        ANCIENT_METAL("ancient_metal", MaterialFamilyType.ANCIENT_HARDENED_FAMILY), HARD("hard", MaterialFamilyType.ANCIENT_HARDENED_FAMILY),
+        MITHRIL("mithril", MaterialFamilyType.MITHRIL),ADAMANTIUM("adamantium", MaterialFamilyType.ADAMANTIUM);
         private final String name;
-
-        AnvilVariant(String name) {
+        private final int level;
+        AnvilVariant(String name, MaterialFamilyType materialLevelType) {
             this.name = name;
+            this.level = materialLevelType.level;
         }
 
         @Override
@@ -266,17 +250,7 @@ public class MiteAnvilBlock extends FallingBlock implements EntityBlock{
         }
 
         public boolean canProcessMaterial(int materialLevelType){
-            if(this.ordinal() <= SILVER.ordinal()){
-                return materialLevelType <= MaterialLevelType.GOLD_COPPER_FAMILY.level;
-            }else if(this == IRON){
-                return materialLevelType <= MaterialLevelType.IRON_STEEL_FAMILY.level;
-            }else if(this.ordinal() <= HARD.ordinal()){
-                return materialLevelType <= MaterialLevelType.ANCIENT_HARDENED_FAMILY.level;
-            }else if(this == MITHRIL){
-                return (materialLevelType != MaterialLevelType.ADAMANTIUM.level);
-            }else{
-                return true;
-            }
+            return this.level >= materialLevelType;
         }
     }
 

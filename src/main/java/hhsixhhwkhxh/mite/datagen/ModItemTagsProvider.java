@@ -1,8 +1,7 @@
 package hhsixhhwkhxh.mite.datagen;
 
 import hhsixhhwkhxh.mite.MiteBreakAll;
-import hhsixhhwkhxh.mite.block.ModBlocks;
-import hhsixhhwkhxh.mite.custom.ModItemTags;
+import hhsixhhwkhxh.mite.item.ModItemTags;
 import hhsixhhwkhxh.mite.item.ModItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -12,7 +11,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ItemTagsProvider;
 
 import java.util.Map;

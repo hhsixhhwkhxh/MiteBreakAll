@@ -1,7 +1,6 @@
 package hhsixhhwkhxh.mite.item;
 
 import com.google.common.collect.Maps;
-import hhsixhhwkhxh.mite.custom.ModItemTags;
 import hhsixhhwkhxh.mite.datagen.ModModelProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;

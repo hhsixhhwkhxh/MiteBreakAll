@@ -3,7 +3,6 @@ package hhsixhhwkhxh.mite.menu;
 import com.mojang.logging.LogUtils;
 import hhsixhhwkhxh.mite.block.MiteAnvilBlock;
 import hhsixhhwkhxh.mite.blockentity.MiteAnvilBlockEntity;
-import hhsixhhwkhxh.mite.custom.MaterialLevelType;
 import hhsixhhwkhxh.mite.datacomponent.MaterialLevel;
 import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;

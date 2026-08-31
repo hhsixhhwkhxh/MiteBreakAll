@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mite_break_all:item/tools/high_carbon_steel_shears"
+  }
+}

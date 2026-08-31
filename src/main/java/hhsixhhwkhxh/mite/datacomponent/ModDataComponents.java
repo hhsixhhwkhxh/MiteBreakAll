@@ -29,6 +29,14 @@ public class ModDataComponents {
                     .networkSynchronized(MaterialLevel.STREAM_CODEC)
     );
 
+    public static final Supplier<DataComponentType<ReachBonus>> REACH_BONUS = DATACOMPONENTS.registerComponentType(
+            "reach_bonus",
+            builder -> builder
+                    .persistent(ReachBonus.CODEC)
+                    .networkSynchronized(ReachBonus.STREAM_CODEC)
+    );
+
+
     public static void register(IEventBus bus){
         DATACOMPONENTS.register(bus);
     }
