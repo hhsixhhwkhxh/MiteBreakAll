@@ -59,6 +59,33 @@ public class ModBlocks {
     public static final DeferredBlock<Block> MITHRIL_ANVIL = registerAnvil("mithril_anvil",MiteAnvilBlock.AnvilVariant.MITHRIL,9523200);
     public static final DeferredBlock<Block> SILVER_ANVIL = registerAnvil("silver_anvil",MiteAnvilBlock.AnvilVariant.SILVER,198400);
 
+    public static final DeferredBlock<Block> STONE_FURNACE_CORE = registerBlock("stone_furnace_core", FurnaceCore::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASS).strength(0.6F).sound(SoundType.STONE).ignitedByLava());
+
+    public static final DeferredBlock<Block> COBBLESTONE_MATERIAL_BLOCK = registerBlock(
+            "cobblestone_material_block",(properties -> new FurnaceWallBlock(properties, FurnaceWallBlock.Type.COBBLESTONE)),
+            BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(2.0F, 6.0F)
+    );
+
+    public static final DeferredBlock<Block> OBSIDIAN_MATERIAL_BLOCK = registerBlock(
+            "obsidian_material_block",(properties -> new FurnaceWallBlock(properties, FurnaceWallBlock.Type.OBSIDIAN)),
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BLACK)
+                    .instrument(NoteBlockInstrument.BASEDRUM)
+                    .requiresCorrectToolForDrops()
+                    .strength(50.0F, 1200.0F)
+    );
+
+    public static final DeferredBlock<Block> NETHERRACK_MATERIAL_BLOCK = registerBlock(
+            "netherrack_material_block",(properties -> new FurnaceWallBlock(properties, FurnaceWallBlock.Type.NETHERRACK)),
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.NETHER)
+                    .instrument(NoteBlockInstrument.BASEDRUM)
+                    .requiresCorrectToolForDrops()
+                    .strength(0.4F)
+                    .sound(SoundType.NETHERRACK)
+    );
+
 
     public static <B extends Block> DeferredBlock<B> registerBlock(String name, Function<BlockBehaviour.Properties, ? extends B> func, BlockBehaviour.Properties props) {
         DeferredBlock<B> block = BLOCKS.registerBlock(name,func,props);;

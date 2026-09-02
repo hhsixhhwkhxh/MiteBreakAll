@@ -92,6 +92,12 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         this.dropSelf(ModBlocks.IRON_ANVIL.get());
         this.dropSelf(ModBlocks.MITHRIL_ANVIL.get());
         this.dropSelf(ModBlocks.SILVER_ANVIL.get());
+
+        this.dropSelf(ModBlocks.STONE_FURNACE_CORE.get());
+
+        this.dropOther(ModBlocks.COBBLESTONE_MATERIAL_BLOCK.get(), Blocks.COBBLESTONE.asItem());
+        this.dropOther(ModBlocks.OBSIDIAN_MATERIAL_BLOCK.get(), Blocks.OBSIDIAN.asItem());
+        this.dropOther(ModBlocks.NETHERRACK_MATERIAL_BLOCK.get(), Blocks.NETHERRACK.asItem());
     }
 
     @Override

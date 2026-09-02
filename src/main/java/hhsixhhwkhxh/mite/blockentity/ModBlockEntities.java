@@ -18,6 +18,10 @@ public class ModBlockEntities{
             ModBlocks.ADAMANTIUM_ANVIL.get(),ModBlocks.ANCIENT_METAL_ANVIL.get(),ModBlocks.COPPER_ANVIL.get(),ModBlocks.GOLD_ANVIL.get(),ModBlocks.HARD_ANVIL.get(),ModBlocks.IRON_ANVIL.get(),ModBlocks.MITHRIL_ANVIL.get(),ModBlocks.SILVER_ANVIL.get()
     );});
 
+    public static final Supplier<BlockEntityType<FurnaceCoreBlockEntity>> FURNACE_CORE = BLOCK_ENTITIES.register("furnace_core",()-> new BlockEntityType<>(FurnaceCoreBlockEntity::new,false, ModBlocks.STONE_FURNACE_CORE.get()));
+
+    public static final Supplier<BlockEntityType<FurnaceWallBlockEntity>> FURNACE_WALL = BLOCK_ENTITIES.register("furnace_wall",()-> new BlockEntityType<>(FurnaceWallBlockEntity::new,false, ModBlocks.COBBLESTONE_MATERIAL_BLOCK.get(),ModBlocks.OBSIDIAN_MATERIAL_BLOCK.get(),ModBlocks.NETHERRACK_MATERIAL_BLOCK.get()));
+
 
     public static void register(IEventBus bus){
         BLOCK_ENTITIES.register(bus);

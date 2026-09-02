@@ -48,8 +48,8 @@ public class MiteAnvilBlock extends FallingBlock implements EntityBlock{
     );
     private static final float FALL_DAMAGE_PER_DISTANCE = 2.0F;
     private static final int FALL_DAMAGE_MAX = 40;
-    public static final EnumProperty<AnvilVariant> ANVIL_VARIANT = EnumProperty.create(AnvilVariant.COPPER.getSerializedName(), AnvilVariant.class);
-    public static final EnumProperty<AnvilStage> ANVIL_STAGE = EnumProperty.create(AnvilStage.NORMAL.getSerializedName(), AnvilStage.class);
+    public static final EnumProperty<AnvilVariant> ANVIL_VARIANT = EnumProperty.create("anvil_variant", AnvilVariant.class);
+    public static final EnumProperty<AnvilStage> ANVIL_STAGE = EnumProperty.create("anvil_stage", AnvilStage.class);
 
 
     @Override

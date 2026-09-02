@@ -13,8 +13,8 @@
         "model": "mite_break_all:block/mithril_anvil_top_0"
       },
       "when": {
-        "facing": "south",
-        "normal": "normal"
+        "anvil_stage": "normal",
+        "facing": "south"
       }
     },
     {
@@ -22,8 +22,8 @@
         "model": "mite_break_all:block/mithril_anvil_top_1"
       },
       "when": {
-        "facing": "south",
-        "normal": "cracked"
+        "anvil_stage": "cracked",
+        "facing": "south"
       }
     },
     {
@@ -31,8 +31,8 @@
         "model": "mite_break_all:block/mithril_anvil_top_2"
       },
       "when": {
-        "facing": "south",
-        "normal": "damaged"
+        "anvil_stage": "damaged",
+        "facing": "south"
       }
     },
     {
@@ -50,8 +50,8 @@
         "y": 90
       },
       "when": {
-        "facing": "west",
-        "normal": "normal"
+        "anvil_stage": "normal",
+        "facing": "west"
       }
     },
     {
@@ -60,8 +60,8 @@
         "y": 90
       },
       "when": {
-        "facing": "west",
-        "normal": "cracked"
+        "anvil_stage": "cracked",
+        "facing": "west"
       }
     },
     {
@@ -70,8 +70,8 @@
         "y": 90
       },
       "when": {
-        "facing": "west",
-        "normal": "damaged"
+        "anvil_stage": "damaged",
+        "facing": "west"
       }
     },
     {
@@ -89,8 +89,8 @@
         "y": 180
       },
       "when": {
-        "facing": "north",
-        "normal": "normal"
+        "anvil_stage": "normal",
+        "facing": "north"
       }
     },
     {
@@ -99,8 +99,8 @@
         "y": 180
       },
       "when": {
-        "facing": "north",
-        "normal": "cracked"
+        "anvil_stage": "cracked",
+        "facing": "north"
       }
     },
     {
@@ -109,8 +109,8 @@
         "y": 180
       },
       "when": {
-        "facing": "north",
-        "normal": "damaged"
+        "anvil_stage": "damaged",
+        "facing": "north"
       }
     },
     {
@@ -128,8 +128,8 @@
         "y": 270
       },
       "when": {
-        "facing": "east",
-        "normal": "normal"
+        "anvil_stage": "normal",
+        "facing": "east"
       }
     },
     {
@@ -138,8 +138,8 @@
         "y": 270
       },
       "when": {
-        "facing": "east",
-        "normal": "cracked"
+        "anvil_stage": "cracked",
+        "facing": "east"
       }
     },
     {
@@ -148,8 +148,8 @@
         "y": 270
       },
       "when": {
-        "facing": "east",
-        "normal": "damaged"
+        "anvil_stage": "damaged",
+        "facing": "east"
       }
     }
   ]

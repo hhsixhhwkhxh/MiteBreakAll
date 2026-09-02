@@ -5,6 +5,7 @@ import hhsixhhwkhxh.mite.MiteBreakAll;
 import hhsixhhwkhxh.mite.block.MiteAnvilBlock;
 import hhsixhhwkhxh.mite.block.ModBlocks;
 import hhsixhhwkhxh.mite.block.SieveBlock;
+import hhsixhhwkhxh.mite.block.FurnaceCore;
 import hhsixhhwkhxh.mite.custom.AnvilItemState;
 import hhsixhhwkhxh.mite.item.ModItems;
 import net.minecraft.client.data.models.BlockModelGenerators;
@@ -288,6 +289,12 @@ public class ModModelProvider extends ModelProvider {
         generateSimpleFlatItem(blockModels,ModItems.ADAMANTIUM_HATCHET.get(),FolderType.TOOLS);
 
         createProxyItemModel(blockModels);
+
+        createLargeFurnaceCore(blockModels,ModBlocks.STONE_FURNACE_CORE.get(),"stone");
+
+        createWallBlockWrapper(blockModels,Blocks.COBBLESTONE,ModBlocks.COBBLESTONE_MATERIAL_BLOCK.get());
+        createWallBlockWrapper(blockModels,Blocks.OBSIDIAN,ModBlocks.OBSIDIAN_MATERIAL_BLOCK.get());
+        createWallBlockWrapper(blockModels,Blocks.NETHERRACK,ModBlocks.NETHERRACK_MATERIAL_BLOCK.get());
     }
 
     public enum FolderType{
@@ -297,14 +304,28 @@ public class ModModelProvider extends ModelProvider {
         NUGGETS("nuggets/"),
         INGOTS("ingots/"),
         ARMOR("armor/"),
-        TOOLS("tools/")
+        TOOLS("tools/"),
+        LARGE_FURNACE("large_furnace")
         ;
-        final String path;
+        String path;
         FolderType(String path) {
             this.path = path;
         }
         public String getPath(){
             return path;
+        }
+
+        public FolderType with(FolderType folderType){
+            path += folderType.path;
+            return this;
+        }
+
+        public FolderType with(String folderPath){
+            path += folderPath;
+            if(!path.endsWith("/")){
+                path += "/";
+            }
+            return this;
         }
     }
 
@@ -526,5 +547,63 @@ public class ModModelProvider extends ModelProvider {
             }
         }
         throw new IllegalStateException("i should be included in {0,1,2,3}");
+    }
+
+    public void createLargeFurnaceCore(BlockModelGenerators blockModels, Block coreBlock, String material) {
+
+        final String prefix = "block/large_furnace/";
+        ResourceLocation coreResourceLocation = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,prefix + material + "/core");
+        ResourceLocation coreTopResourceLocation = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,prefix + material + "/core_top");
+        ResourceLocation frontOffResourceLocation = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,prefix + material + "/front_off");
+        ResourceLocation frontOnResourceLocation = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,prefix + material + "/front_on");
+
+        TextureMapping textureMapping = new TextureMapping().put(TextureSlot.SIDE, coreResourceLocation)
+                .put(TextureSlot.FRONT, coreResourceLocation)
+                .put(TextureSlot.TOP, coreTopResourceLocation);
+
+
+        TexturedModel.Provider modelProvider = TexturedModel.ORIENTABLE_ONLY_TOP;
+        MultiVariant multivariant = BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ORIENTABLE.create(coreBlock,textureMapping,blockModels.modelOutput));
+
+        MultiVariant multivariant1 = BlockModelGenerators.plainVariant(
+                modelProvider.get(coreBlock)
+                        .updateTextures(mTextureMapping -> mTextureMapping.put(TextureSlot.FRONT, frontOffResourceLocation))
+                        .createWithSuffix(coreBlock, "_active", blockModels.modelOutput)
+        );
+        MultiVariant multivariant2 = BlockModelGenerators.plainVariant(
+                modelProvider.get(coreBlock)
+                        .updateTextures(mTextureMapping -> mTextureMapping.put(TextureSlot.FRONT, frontOnResourceLocation))
+                        .createWithSuffix(coreBlock, "_lit", blockModels.modelOutput)
+        );
+
+
+        blockModels.blockStateOutput
+                .accept(
+                        MultiVariantGenerator.dispatch(coreBlock)
+                                .with(PropertyDispatch.initial(FurnaceCore.ACTIVATED,BlockStateProperties.LIT)
+                                        .generate((activated,lit)->{
+                                            if(activated){
+                                                if(lit){
+                                                    return multivariant2;
+                                                }else{
+                                                    return multivariant1;
+                                                }
+                                            }else{
+                                                return multivariant;
+                                            }
+                                        }))
+                                .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING)
+                );
+
+    }
+
+    public void createWallBlockWrapper(BlockModelGenerators blockModels, Block vanillaBlock, Block modBlock){
+        TexturedModel texturedModel = TexturedModel.CUBE.get(vanillaBlock);
+
+        Function<ResourceLocation, TextureMapping> textureMappingGetter = (TextureMapping::cube);
+
+        ResourceLocation resourceLocation = texturedModel.getTemplate().create(BuiltInRegistries.BLOCK.getKey(vanillaBlock).withPath(name -> "block/" + name), textureMappingGetter.apply(getBlockTextureWithPrefix(vanillaBlock, "","")), blockModels.modelOutput);
+        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(modBlock, BlockModelGenerators.plainVariant(resourceLocation)));
+
     }
 }

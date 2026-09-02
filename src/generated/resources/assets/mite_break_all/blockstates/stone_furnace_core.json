@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "activated=false,facing=east,lit=false": {
+      "model": "mite_break_all:block/stone_furnace_core",
+      "y": 90
+    },
+    "activated=false,facing=east,lit=true": {
+      "model": "mite_break_all:block/stone_furnace_core",
+      "y": 90
+    },
+    "activated=false,facing=north,lit=false": {
+      "model": "mite_break_all:block/stone_furnace_core"
+    },
+    "activated=false,facing=north,lit=true": {
+      "model": "mite_break_all:block/stone_furnace_core"
+    },
+    "activated=false,facing=south,lit=false": {
+      "model": "mite_break_all:block/stone_furnace_core",
+      "y": 180
+    },
+    "activated=false,facing=south,lit=true": {
+      "model": "mite_break_all:block/stone_furnace_core",
+      "y": 180
+    },
+    "activated=false,facing=west,lit=false": {
+      "model": "mite_break_all:block/stone_furnace_core",
+      "y": 270
+    },
+    "activated=false,facing=west,lit=true": {
+      "model": "mite_break_all:block/stone_furnace_core",
+      "y": 270
+    },
+    "activated=true,facing=east,lit=false": {
+      "model": "mite_break_all:block/stone_furnace_core_active",
+      "y": 90
+    },
+    "activated=true,facing=east,lit=true": {
+      "model": "mite_break_all:block/stone_furnace_core_lit",
+      "y": 90
+    },
+    "activated=true,facing=north,lit=false": {
+      "model": "mite_break_all:block/stone_furnace_core_active"
+    },
+    "activated=true,facing=north,lit=true": {
+      "model": "mite_break_all:block/stone_furnace_core_lit"
+    },
+    "activated=true,facing=south,lit=false": {
+      "model": "mite_break_all:block/stone_furnace_core_active",
+      "y": 180
+    },
+    "activated=true,facing=south,lit=true": {
+      "model": "mite_break_all:block/stone_furnace_core_lit",
+      "y": 180
+    },
+    "activated=true,facing=west,lit=false": {
+      "model": "mite_break_all:block/stone_furnace_core_active",
+      "y": 270
+    },
+    "activated=true,facing=west,lit=true": {
+      "model": "mite_break_all:block/stone_furnace_core_lit",
+      "y": 270
+    }
+  }
+}
