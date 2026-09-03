@@ -1,7 +1,7 @@
 package hhsixhhwkhxh.mite.menu;
 
 
-import hhsixhhwkhxh.mite.custom.ExtendedResultSlot;
+import hhsixhhwkhxh.mite.slot.CraftingResultSlot;
 import hhsixhhwkhxh.mite.block.ModBlocks;
 import hhsixhhwkhxh.mite.blockentity.MiteCraftingTableBlockEntity;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
@@ -28,7 +28,7 @@ public class MiteCraftingMenu extends AbstractCraftingMenu {
     private final ContainerLevelAccess access;
     private final Player player;
     private boolean placingRecipe;
-    private final ExtendedResultSlot extendedResultSlot;
+    private final CraftingResultSlot craftingResultSlot;
     protected final ContainerData data;
 
     public static final int CRAFT_TIME = MiteCraftingTableBlockEntity.CRAFT_TIME;
@@ -47,8 +47,8 @@ public class MiteCraftingMenu extends AbstractCraftingMenu {
         this.access = access;
         this.player = playerInventory.player;
         //this.addResultSlot(this.player, 124, 35);
-        extendedResultSlot =new ExtendedResultSlot(player, this.craftSlots, this.resultSlots, 0,  124, 35);
-        this.addSlot(extendedResultSlot);
+        craftingResultSlot =new CraftingResultSlot(player, this.craftSlots, this.resultSlots, 0,  124, 35);
+        this.addSlot(craftingResultSlot);
         this.addCraftingGridSlots(30, 17);
         this.addStandardInventorySlots(playerInventory, 8, 84);
 
@@ -59,7 +59,7 @@ public class MiteCraftingMenu extends AbstractCraftingMenu {
         this.addDataSlot(DataSlot.forContainer(data,IS_RESULT_LOCKED));
 
         if(this.player instanceof ServerPlayer serverPlayer){
-            extendedResultSlot.setOnClickListener((slot)->{
+            craftingResultSlot.setOnClickListener((slot)->{
                 if(data.get(IS_CRAFTING)==1){
                     return;
                 }
@@ -74,7 +74,7 @@ public class MiteCraftingMenu extends AbstractCraftingMenu {
             ItemStack itemStack = this.quickMoveStack(player,0);
 
             if(itemStack==ItemStack.EMPTY){
-                extendedResultSlot.setMayPickup(true);
+                craftingResultSlot.setMayPickup(true);
                 super.clicked(0,0,ClickType.THROW,player);
                 return false;
             }
@@ -253,7 +253,7 @@ public class MiteCraftingMenu extends AbstractCraftingMenu {
 
     @Override
     public void clicked(int slotId, int button, ClickType clickType, Player player) {
-        extendedResultSlot.setMayPickup(data.get(IS_RESULT_LOCKED)==0);
+        craftingResultSlot.setMayPickup(data.get(IS_RESULT_LOCKED)==0);
         super.clicked(slotId, button, clickType, player);
     }
 }

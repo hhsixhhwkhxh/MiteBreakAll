@@ -1,4 +1,4 @@
-package hhsixhhwkhxh.mite.custom;
+package hhsixhhwkhxh.mite.slot;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -7,10 +7,10 @@ import net.minecraft.world.inventory.ResultSlot;
 
 import java.util.function.Consumer;
 
-public class ExtendedResultSlot extends ResultSlot {
+public class CraftingResultSlot extends ResultSlot {
     private boolean mayPickup = true;
-    Consumer<ExtendedResultSlot> clickListener;
-    public ExtendedResultSlot(Player player, CraftingContainer craftSlots, Container container, int slot, int xPosition, int yPosition) {
+    Consumer<CraftingResultSlot> clickListener;
+    public CraftingResultSlot(Player player, CraftingContainer craftSlots, Container container, int slot, int xPosition, int yPosition) {
         super(player, craftSlots, container, slot, xPosition, yPosition);
     }
 
@@ -18,7 +18,7 @@ public class ExtendedResultSlot extends ResultSlot {
         this.mayPickup = mayPickup;
     }
 
-    public void setOnClickListener(Consumer<ExtendedResultSlot> clickListener){
+    public void setOnClickListener(Consumer<CraftingResultSlot> clickListener){
         this.clickListener = clickListener;
     }
 

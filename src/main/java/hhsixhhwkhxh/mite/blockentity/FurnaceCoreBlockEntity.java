@@ -1,13 +1,9 @@
 package hhsixhhwkhxh.mite.blockentity;
 
-import hhsixhhwkhxh.mite.MiteBreakAll;
 import hhsixhhwkhxh.mite.Utils;
-import hhsixhhwkhxh.mite.block.MiteAnvilBlock;
+import hhsixhhwkhxh.mite.block.FurnaceWallBlock;
 import hhsixhhwkhxh.mite.block.ModBlocks;
-import hhsixhhwkhxh.mite.block.FurnaceCore;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -16,7 +12,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -27,27 +22,29 @@ import static net.minecraft.world.level.block.Block.UPDATE_ALL;
 public class FurnaceCoreBlockEntity extends BlockEntity {
 
     private BlockPos furnaceCentrePos = null;
-    private BlockPos realFurnacePos = null;
+    //private BlockPos realFurnacePos = null;
     private final Set<BlockPos> shadowCores = new HashSet<>(3);
     public final Block wallBlock;
     public final Block coreBlock;
     public final Block wrapperBlock;
 
     public BlockPos getFurnaceCentrePos() {
-        return furnaceCentrePos;
+        //return furnaceCentrePos;
+        return Utils.getAbsolutePos(worldPosition,furnaceCentrePos);
     }
 
     public void setFurnaceCentrePos(BlockPos furnaceCentrePos) {
-        this.furnaceCentrePos = furnaceCentrePos;
+        //this.furnaceCentrePos = furnaceCentrePos;
+        this.furnaceCentrePos = Utils.getRelativePos(worldPosition,furnaceCentrePos);
     }
 
-    public BlockPos getRealFurnacePos() {
-        return realFurnacePos;
-    }
-
-    public void setRealFurnacePos(BlockPos realFurnacePos) {
-        this.realFurnacePos = realFurnacePos;
-    }
+//    public BlockPos getRealFurnacePos() {
+//        return realFurnacePos;
+//    }
+//
+//    public void setRealFurnacePos(BlockPos realFurnacePos) {
+//        this.realFurnacePos = realFurnacePos;
+//    }
 
     public FurnaceCoreBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.FURNACE_CORE.get(), pos, blockState);
@@ -81,7 +78,8 @@ public class FurnaceCoreBlockEntity extends BlockEntity {
         for (BlockPos neighbourBlockPos : getNeighbourPosList(worldPosition)) {
             FindResult findResult = isCenterPos(level,neighbourBlockPos,true);
             if(findResult.isValid){
-                furnaceCentrePos = neighbourBlockPos;
+                //furnaceCentrePos = neighbourBlockPos;
+                setFurnaceCentrePos(neighbourBlockPos);
 
                 findResult.wallPosSet.forEach(wallBlockPos->{
                     wrapWallBlock(level,wallBlockPos);
@@ -98,11 +96,14 @@ public class FurnaceCoreBlockEntity extends BlockEntity {
     }
 
     public void deactivationCore(LevelAccessor level){
+        if(level.isClientSide()){
+            return;
+        }
         if(furnaceCentrePos==null){
             return;
         }
 
-        FindResult findResult = isCenterPos(level,furnaceCentrePos,false);
+        FindResult findResult = isCenterPos(level,getFurnaceCentrePos(),false);
         findResult.wallPosSet.forEach(wallBlockPos->{
             unwrapWallBlock(level,wallBlockPos);
         });
@@ -115,26 +116,12 @@ public class FurnaceCoreBlockEntity extends BlockEntity {
     }
 
     public void wrapWallBlock(LevelAccessor level,BlockPos blockPos){
-        //var originBlock = level.getBlockState(blockPos);
-
         level.setBlock(blockPos,wrapperBlock.defaultBlockState(),UPDATE_ALL);
-        FurnaceWallBlockEntity blockEntity = (FurnaceWallBlockEntity) level.getBlockEntity(blockPos);
-        blockEntity.setRealFurnacePos(worldPosition);
+        FurnaceWallBlock.setRealFurnacePos(level,blockPos,worldPosition);
     }
 
     public void unwrapWallBlock(LevelAccessor level,BlockPos blockPos){
-        //var wrapperBlock = level.getBlockState(blockPos);
-
-        //level.removeBlock(blockPos,false);
-        //boolean test = level.setBlock(blockPos,wallBlock.defaultBlockState(),UPDATE_ALL);
-
-        BlockState before = level.getBlockState(blockPos);
-        boolean result = level.setBlock(blockPos, wallBlock.defaultBlockState(), UPDATE_ALL);
-        BlockState after = level.getBlockState(blockPos);
-
-        //MiteBreakAll.LOGGER.debug("Before: " + before);
-        //MiteBreakAll.LOGGER.debug("Result: " + result);
-        //MiteBreakAll.LOGGER.debug("After: " + after);
+        level.setBlock(blockPos, wallBlock.defaultBlockState(), UPDATE_ALL);
     }
 
 
@@ -143,35 +130,35 @@ public class FurnaceCoreBlockEntity extends BlockEntity {
     }
 
 
-    public Set<BlockPos> getShadowCores() {
-        return shadowCores;
-    }
-
-    public void addShadowCores(BlockPos blockPos) {
-        shadowCores.add(blockPos);
-    }
-
-    public void updateShadowCoreList(LevelAccessor level){
-        shadowCores.clear();
-        for (BlockPos shadowPos : getNeighbourPosList(furnaceCentrePos)) {
-            if(shadowPos.equals(worldPosition)){
-                continue;
-            }
-            if(level.getBlockState(shadowPos).is(coreBlock)){
-                shadowCores.add(shadowPos);
-                level.getBlockState(shadowPos).setValue(FurnaceCore.SHADOW,true);
-                getBlockEntity(level,shadowPos).ifPresent(blockEntity->{
-                    blockEntity.setFurnaceCentrePos(worldPosition);
-                });
-            }
-        }
-    }
-
-    public void syncShadowCoreStates(LevelAccessor level){
-        shadowCores.forEach(shadowPos->{
-
-        });
-    }
+//    public Set<BlockPos> getShadowCores() {
+//        return shadowCores;
+//    }
+//
+//    public void addShadowCores(BlockPos blockPos) {
+//        shadowCores.add(blockPos);
+//    }
+//
+//    public void updateShadowCoreList(LevelAccessor level){
+//        shadowCores.clear();
+//        for (BlockPos shadowPos : getNeighbourPosList(furnaceCentrePos)) {
+//            if(shadowPos.equals(worldPosition)){
+//                continue;
+//            }
+//            if(level.getBlockState(shadowPos).is(coreBlock)){
+//                shadowCores.add(shadowPos);
+//                level.getBlockState(shadowPos).setValue(FurnaceCore.SHADOW,true);
+//                getBlockEntity(level,shadowPos).ifPresent(blockEntity->{
+//                    blockEntity.setFurnaceCentrePos(worldPosition);
+//                });
+//            }
+//        }
+//    }
+//
+//    public void syncShadowCoreStates(LevelAccessor level){
+//        shadowCores.forEach(shadowPos->{
+//
+//        });
+//    }
 
     private boolean isWallBlock(LevelAccessor level, BlockPos pos){
         return level.getBlockState(pos).is(wallBlock)||level.getBlockState(pos).is(wrapperBlock);
@@ -285,14 +272,14 @@ public class FurnaceCoreBlockEntity extends BlockEntity {
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        Utils.loadBlockPos(input,"real_furnace").ifPresent(pos-> realFurnacePos = pos);
+        //Utils.loadBlockPos(input,"real_furnace").ifPresent(pos-> realFurnacePos = pos);
         Utils.loadBlockPos(input,"furnace_centre").ifPresent(pos-> furnaceCentrePos = pos);
     }
 
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
-        Utils.saveBlockPos(output,"real_furnace", realFurnacePos);
+        //Utils.saveBlockPos(output,"real_furnace", realFurnacePos);
         Utils.saveBlockPos(output,"furnace_centre", furnaceCentrePos);
     }
 

@@ -10,14 +10,15 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Optional;
-
-import static net.minecraft.world.level.block.Block.UPDATE_ALL;
 
 public final class Utils {
     public static int getVitalStatMaxValue(int level){
@@ -63,5 +64,44 @@ public final class Utils {
         output.putInt(name+"_pos_x", pos.getX());
         output.putInt(name+"_pos_y", pos.getY());
         output.putInt(name+"_pos_z", pos.getZ());
+    }
+
+    public static List<IntegerProperty> createBlockPosProperty(String name){
+        return List.of(
+                IntegerProperty.create(name + "_pos_x", 0,4),
+                IntegerProperty.create(name + "_pos_y", 0,4),
+                IntegerProperty.create(name + "_pos_z", 0,4)
+        );
+    }
+
+    public static BlockPos getAbsolutePosFromBlockState(BlockPos basePos, BlockState blockState, List<IntegerProperty> list){
+        return basePos.offset(
+                blockState.getValue(list.getFirst())-2,
+                blockState.getValue(list.get(1))-2,
+                blockState.getValue(list.getLast())-2
+        );
+    }
+
+    public static BlockPos getRelativePos(BlockPos basePos, BlockPos targetPos){
+        return new BlockPos(
+                targetPos.getX() - basePos.getX(),
+                targetPos.getY() - basePos.getY(),
+                targetPos.getZ() - basePos.getZ()
+        );
+    }
+
+    public static BlockPos getAbsolutePos(BlockPos basePos, BlockPos offset){
+        return basePos.offset(
+                offset.getX(),
+                offset.getY(),
+                offset.getZ()
+        );
+    }
+
+    public static BlockState setPropertyBlockPos(BlockState blockState, List<IntegerProperty> properties, BlockPos offset){
+        return blockState
+                .setValue(properties.get(0), offset.getX()+2)
+                .setValue(properties.get(1),offset.getY()+2)
+                .setValue(properties.get(2),offset.getZ()+2);
     }
 }

@@ -20,7 +20,7 @@ public class ModBlockEntities{
 
     public static final Supplier<BlockEntityType<FurnaceCoreBlockEntity>> FURNACE_CORE = BLOCK_ENTITIES.register("furnace_core",()-> new BlockEntityType<>(FurnaceCoreBlockEntity::new,false, ModBlocks.STONE_FURNACE_CORE.get()));
 
-    public static final Supplier<BlockEntityType<FurnaceWallBlockEntity>> FURNACE_WALL = BLOCK_ENTITIES.register("furnace_wall",()-> new BlockEntityType<>(FurnaceWallBlockEntity::new,false, ModBlocks.COBBLESTONE_MATERIAL_BLOCK.get(),ModBlocks.OBSIDIAN_MATERIAL_BLOCK.get(),ModBlocks.NETHERRACK_MATERIAL_BLOCK.get()));
+    //public static final Supplier<BlockEntityType<FurnaceWallBlockEntity>> FURNACE_WALL = BLOCK_ENTITIES.register("furnace_wall",()-> new BlockEntityType<>(FurnaceWallBlockEntity::new,false, ModBlocks.COBBLESTONE_MATERIAL_BLOCK.get(),ModBlocks.OBSIDIAN_MATERIAL_BLOCK.get(),ModBlocks.NETHERRACK_MATERIAL_BLOCK.get()));
 
 
     public static void register(IEventBus bus){
