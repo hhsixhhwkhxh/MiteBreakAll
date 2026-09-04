@@ -2,9 +2,11 @@ package hhsixhhwkhxh.mite.block;
 
 import com.mojang.serialization.MapCodec;
 import hhsixhhwkhxh.mite.blockentity.FurnaceCoreBlockEntity;
+import hhsixhhwkhxh.mite.blockentity.MiteAnvilBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -71,7 +73,13 @@ public class FurnaceCore extends BaseEntityBlock {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide) {
-            //this.openContainer(level, pos, player);
+            if(!level.getBlockState(pos).getValue(ACTIVATED)){
+                return InteractionResult.PASS;
+            }
+            getBlockEntity(level,pos).ifPresent(blockEntity->{
+                player.openMenu(blockEntity);
+                player.awardStat(Stats.INTERACT_WITH_FURNACE);
+            });
         }
 
         return InteractionResult.SUCCESS;

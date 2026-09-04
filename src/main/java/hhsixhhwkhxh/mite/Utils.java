@@ -46,7 +46,7 @@ public final class Utils {
         PacketDistributor.sendToPlayer( player, new ClientboundSetVitalStatMaxValuePacket(vitalStatMaxValue));
     }
 
-    public static Optional<BlockPos> loadBlockPos(ValueInput input,String name){
+    public static Optional<BlockPos> loadBlockPos(ValueInput input, String name, BlockPos basePos){
         Optional<Integer> xOpt = input.getInt(name+"_pos_x");
         Optional<Integer> yOpt = input.getInt(name+"_pos_y");
         Optional<Integer> zOpt = input.getInt(name+"_pos_z");
@@ -54,13 +54,14 @@ public final class Utils {
         if(xOpt.isEmpty()|| yOpt.isEmpty()|| zOpt.isEmpty()){
             return Optional.empty();
         }
-        return Optional.of(new BlockPos(xOpt.get(),yOpt.get(),zOpt.get()));
+        return Optional.of(getAbsolutePos(basePos,new BlockPos(xOpt.get(),yOpt.get(),zOpt.get())));
     }
 
-    public static void saveBlockPos(ValueOutput output, String name,@Nullable BlockPos pos){
+    public static void saveBlockPos(ValueOutput output, String name, BlockPos basePos, @Nullable BlockPos pos){
         if(pos == null){
             return;
         }
+        pos = getRelativePos(basePos,pos);
         output.putInt(name+"_pos_x", pos.getX());
         output.putInt(name+"_pos_y", pos.getY());
         output.putInt(name+"_pos_z", pos.getZ());

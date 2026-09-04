@@ -11,6 +11,7 @@ import hhsixhhwkhxh.mite.datacomponent.ReachBonus;
 import hhsixhhwkhxh.mite.item.ModCreativeModeTabs;
 import hhsixhhwkhxh.mite.packet.ClientboundSetWaterLevelPacket;
 import hhsixhhwkhxh.mite.packet.ClientboundSetVitalStatMaxValuePacket;
+import hhsixhhwkhxh.mite.screen.LargeFurnaceScreen;
 import hhsixhhwkhxh.mite.screen.MiteAnvilScreen;
 import hhsixhhwkhxh.mite.screen.MiteCraftingScreen;
 import hhsixhhwkhxh.mite.block.ModBlocks;
@@ -126,6 +127,10 @@ public class MiteBreakAll {
         event.register(
                 ModMenuTypes.MITE_ANVIL_MENU.get(),
                 MiteAnvilScreen::new
+        );
+        event.register(
+                ModMenuTypes.LARGE_FURNACE_MENU.get(),
+                LargeFurnaceScreen::new
         );
     }
 

@@ -80,7 +80,7 @@ public class MiteAnvilBlock extends FallingBlock implements EntityBlock{
             BlockEntity blockentity = level.getBlockEntity(pos);
             if (blockentity instanceof MiteAnvilBlockEntity) {
                 player.openMenu((MiteAnvilBlockEntity)blockentity);
-                player.awardStat(Stats.INTERACT_WITH_LECTERN);
+                player.awardStat(Stats.INTERACT_WITH_ANVIL);
             }
         }
 

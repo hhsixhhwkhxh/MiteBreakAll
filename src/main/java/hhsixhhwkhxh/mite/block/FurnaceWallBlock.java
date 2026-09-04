@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -82,6 +83,14 @@ public class FurnaceWallBlock extends Block {
         NETHERRACK(Blocks.NETHERRACK,"netherrack");
         final Block block;
         final String name;
+        private final static HashMap<Block,Type> InnerMap = new HashMap<>();
+
+        static {
+            for (Type enumObj : values()) {
+                InnerMap.put(enumObj.block,enumObj);
+            }
+        }
+
         Type(Block block,String name){
             this.block = block;
             this.name = name;
@@ -93,6 +102,10 @@ public class FurnaceWallBlock extends Block {
 
         public Block getBlock(){
             return block;
+        }
+
+        public static Type getTypeByBlock(Block block){
+            return InnerMap.get(block);
         }
     }
 

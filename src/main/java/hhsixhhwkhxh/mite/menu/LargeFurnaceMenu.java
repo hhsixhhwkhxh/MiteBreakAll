@@ -23,14 +23,16 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
     public static final int[] MOULD_SLOT = new int[4];
     public static final int[] INGOT_RESULT_SLOT = new int[4];
 
+    public static final int[] CRAFT_INPUT_SLOT = new int[9];
+
     public static final int CRAFT_RESULT_SLOT;
     public static int SLOT_COUNT = 0;
-    public static final int DATA_COUNT = 4;
+    public static final int DATA_COUNT = 44;
 
     final Container container;
     private final ContainerData data;
     protected final Level level;
-    private final RecipeType<? extends AbstractCookingRecipe> recipeType;
+    private final RecipeType<? extends AbstractCookingRecipe> recipeType = RecipeType.SMELTING;
     private final RecipePropertySet acceptedInputs;
     private final RecipeBookType recipeBookType;
 
@@ -42,11 +44,13 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
         assignSlotIndex(FUEL_SLOT);
         assignSlotIndex(MOULD_SLOT);
         assignSlotIndex(INGOT_RESULT_SLOT);
+        assignSlotIndex(CRAFT_INPUT_SLOT);
+
         CRAFT_RESULT_SLOT = assignSingleSlotIndex();
     }
 
     private static void assignSlotIndex(int[] array){
-        for (int i : array) {
+        for (int i = 0; i < array.length; i++) {
             array[i] = SLOT_COUNT++;
         }
     }
@@ -56,61 +60,52 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
     }
 
     protected LargeFurnaceMenu(
-        MenuType<?> menuType,
-        RecipeType<? extends AbstractCookingRecipe> recipeType,
-        ResourceKey<RecipePropertySet> acceptedInputs,
-        RecipeBookType recipeBookType,
         int containerId,
         Inventory inventory
     ) {
-        this(menuType, recipeType, acceptedInputs, recipeBookType, containerId, inventory, new SimpleContainer(SLOT_COUNT), new SimpleContainerData(DATA_COUNT));
+        this(containerId, inventory, new SimpleContainer(SLOT_COUNT), new SimpleContainerData(DATA_COUNT));
     }
 
-    protected LargeFurnaceMenu(
-        MenuType<?> menuType,
-        RecipeType<? extends AbstractCookingRecipe> recipeType,
-        ResourceKey<RecipePropertySet> acceptedInputs,
-        RecipeBookType recipeBookType,
-        int containerId,
-        Inventory inventory,
-        Container container,
-        ContainerData data
+    public LargeFurnaceMenu(
+            int containerId,
+            Inventory inventory,
+            Container container,
+            ContainerData data
     ) {
-        super(menuType, containerId);
-        this.recipeType = recipeType;
-        this.recipeBookType = recipeBookType;
+        super(ModMenuTypes.LARGE_FURNACE_MENU.get(), containerId);
+        this.recipeBookType = RecipeBookType.FURNACE;
         checkContainerSize(container, 3);
         checkContainerDataCount(data, 4);
         this.container = container;
         this.data = data;
         this.level = inventory.player.level();
-        this.acceptedInputs = this.level.recipeAccess().propertySet(acceptedInputs);
+        this.acceptedInputs = this.level.recipeAccess().propertySet(RecipePropertySet.FURNACE_INPUT);
 
-        for (int index : INGREDIENT_SLOT) {
-            this.addSlot(new Slot(container, index, 72 + 20*index, 14));
+        for (int index = 0; index < INGREDIENT_SLOT.length; index ++) {
+            this.addSlot(new Slot(container, INGREDIENT_SLOT[index], 72 + 20*index, 14));
         }
 
-        for (int index : FUEL_SLOT) {
-            this.addSlot(new LargeFurnaceFuelSlot(this, container, index, 20, 14 + 18*index));
+        for (int index = 0; index < FUEL_SLOT.length; index ++) {
+            this.addSlot(new LargeFurnaceFuelSlot(this, container, FUEL_SLOT[index], 20, 14 + 18*index));
         }
 
-        for (int index : MOULD_SLOT) {
-            this.addSlot(new Slot(container, index, 72 + 20*index, 32));
+        for (int index = 0; index < MOULD_SLOT.length; index ++) {
+            this.addSlot(new Slot(container, MOULD_SLOT[index], 72 + 20*index, 32));
         }
 
-        for (int index : INGOT_RESULT_SLOT) {
-            this.addSlot(new FurnaceResultSlot(inventory.player, container, index, 72 + 20*index, 68));
+        for (int index = 0; index < INGOT_RESULT_SLOT.length; index ++) {
+            this.addSlot(new FurnaceResultSlot(inventory.player, container, INGOT_RESULT_SLOT[index], 72 + 20*index, 68));
         }
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                this.addSlot(new Slot(this.container, j + i * 3, 20 + j * 18, 95 + i * 18));
+                this.addSlot(new Slot(this.container, CRAFT_INPUT_SLOT[j + i * 3], 20 + j * 18, 95 + i * 18));
             }
         }
 
         this.craftSlots = new TransientCraftingContainer(this, 3, 3);
 
-        craftingResultSlot =new CraftingResultSlot(inventory.player, craftSlots, container, 0,  98, 113);
+        craftingResultSlot =new CraftingResultSlot(inventory.player, craftSlots, container, CRAFT_RESULT_SLOT,  98, 113);
         this.addSlot(craftingResultSlot);
 
 

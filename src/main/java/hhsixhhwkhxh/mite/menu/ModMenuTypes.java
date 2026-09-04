@@ -15,6 +15,7 @@ public class ModMenuTypes {
 
     public static Supplier<MenuType<MiteCraftingMenu>> MITE_CRAFTING_MENU = MENUS.register("mite_crafting_menu",()->{return new MenuType<>(MiteCraftingMenu::new, FeatureFlags.DEFAULT_FLAGS);});
     public static Supplier<MenuType<MiteAnvilMenu>> MITE_ANVIL_MENU = MENUS.register("mite_anvil_menu",()->{return new MenuType<>(MiteAnvilMenu::new, FeatureFlags.DEFAULT_FLAGS);});
+    public static Supplier<MenuType<LargeFurnaceMenu>> LARGE_FURNACE_MENU = MENUS.register("large_furnace_menu",()->{return new MenuType<>(LargeFurnaceMenu::new, FeatureFlags.DEFAULT_FLAGS);});
 
 
     public static void register(IEventBus bus){
