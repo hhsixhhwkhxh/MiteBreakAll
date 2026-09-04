@@ -3,8 +3,8 @@ package hhsixhhwkhxh.mite.menu;
 import hhsixhhwkhxh.mite.slot.CraftingResultSlot;
 import hhsixhhwkhxh.mite.slot.LargeFurnaceFuelSlot;
 import net.minecraft.recipebook.ServerPlaceRecipe;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,17 +17,19 @@ import net.minecraft.world.level.Level;
 
 import java.util.List;
 
+import static hhsixhhwkhxh.mite.blockentity.FurnaceCoreBlockEntity.*;
+
 public class LargeFurnaceMenu extends RecipeBookMenu {
     public static final int[] INGREDIENT_SLOT = new int[4];
     public static final int[] FUEL_SLOT = new int[4];
     public static final int[] MOULD_SLOT = new int[4];
-    public static final int[] INGOT_RESULT_SLOT = new int[4];
+    public static final int[] BURN_RESULT_SLOT = new int[4];
 
     public static final int[] CRAFT_INPUT_SLOT = new int[9];
 
     public static final int CRAFT_RESULT_SLOT;
     public static int SLOT_COUNT = 0;
-    public static final int DATA_COUNT = 44;
+    public static final int DATA_COUNT = 20;
 
     final Container container;
     private final ContainerData data;
@@ -43,7 +45,7 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
         assignSlotIndex(INGREDIENT_SLOT);
         assignSlotIndex(FUEL_SLOT);
         assignSlotIndex(MOULD_SLOT);
-        assignSlotIndex(INGOT_RESULT_SLOT);
+        assignSlotIndex(BURN_RESULT_SLOT);
         assignSlotIndex(CRAFT_INPUT_SLOT);
 
         CRAFT_RESULT_SLOT = assignSingleSlotIndex();
@@ -93,8 +95,8 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
             this.addSlot(new Slot(container, MOULD_SLOT[index], 72 + 20*index, 32));
         }
 
-        for (int index = 0; index < INGOT_RESULT_SLOT.length; index ++) {
-            this.addSlot(new FurnaceResultSlot(inventory.player, container, INGOT_RESULT_SLOT[index], 72 + 20*index, 68));
+        for (int index = 0; index < BURN_RESULT_SLOT.length; index ++) {
+            this.addSlot(new FurnaceResultSlot(inventory.player, container, BURN_RESULT_SLOT[index], 72 + 20*index, 68));
         }
 
         for (int i = 0; i < 3; i++) {
@@ -123,6 +125,8 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
 //    public Slot getResultSlot() {
 //        return this.slots.get(RESULT_SLOT);
 //    }
+
+
 
     /**
      * Determines whether supplied player can use this container
@@ -192,6 +196,19 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
     public boolean isFuel(ItemStack stack) {
         return stack.getBurnTime(this.recipeType, this.level.fuelValues()) > 0;
     }
+
+    public float getTemperatureProgress(){
+
+        //return data.get(TEMPERATURE)/2000F;
+        return Mth.clamp((float)data.get(TEMPERATURE) / 2000F, 0.0F, 1.0F);
+    }
+
+    public float getBurnProgress(int index) {
+        int cookingTimer = this.data.get(COOKING_TIMER[index]);
+        int cookingTotalTime = this.data.get(COOKING_TOTAL_TIME[index]);
+        return cookingTotalTime != 0 && cookingTimer != 0 ? Mth.clamp((float)cookingTimer / cookingTotalTime, 0.0F, 1.0F) : 0.0F;
+    }
+
 
 //    public float getBurnProgress() {
 //        int i = this.data.get(2);

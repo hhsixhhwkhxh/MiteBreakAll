@@ -5,6 +5,7 @@ import hhsixhhwkhxh.mite.custom.ModFoodData;
 import hhsixhhwkhxh.mite.custom.PlayerWaterData;
 import hhsixhhwkhxh.mite.packet.ClientboundSetVitalStatMaxValuePacket;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -17,8 +18,11 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class Utils {
     public static int getVitalStatMaxValue(int level){
@@ -65,6 +69,41 @@ public final class Utils {
         output.putInt(name+"_pos_x", pos.getX());
         output.putInt(name+"_pos_y", pos.getY());
         output.putInt(name+"_pos_z", pos.getZ());
+    }
+
+    public static <T extends Collection<BlockPos>> Optional<T> loadBlockPosCollection(ValueInput input, String name, BlockPos basePos, T posCollection){
+        Optional<ValueInput.ValueInputList> valueInputListOpt = input.childrenList(name);
+        if(valueInputListOpt.isEmpty()){
+            return Optional.empty();
+        }
+
+        for (ValueInput child : valueInputListOpt.get()){
+            Optional<Integer> xOpt = child.getInt("x");
+            Optional<Integer> yOpt = child.getInt("y");
+            Optional<Integer> zOpt = child.getInt("z");
+
+            if(xOpt.isEmpty()|| yOpt.isEmpty()|| zOpt.isEmpty()){
+                continue;
+            }
+
+            posCollection.add(Utils.getAbsolutePos(basePos,new BlockPos(xOpt.get(),yOpt.get(),zOpt.get())));
+        }
+
+        if(posCollection.isEmpty()){
+            return Optional.empty();
+        }
+        return Optional.of(posCollection);
+    }
+
+    public static <T extends Collection<BlockPos>> void saveBlockPosCollection(ValueOutput output, String name, BlockPos basePos, T posCollection){
+        ValueOutput.ValueOutputList listBuilder = output.childrenList(name);
+        for (BlockPos absPos : posCollection) {
+            ValueOutput child = listBuilder.addChild();
+            BlockPos relPos = getRelativePos(basePos,absPos);
+            child.putInt("x", relPos.getX());
+            child.putInt("y", relPos.getY());
+            child.putInt("z", relPos.getZ());
+        }
     }
 
     public static List<IntegerProperty> createBlockPosProperty(String name){

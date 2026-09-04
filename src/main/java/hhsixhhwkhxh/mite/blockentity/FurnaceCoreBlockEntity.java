@@ -7,32 +7,36 @@ import hhsixhhwkhxh.mite.menu.LargeFurnaceMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
+import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static hhsixhhwkhxh.mite.block.FurnaceCore.ACTIVATED;
-import static hhsixhhwkhxh.mite.block.FurnaceCore.SHADOW;
+import static hhsixhhwkhxh.mite.block.FurnaceCore.*;
+import static hhsixhhwkhxh.mite.menu.LargeFurnaceMenu.*;
 import static net.minecraft.world.level.block.Block.UPDATE_ALL;
 
 public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
     private BlockPos furnaceCentrePos = null;
     private BlockPos realFurnacePos = null;
-    private final Set<BlockPos> shadowCores = new HashSet<>(3);
+    private Set<BlockPos> shadowCores = new HashSet<>(3);
 
     public final Block wallBlock;
     public final Block coreBlock;
@@ -40,20 +44,47 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
     protected NonNullList<ItemStack> items = NonNullList.withSize(44, ItemStack.EMPTY);
 
+    public static RecipeType<SmeltingRecipe> RECIPE_TYPE = RecipeType.SMELTING;
+    private final static RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> QUICK_CHECK =RecipeManager.createCheck(RECIPE_TYPE);
+
+    private final int[] dataArray = new int[DATA_COUNT];
+
+    public final static int TEMPERATURE;
+    public final static int[] FUEL_BURN_TIME_REMAINING = new int[4];
+    public final static int[] COOKING_TIMER = new int[4];
+    public final static int[] COOKING_TOTAL_TIME = new int[4];
+
+    private static int dataIndexCounter = 0;
+    static {
+        TEMPERATURE = assignIndexForArray();
+        assignIndexForArray(FUEL_BURN_TIME_REMAINING);
+        assignIndexForArray(COOKING_TIMER);
+    }
+
+    public static void assignIndexForArray(int[] array){
+        for (int index = 0; index < array.length; index++) {
+            array[index] = dataIndexCounter++;
+        }
+    }
+
+    public static int assignIndexForArray(){
+        return dataIndexCounter++;
+    }
+
     private final ContainerData dataAccess = new ContainerData() {
         @Override
         public int get(int index) {
-            return 0;
+            return dataArray[index];
         }
 
         @Override
         public void set(int index, int value) {
-
+            dataArray[index] = value;
         }
 
         @Override
         public int getCount() {
-            return 44;
+            return DATA_COUNT;
         }
     };
 
@@ -83,6 +114,93 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         }else{
             throw new IllegalStateException("Unexcepted wallBlockState: "+wallBlockState);
         }
+    }
+
+    public static void serverTick(ServerLevel level, BlockPos pos, BlockState state, FurnaceCoreBlockEntity furnace) {
+
+        if(!state.getValue(ACTIVATED)||state.getValue(SHADOW)){
+            return;
+        }
+
+        int temperature = furnace.getTemperature();
+        if(temperature <= 0){
+            if(state.getValue(LIT)){
+                level.setBlock(pos,state.setValue(LIT,false),UPDATE_ALL);
+                furnace.setChanged();
+                return;
+            }
+        }else{
+            if(!state.getValue(LIT)){
+                level.setBlock(pos,state.setValue(LIT,true),UPDATE_ALL);
+            }
+        }
+
+        //燃料
+        boolean hasAnyFuelBurning = false;
+        for (int i = 0; i < furnace.getCoreQuantity(); i++){
+
+            ItemStack fuelStack = furnace.getItems().get(LargeFurnaceMenu.FUEL_SLOT[i]);
+
+            int fuelBurnTimeRemaining = furnace.getFuelBurnTimeRemaining(i);
+            if(fuelBurnTimeRemaining>0){
+                hasAnyFuelBurning = true;
+                fuelBurnTimeRemaining--;
+                temperature++;
+
+                furnace.setFuelBurnTimeRemaining(i,fuelBurnTimeRemaining);
+            }else if(!fuelStack.isEmpty()){
+                fuelBurnTimeRemaining = getBurnDuration(level.fuelValues(),fuelStack);
+                furnace.setFuelBurnTimeRemaining(i,fuelBurnTimeRemaining);
+                fuelStack.shrink(1);
+            }
+        }
+
+        if(!hasAnyFuelBurning){
+            if(temperature<=0){
+                return;
+            }
+            temperature--;
+        }
+
+        //熔炼 计时器
+        for (int i = 0; i < furnace.getCoreQuantity(); i++){
+            int cookingTimer = furnace.getCookingTimer(i);
+            int cookingTotalTime = furnace.getCookingTotalTime(i);
+
+            ItemStack inputStack = furnace.getItems().get(INGREDIENT_SLOT[i]);
+            if(cookingTotalTime <= 0){
+                //没有任务进行
+                if(inputStack.isEmpty()){
+                    continue;
+                }
+                //开始新任务
+                cookingTotalTime = getItemTotalCookTime(level,inputStack);
+                if(cookingTimer<=0){
+                    continue;
+                }
+                inputStack.shrink(1);
+                furnace.setCookingTimer(i,0);
+                furnace.setCookingTotalTime(i,cookingTotalTime);
+                continue;
+            }
+            if(cookingTimer >= cookingTotalTime){
+                //结算
+                int finalI = i;
+                furnace.getBurnOutput(level,inputStack).ifPresent(itemStack->{
+                    furnace.getItems().set(BURN_RESULT_SLOT[finalI],itemStack);
+                });
+                cookingTotalTime = cookingTimer = 0;
+                furnace.setCookingTotalTime(i,cookingTotalTime);
+                furnace.setCookingTimer(i,cookingTimer);
+                continue;
+            }
+            cookingTimer++;
+            furnace.setCookingTimer(i,cookingTimer);
+        }
+
+        furnace.setTemperature(temperature);
+        furnace.setChanged();
+
     }
 
     public void trySpawnLargeFurnace(LevelAccessor level){
@@ -278,6 +396,10 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         Utils.loadBlockPos(input,"real_furnace", worldPosition).ifPresent(pos-> realFurnacePos = pos);
         Utils.loadBlockPos(input,"furnace_centre", worldPosition).ifPresent(pos-> furnaceCentrePos = pos);
         ContainerHelper.loadAllItems(input, this.items);
+
+        Utils.loadBlockPosCollection(input, "shadow_cores", worldPosition, new HashSet<>(3)).ifPresent(set->{
+            shadowCores = set;
+        });
     }
 
     @Override
@@ -286,6 +408,8 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         Utils.saveBlockPos(output,"real_furnace", worldPosition, realFurnacePos);
         Utils.saveBlockPos(output,"furnace_centre", worldPosition, furnaceCentrePos);
         ContainerHelper.saveAllItems(output, this.items);
+
+        Utils.saveBlockPosCollection(output,"shadow_cores",worldPosition,shadowCores);
     }
 
     @Override
@@ -315,7 +439,72 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
     @Override
     public int getContainerSize() {
-        return 44;
+        return items.size();
+    }
+
+    public int getTemperature() {
+        return dataAccess.get(TEMPERATURE);
+    }
+
+    public void setTemperature(int value) {
+        dataAccess.set(TEMPERATURE, value);
+    }
+
+    public int getFuelBurnTimeRemaining(int index){
+        return dataAccess.get(FUEL_BURN_TIME_REMAINING[index]);
+    }
+
+    public void setFuelBurnTimeRemaining(int index,int value){
+        dataAccess.set(FUEL_BURN_TIME_REMAINING[index], value);
+    }
+
+    public int getCookingTimer(int index){
+        return dataAccess.get(COOKING_TIMER[index]);
+    }
+
+    public void setCookingTimer(int index, int value){
+        dataAccess.set(COOKING_TIMER[index], value);
+    }
+
+    public int getCookingTotalTime(int index){
+        return dataAccess.get(COOKING_TOTAL_TIME[index]);
+    }
+
+    public void setCookingTotalTime(int index, int value){
+        dataAccess.set(COOKING_TOTAL_TIME[index], value);
+    }
+
+    private int getCoreQuantity(){
+        return shadowCores.size()+1;
+    }
+
+    @Nullable
+    public static <T extends BlockEntity> BlockEntityTicker<T> createFurnaceTicker(
+            Level level, BlockEntityType<T> serverType, BlockEntityType<?> clientType
+    ) {
+        if(level instanceof ServerLevel serverLevel && serverType == clientType){
+            return ((pLevel, pBlockPos, pBlockState, pBlockEntity) -> serverTick(serverLevel, pBlockPos, pBlockState,(FurnaceCoreBlockEntity) pBlockEntity));
+        }
+        return null;
+    }
+
+    public static int getItemTotalCookTime(ServerLevel level, ItemStack input) {
+        SingleRecipeInput singlerecipeinput = new SingleRecipeInput(input);
+        return QUICK_CHECK.getRecipeFor(singlerecipeinput, level).map(p_379263_ -> p_379263_.value().cookingTime()).orElse(200);
+    }
+
+    public static int getBurnDuration(FuelValues fuelValues, ItemStack stack) {
+        return stack.getBurnTime(RECIPE_TYPE, fuelValues);
+    }
+
+    public Optional<ItemStack> getBurnOutput(ServerLevel level, ItemStack input){
+        SingleRecipeInput singlerecipeinput = new SingleRecipeInput(input);
+        var recipeholder = QUICK_CHECK.getRecipeFor(singlerecipeinput, level).orElse(null);
+        if (recipeholder == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(recipeholder.value().assemble(singlerecipeinput, level.registryAccess()));
     }
 
     public static class FindResult{
@@ -323,8 +512,8 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         static {
             FAIL.setValid(false);
         }
-        private Set<BlockPos> corePosSet = new HashSet<>(4);
-        private Set<BlockPos> wallPosSet = new HashSet<>(22);
+        private final Set<BlockPos> corePosSet = new HashSet<>(4);
+        private final Set<BlockPos> wallPosSet = new HashSet<>(22);
 
         public void setValid(boolean valid) {
             isValid = valid;

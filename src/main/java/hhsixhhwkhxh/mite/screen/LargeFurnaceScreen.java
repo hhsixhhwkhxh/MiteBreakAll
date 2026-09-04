@@ -23,9 +23,14 @@ import java.util.List;
 
 public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu> {
 
-    private static final ResourceLocation LIT_PROGRESS_SPRITE = ResourceLocation.withDefaultNamespace("container/furnace/lit_progress");
-    private static final ResourceLocation BURN_PROGRESS_SPRITE = ResourceLocation.withDefaultNamespace("container/furnace/burn_progress");
+    //private static final ResourceLocation LIT_PROGRESS_SPRITE = ResourceLocation.withDefaultNamespace("container/furnace/lit_progress");
+    //private static final ResourceLocation BURN_PROGRESS_SPRITE = ResourceLocation.withDefaultNamespace("container/furnace/burn_progress");
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"textures/gui/container/furnace_core.png");
+    //thermometer
+    private static final ResourceLocation THERMOMETER_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"container/large_furnace/thermometer");
+    private static final ResourceLocation BURN_PROGRESS_DOWN_SPRITE = ResourceLocation.withDefaultNamespace("container/large_furnace/burn_progress_down");
+    private static final ResourceLocation BURN_PROGRESS_RIGHT_SPRITE = ResourceLocation.withDefaultNamespace("container/large_furnace/burn_progress_right");
+
 
 
 
@@ -53,6 +58,10 @@ public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu
         int i = this.leftPos;
         int j = this.topPos;
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
+
+        int thermometerSpriteHeight =  (int) (59 *(menu.getTemperatureProgress()));
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, THERMOMETER_SPRITE, 19, 59, 0, 59-thermometerSpriteHeight, i + 44, j + 19 +(59-thermometerSpriteHeight), 19,thermometerSpriteHeight);
+//
 //        if (this.menu.isLit()) {
 //            int k = 14;
 //            int l = Mth.ceil(this.menu.getLitProgress() * 13.0F) + 1;
