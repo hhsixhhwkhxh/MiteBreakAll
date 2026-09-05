@@ -7,7 +7,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class LargeFurnaceFuelSlot extends Slot {
+public class LargeFurnaceFuelSlot extends LockableSlot {
     private final LargeFurnaceMenu menu;
 
     public LargeFurnaceFuelSlot(LargeFurnaceMenu furnaceMenu, Container furnaceContainer, int slot, int xPosition, int yPosition) {

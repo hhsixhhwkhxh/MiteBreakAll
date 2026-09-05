@@ -1,9 +1,14 @@
 package hhsixhhwkhxh.mite.menu;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import hhsixhhwkhxh.mite.blockentity.FurnaceCoreBlockEntity;
 import hhsixhhwkhxh.mite.slot.CraftingResultSlot;
 import hhsixhhwkhxh.mite.slot.LargeFurnaceFuelSlot;
+import hhsixhhwkhxh.mite.slot.LockableSlot;
 import net.minecraft.recipebook.ServerPlaceRecipe;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -15,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static hhsixhhwkhxh.mite.blockentity.FurnaceCoreBlockEntity.*;
@@ -28,6 +34,7 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
     public static final int[] CRAFT_INPUT_SLOT = new int[9];
 
     public static final int CRAFT_RESULT_SLOT;
+
     public static int SLOT_COUNT = 0;
     public static final int DATA_COUNT = 20;
 
@@ -40,6 +47,9 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
 
     protected final CraftingContainer craftSlots;
     private final CraftingResultSlot craftingResultSlot;
+
+    private boolean isClientSide = false;
+    private Multimap<Integer,LockableSlot> lazyLockSlotMap = ArrayListMultimap.create();
 
     static {
         assignSlotIndex(INGREDIENT_SLOT);
@@ -65,7 +75,9 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
         int containerId,
         Inventory inventory
     ) {
+
         this(containerId, inventory, new SimpleContainer(SLOT_COUNT), new SimpleContainerData(DATA_COUNT));
+
     }
 
     public LargeFurnaceMenu(
@@ -83,16 +95,22 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
         this.level = inventory.player.level();
         this.acceptedInputs = this.level.recipeAccess().propertySet(RecipePropertySet.FURNACE_INPUT);
 
+        int coreQuantity = getCoreQuantity();
+        isClientSide = !(inventory.player instanceof ServerPlayer);
+
         for (int index = 0; index < INGREDIENT_SLOT.length; index ++) {
-            this.addSlot(new Slot(container, INGREDIENT_SLOT[index], 72 + 20*index, 14));
+            LockableSlot slot = new LockableSlot(container, INGREDIENT_SLOT[index], 72 + 20*index, 14);
+            addLockableSlot(index,slot,coreQuantity);
         }
 
         for (int index = 0; index < FUEL_SLOT.length; index ++) {
-            this.addSlot(new LargeFurnaceFuelSlot(this, container, FUEL_SLOT[index], 20, 14 + 18*index));
+            LockableSlot slot = new LargeFurnaceFuelSlot(this, container, FUEL_SLOT[index], 20, 14 + 18*index);
+            addLockableSlot(index,slot,coreQuantity);
         }
 
         for (int index = 0; index < MOULD_SLOT.length; index ++) {
-            this.addSlot(new Slot(container, MOULD_SLOT[index], 72 + 20*index, 32));
+            LockableSlot slot = new LockableSlot(container, MOULD_SLOT[index], 72 + 20*index, 32);
+            addLockableSlot(index,slot,coreQuantity);
         }
 
         for (int index = 0; index < BURN_RESULT_SLOT.length; index ++) {
@@ -122,10 +140,31 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
         }
     }
 
+    private void addLockableSlot(int index,LockableSlot slot,int coreQuantity){
+        this.addSlot(slot);
+        if(isClientSide){
+            lazyLockSlotMap.put(index,slot);
+        }else{
+            slot.setActive(index<coreQuantity);
+        }
+    }
+
 //    public Slot getResultSlot() {
 //        return this.slots.get(RESULT_SLOT);
 //    }
 
+    //客户端 设置槽位锁定状态
+    public boolean tryInitLockableSlot(){
+        int coreQuantity = getCoreQuantity();
+        if(coreQuantity==0){
+            return false;
+        }
+        lazyLockSlotMap.forEach((index,lockableSlot)->{
+            lockableSlot.setActive(index<coreQuantity);
+        });
+        lazyLockSlotMap.clear();
+        return true;
+    }
 
 
     /**
@@ -198,9 +237,11 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
     }
 
     public float getTemperatureProgress(){
+        return Mth.clamp((float)data.get(TEMPERATURE) / TEMPERATURE_LIMIT, 0.0F, 1.0F);
+    }
 
-        //return data.get(TEMPERATURE)/2000F;
-        return Mth.clamp((float)data.get(TEMPERATURE) / 2000F, 0.0F, 1.0F);
+    public int getCoreQuantity(){
+        return data.get(CORE_QUANTITY);
     }
 
     public float getBurnProgress(int index) {

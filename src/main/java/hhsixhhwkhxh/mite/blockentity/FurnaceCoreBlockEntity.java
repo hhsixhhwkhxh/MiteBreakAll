@@ -1,5 +1,6 @@
 package hhsixhhwkhxh.mite.blockentity;
 
+import hhsixhhwkhxh.mite.MiteBreakAll;
 import hhsixhhwkhxh.mite.Utils;
 import hhsixhhwkhxh.mite.block.FurnaceWallBlock;
 import hhsixhhwkhxh.mite.block.ModBlocks;
@@ -27,6 +28,7 @@ import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static hhsixhhwkhxh.mite.block.FurnaceCore.*;
 import static hhsixhhwkhxh.mite.menu.LargeFurnaceMenu.*;
@@ -53,21 +55,27 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     public final static int[] FUEL_BURN_TIME_REMAINING = new int[4];
     public final static int[] COOKING_TIMER = new int[4];
     public final static int[] COOKING_TOTAL_TIME = new int[4];
+    public final static int CORE_QUANTITY;
+
+    public final static int TEMPERATURE_LIMIT = 2000*20;
 
     private static int dataIndexCounter = 0;
     static {
-        TEMPERATURE = assignIndexForArray();
-        assignIndexForArray(FUEL_BURN_TIME_REMAINING);
-        assignIndexForArray(COOKING_TIMER);
+        TEMPERATURE = assignSingleIndex();
+        assignSingleIndex(FUEL_BURN_TIME_REMAINING);
+        assignSingleIndex(COOKING_TIMER);
+        assignSingleIndex(COOKING_TOTAL_TIME);
+
+        CORE_QUANTITY = assignSingleIndex();
     }
 
-    public static void assignIndexForArray(int[] array){
+    public static void assignSingleIndex(int[] array){
         for (int index = 0; index < array.length; index++) {
             array[index] = dataIndexCounter++;
         }
     }
 
-    public static int assignIndexForArray(){
+    public static int assignSingleIndex(){
         return dataIndexCounter++;
     }
 
@@ -125,13 +133,12 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         int temperature = furnace.getTemperature();
         if(temperature <= 0){
             if(state.getValue(LIT)){
-                level.setBlock(pos,state.setValue(LIT,false),UPDATE_ALL);
-                furnace.setChanged();
+                furnace.setLitWithShadow(level,state,false);
                 return;
             }
         }else{
             if(!state.getValue(LIT)){
-                level.setBlock(pos,state.setValue(LIT,true),UPDATE_ALL);
+                furnace.setLitWithShadow(level,state,true);
             }
         }
 
@@ -145,7 +152,10 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
             if(fuelBurnTimeRemaining>0){
                 hasAnyFuelBurning = true;
                 fuelBurnTimeRemaining--;
-                temperature++;
+
+                if(temperature<TEMPERATURE_LIMIT){
+                    temperature++;
+                }
 
                 furnace.setFuelBurnTimeRemaining(i,fuelBurnTimeRemaining);
             }else if(!fuelStack.isEmpty()){
@@ -175,26 +185,49 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
                 }
                 //开始新任务
                 cookingTotalTime = getItemTotalCookTime(level,inputStack);
-                if(cookingTimer<=0){
+                if(cookingTotalTime<=0){
                     continue;
                 }
-                inputStack.shrink(1);
                 furnace.setCookingTimer(i,0);
                 furnace.setCookingTotalTime(i,cookingTotalTime);
                 continue;
             }
             if(cookingTimer >= cookingTotalTime){
-                //结算
+                //尝试结算
+                ItemStack outputStack = furnace.getItems().get(BURN_RESULT_SLOT[i]);
+                AtomicBoolean isSucceeded = new AtomicBoolean(false);
                 int finalI = i;
                 furnace.getBurnOutput(level,inputStack).ifPresent(itemStack->{
-                    furnace.getItems().set(BURN_RESULT_SLOT[finalI],itemStack);
+                    if(ItemStack.isSameItemSameComponents(outputStack,itemStack)){
+                        int count = outputStack.getCount();
+                        if(count < outputStack.getMaxStackSize()){
+                            outputStack.setCount(count + 1);
+                            isSucceeded.set(true);
+                        }
+                        return;
+                    }
+                    if(outputStack.isEmpty()){
+                        furnace.getItems().set(BURN_RESULT_SLOT[finalI],itemStack);
+                        isSucceeded.set(true);
+                        return;
+                    }
+
                 });
-                cookingTotalTime = cookingTimer = 0;
-                furnace.setCookingTotalTime(i,cookingTotalTime);
-                furnace.setCookingTimer(i,cookingTimer);
+
+                if(isSucceeded.get()){
+                    inputStack.shrink(1);
+                    cookingTotalTime = cookingTimer = 0;
+                    furnace.setCookingTotalTime(i,cookingTotalTime);
+                    furnace.setCookingTimer(i,cookingTimer);
+                }
                 continue;
             }
-            cookingTimer++;
+
+            if (cookingTimer>=0&&inputStack.isEmpty()){
+                cookingTimer--;
+            }else{
+                cookingTimer++;
+            }
             furnace.setCookingTimer(i,cookingTimer);
         }
 
@@ -229,7 +262,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
                     });
 
                 });
-
+                dataAccess.set(CORE_QUANTITY,findResult.corePosSet.size());
 
                 return;
             }
@@ -319,8 +352,6 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         return new BlockPos[]{pos.east(),pos.south(),pos.west(),pos.north()};
     }
 
-
-
     private FindResult isCenterPos(LevelAccessor level, BlockPos pos, boolean strictMode){
         BlockPos[] cornerPosList = {pos.offset(-1,0,-1), pos.offset(1,0,1), pos.offset(1,0,-1), pos.offset(-1,0,1)};
 
@@ -400,6 +431,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         Utils.loadBlockPosCollection(input, "shadow_cores", worldPosition, new HashSet<>(3)).ifPresent(set->{
             shadowCores = set;
         });
+        dataAccess.set(CORE_QUANTITY,shadowCores.size()+1);
     }
 
     @Override
@@ -434,7 +466,19 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
     @Override
     protected AbstractContainerMenu createMenu(int containerId, Inventory inventory) {
-        return new LargeFurnaceMenu(containerId,inventory,this,dataAccess);
+        LevelAccessor levelAccessor = inventory.player.level();
+        if (isShadow(levelAccessor)) {
+            Optional<FurnaceCoreBlockEntity> blockEntity = getBlockEntity(levelAccessor,realFurnacePos);
+            if(blockEntity.isPresent()){
+                return blockEntity.get().createMenu(containerId,inventory);
+            }else{
+                MiteBreakAll.LOGGER.error("Menu redirect failed");
+                return new LargeFurnaceMenu(containerId,inventory,this,dataAccess);
+            }
+        }else{
+            return new LargeFurnaceMenu(containerId,inventory,this,dataAccess);
+        }
+
     }
 
     @Override
@@ -475,7 +519,15 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     }
 
     private int getCoreQuantity(){
-        return shadowCores.size()+1;
+        return dataAccess.get(CORE_QUANTITY);
+    }
+
+    public void setLitWithShadow(LevelAccessor level, BlockState mainState,boolean value){
+        level.setBlock(worldPosition,mainState.setValue(LIT,value),UPDATE_ALL);
+        shadowCores.forEach(pos->{
+            BlockState state = level.getBlockState(pos);
+            level.setBlock(pos,state.setValue(LIT,value),UPDATE_ALL);
+        });
     }
 
     @Nullable
