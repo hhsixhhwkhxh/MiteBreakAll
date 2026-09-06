@@ -259,5 +259,8 @@ public class ModZhCnLangProvider extends LanguageProvider {
         add(ModItems.ADAMANTIUM_HATCHET.get(), "艾德曼手斧");
 
         add("tooltip.item.deprecated","此物品不应当出现在正常生存流程中");
+
+        add(ModBlocks.STONE_FURNACE_CORE.get(), "石熔炉核心");
+        add(ModItems.OBSIDIAN_INGOT_MOULD.get(),"黑曜石锭模板");
     }
 }

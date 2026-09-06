@@ -247,6 +247,9 @@ public class ModCreativeModeTabs {
             output.accept(ModItems.ADAMANTIUM_DAGGER);
             output.accept(ModItems.ADAMANTIUM_HATCHET);
 
+            output.accept(ModBlocks.STONE_FURNACE_CORE);
+            output.accept(ModItems.OBSIDIAN_INGOT_MOULD);
+
         }).build();
     });
 

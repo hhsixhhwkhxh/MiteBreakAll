@@ -260,5 +260,8 @@ public class ModEnUsLangProvider extends LanguageProvider {
         add(ModItems.ADAMANTIUM_HATCHET.get(), "Adamantium Hatchet");
 
         add("tooltip.item.deprecated","This item is not meant for normal survival mode.");
+
+        add(ModBlocks.STONE_FURNACE_CORE.get(), "Stone Furnace Core");
+        add(ModItems.OBSIDIAN_INGOT_MOULD.get(),"Obsidian Ingot Mould");
     }
 }

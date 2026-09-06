@@ -1,25 +1,22 @@
 package hhsixhhwkhxh.mite.screen;
 
 import hhsixhhwkhxh.mite.MiteBreakAll;
+import hhsixhhwkhxh.mite.item.ModItems;
 import hhsixhhwkhxh.mite.menu.LargeFurnaceMenu;
-import hhsixhhwkhxh.mite.menu.ModMenuTypes;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.AbstractRecipeBookScreen;
-import net.minecraft.client.gui.screens.recipebook.FurnaceRecipeBookComponent;
-import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractFurnaceMenu;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.HashMap;
-import java.util.List;
 
 
 public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu> {
@@ -31,9 +28,30 @@ public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu
     private static final ResourceLocation LOCKED_SLOT = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"container/large_furnace/locked_slot");
     private static final ResourceLocation LIQUID_METAL = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"container/large_furnace/liquid_metal");
 
-
     private boolean hasLockableSlotBeenInitialized = false;
 
+    private static final HashMap<Integer,ResourceLocation> INGOT_RES_MAP= new HashMap<>();
+
+    static {
+        putIngotResMap(ModItems.MERCURY_INGOT,"mercury_ingot");
+        putIngotResMap(ModItems.SILVER_INGOT,"silver_ingot");
+        putIngotResMap(Items.COPPER_INGOT,"copper_ingot");
+        putIngotResMap(Items.GOLD_INGOT,"gold_ingot");
+        putIngotResMap(Items.IRON_INGOT,"iron_ingot");
+        putIngotResMap(ModItems.HARD_INGOT,"hard_ingot");
+        putIngotResMap(ModItems.ANCIENT_METAL_INGOT,"ancient_metal_ingot");
+        putIngotResMap(ModItems.MITHRIL_INGOT,"mithril_ingot");
+        putIngotResMap(ModItems.ADAMANTIUM_INGOT,"adamantium_ingot");
+
+    }
+
+    private static void putIngotResMap(Item item,String name){
+        INGOT_RES_MAP.put(item.getDescriptionId().hashCode(),ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"container/large_furnace/ingots/"+name));
+    }
+
+    private static void putIngotResMap(DeferredItem<Item> item, String name){
+        putIngotResMap(item.get(),name);
+    }
 
     public LargeFurnaceScreen(
             LargeFurnaceMenu menu,
@@ -88,10 +106,48 @@ public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu
 
         //4个进度条
         for (int i = 0;i < menu.getCoreQuantity();i++){
-            int downSpriteHeight = Mth.ceil(15 * menu.getBurnProgress(i));
+            var progress = menu.getBurnProgress(i);
+            int downSpriteHeight = Mth.ceil(15 * progress);
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, BURN_PROGRESS_DOWN_SPRITE, 11, 15, 0, 0, leftPos + 75 + 20*i, topPos + 51, 11, downSpriteHeight);
+
+
         }
 
 
+    }
+
+    @Override
+    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.renderContents(guiGraphics, mouseX, mouseY, partialTick);
+
+        for (int i = 0;i < menu.getCoreQuantity();i++){
+            if(!this.menu.isNuggetToIngotRecipe(i)){
+                continue;
+            }
+            var progress = menu.getBurnProgress(i);
+            float liquidMetalProgress = 1;
+            if(progress<=0.6){
+                liquidMetalProgress = progress*(5/3F);
+            }
+            int x = leftPos + 72 + 20*i;
+            int y = topPos + 32;
+            int liquidMetalSpriteHeight =  Mth.ceil(16 * liquidMetalProgress);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, LIQUID_METAL, 16, 16, 0, 16-liquidMetalSpriteHeight, x, y + (16-liquidMetalSpriteHeight), 16,liquidMetalSpriteHeight);
+
+            int hash = menu.getOutputIngotName(i);
+            if(progress<=0.6||!INGOT_RES_MAP.containsKey(hash)){
+                continue;
+            }
+
+            float fade = (float) (progress-0.6)*5/2;
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED,INGOT_RES_MAP.get(hash),x,y,16,16, fade);
+
+        }
+    }
+
+    @Override
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 }

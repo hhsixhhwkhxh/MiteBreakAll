@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -29,6 +30,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -59,20 +61,27 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     public final static int[] COOKING_TIMER = new int[4];
     public final static int[] COOKING_TOTAL_TIME = new int[4];
     public final static int CORE_QUANTITY;
+    public final static int[] IS_NUGGET_TO_INGOT_RECIPE = new int[4];
+    public final static int[] OUTPUT_INGOT_NAME = new int[4];
 
-    public final static int TEMPERATURE_LIMIT = 2000*20;
+    public final static int TEMPERATURE_MULTIPLIER = 10000;
+    public final static int TEMPERATURE_LIMIT = 2000;
 
     private static int dataIndexCounter = 0;
     static {
         TEMPERATURE = assignSingleIndex();
-        assignSingleIndex(FUEL_BURN_TIME_REMAINING);
-        assignSingleIndex(COOKING_TIMER);
-        assignSingleIndex(COOKING_TOTAL_TIME);
+        assignArrayIndex(FUEL_BURN_TIME_REMAINING);
+        assignArrayIndex(COOKING_TIMER);
+        assignArrayIndex(COOKING_TOTAL_TIME);
 
         CORE_QUANTITY = assignSingleIndex();
+        assignArrayIndex(IS_NUGGET_TO_INGOT_RECIPE);
+        assignArrayIndex(OUTPUT_INGOT_NAME);
+
+        Objects.checkIndex(dataIndexCounter, DATA_COUNT);
     }
 
-    public static void assignSingleIndex(int[] array){
+    public static void assignArrayIndex(int[] array){
         for (int index = 0; index < array.length; index++) {
             array[index] = dataIndexCounter++;
         }
@@ -133,7 +142,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
             return;
         }
 
-        int temperature = furnace.getTemperature();
+        float temperature = furnace.getTemperature();
         if(temperature <= 0){
             if(state.getValue(LIT)){
                 furnace.setLitWithShadow(level,state,false);
@@ -157,7 +166,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
                 fuelBurnTimeRemaining--;
 
                 if(temperature<TEMPERATURE_LIMIT){
-                    temperature++;
+                    temperature+=0.05F;
                 }
 
                 furnace.setFuelBurnTimeRemaining(i,fuelBurnTimeRemaining);
@@ -172,7 +181,8 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
             if(temperature<=0){
                 return;
             }
-            temperature--;
+            //temperature--;
+            temperature = furnace.reduceTemperature(temperature);
         }
 
         //熔炼 计时器
@@ -182,12 +192,21 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
             ItemStack inputStack = furnace.getItems().get(INGREDIENT_SLOT[i]);
             ItemStack mouldStack = furnace.getItems().get(MOULD_SLOT[i]);
+
+            //检查是否满足粒->锭的条件 用于更新dataAccess 方便客户端Screen获取信息
+            var meltingRecipeOpt = getMeltingRecipe(inputStack.getItem());
+            boolean isMeltingRecipe = (meltingRecipeOpt.isPresent());
+            furnace.setIsNuggetToIngotRecipe(i,isMeltingRecipe);
+            if(isMeltingRecipe){
+                furnace.setOutputIngotName(i,meltingRecipeOpt.get().outputItem().getDescriptionId());
+            }
+
             if(cookingTotalTime <= 0){
                 //没有任务进行
                 if(inputStack.isEmpty()){
                     continue;
                 }
-                if(!mouldStack.is(ModItems.OBSIDIAN_INGOT_MOULD)||getMeltingRecipe(inputStack.getItem()).isPresent()&&inputStack.getCount()<9){
+                if(!mouldStack.is(ModItems.OBSIDIAN_INGOT_MOULD)||meltingRecipeOpt.isPresent()&&inputStack.getCount()<9){
                     continue;
                 }
 
@@ -224,9 +243,15 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
                 });
 
                 if(isSucceeded.get()){
-                    if(getMeltingRecipe(inputStack.getItem()).isPresent()){
+                    if(meltingRecipeOpt.isPresent()){
                         inputStack.shrink(9);
-                        mouldStack.setDamageValue(mouldStack.getDamageValue() + 1);
+
+                        int dataDamage = mouldStack.getDamageValue() + 1;
+                        if(dataDamage < mouldStack.getMaxDamage()){
+                            mouldStack.setDamageValue(dataDamage);
+                        }else{
+                            furnace.getItems().set(MOULD_SLOT[i],ItemStack.EMPTY);
+                        }
                     }else{
                         inputStack.shrink(1);
                     }
@@ -238,7 +263,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
                 continue;
             }
 
-            if (cookingTimer>=0&&inputStack.isEmpty()){
+            if (cookingTimer>=0&&(inputStack.isEmpty()||isMeltingRecipe&&!isMould(mouldStack))){
                 cookingTimer--;
             }else{
                 cookingTimer++;
@@ -249,6 +274,29 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         furnace.setTemperature(temperature);
         furnace.setChanged();
 
+    }
+
+    public float reduceTemperature(float currentTemp){
+        float delta;
+        if(currentTemp <= 100){
+            delta = 0.025F;
+        }else if(currentTemp <= 500){
+            delta = 0.05F;
+        }else if(currentTemp <= 1000){
+            delta = 0.1F;
+        }else if(currentTemp <= 2000){
+            delta = 0.066F;
+        }else if(currentTemp <= 3000){
+            delta = 0.0625F;
+        }else if(currentTemp <= 4000){
+            delta = 0.075F;
+        }else if(currentTemp <= 5000){
+            delta = 0.07F;
+        }else{
+            delta = 0.083F;
+        }
+        currentTemp -= delta;
+        return (currentTemp);
     }
 
     public void trySpawnLargeFurnace(LevelAccessor level){
@@ -509,12 +557,12 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         return items.size();
     }
 
-    public int getTemperature() {
-        return dataAccess.get(TEMPERATURE);
+    public float getTemperature() {
+        return (float) dataAccess.get(TEMPERATURE) / TEMPERATURE_MULTIPLIER;
     }
 
-    public void setTemperature(int value) {
-        dataAccess.set(TEMPERATURE, value);
+    public void setTemperature(float value) {
+        dataAccess.set(TEMPERATURE, Mth.floor(value * TEMPERATURE_MULTIPLIER));
     }
 
     public int getFuelBurnTimeRemaining(int index){
@@ -597,7 +645,23 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         return Optional.of(recipeholder.value().assemble(singlerecipeinput, level.registryAccess()));
     }
 
+    public void setIsNuggetToIngotRecipe(int index,boolean value){
+        dataAccess.set(IS_NUGGET_TO_INGOT_RECIPE[index],value?1:0);
+    }
 
+    public void setOutputIngotName(int index,String value){
+        dataAccess.set(OUTPUT_INGOT_NAME[index],value.hashCode());
+    }
+
+    public static boolean isMould(ItemStack itemStack){
+        if(itemStack == null){
+            return false;
+        }
+        if(itemStack.is(ModItems.OBSIDIAN_INGOT_MOULD)){
+            return true;
+        }
+        return false;
+    }
 
     public static class FindResult{
         public static final FindResult FAIL = new FindResult();

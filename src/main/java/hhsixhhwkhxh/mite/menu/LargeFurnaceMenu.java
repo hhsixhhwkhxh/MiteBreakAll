@@ -35,7 +35,7 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
     public static final int CRAFT_RESULT_SLOT;
 
     public static int SLOT_COUNT = 0;
-    public static final int DATA_COUNT = 20;
+    public static final int DATA_COUNT = 23;
 
     final Container container;
     private final ContainerData data;
@@ -234,7 +234,7 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
     }
 
     public float getTemperatureProgress(){
-        return Mth.clamp((float)data.get(TEMPERATURE) / TEMPERATURE_LIMIT, 0.0F, 1.0F);
+        return Mth.clamp((float)data.get(TEMPERATURE)/ TEMPERATURE_MULTIPLIER / TEMPERATURE_LIMIT, 0.0F, 1.0F);
     }
 
     public int getCoreQuantity(){
@@ -245,6 +245,14 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
         int cookingTimer = this.data.get(COOKING_TIMER[index]);
         int cookingTotalTime = this.data.get(COOKING_TOTAL_TIME[index]);
         return cookingTotalTime != 0 && cookingTimer != 0 ? Mth.clamp((float)cookingTimer / cookingTotalTime, 0.0F, 1.0F) : 0.0F;
+    }
+
+    public boolean isNuggetToIngotRecipe(int index){
+        return (data.get(IS_NUGGET_TO_INGOT_RECIPE[index])!=0);
+    }
+
+    public int getOutputIngotName(int index){
+        return data.get(OUTPUT_INGOT_NAME[index]);
     }
 
     @Override
