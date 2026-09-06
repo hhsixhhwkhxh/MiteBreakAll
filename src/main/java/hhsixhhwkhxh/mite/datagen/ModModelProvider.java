@@ -295,6 +295,8 @@ public class ModModelProvider extends ModelProvider {
         createWallBlockWrapper(blockModels,Blocks.COBBLESTONE,ModBlocks.COBBLESTONE_MATERIAL_BLOCK.get());
         createWallBlockWrapper(blockModels,Blocks.OBSIDIAN,ModBlocks.OBSIDIAN_MATERIAL_BLOCK.get());
         createWallBlockWrapper(blockModels,Blocks.NETHERRACK,ModBlocks.NETHERRACK_MATERIAL_BLOCK.get());
+
+        blockModels.registerSimpleFlatItemModel(ModItems.OBSIDIAN_INGOT_MOULD.get());
     }
 
     public enum FolderType{

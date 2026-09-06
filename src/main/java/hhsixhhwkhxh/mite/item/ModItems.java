@@ -36,7 +36,7 @@ public class ModItems {
     public static final DeferredItem<Item> WILD_APPLE = ITEMS.registerItem("wild_apple", Item::new,new Item.Properties().food(new FoodProperties.Builder()
             .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
 
-    public static final DeferredItem<Item> STRAWBERRIES = ITEMS.registerItem("strawberries", properties ->  new Item(properties.food(Foods.SWEET_BERRIES).component(ModDataComponents.MOISTURE,new Moisture(2))));
+    public static final DeferredItem<Item> STRAWBERRIES = ITEMS.registerItem("strawberries", properties -> new Item(properties.food(Foods.SWEET_BERRIES).component(ModDataComponents.MOISTURE,new Moisture(2))));
 
     public static final DeferredItem<Item> FLINT_SHARD = ITEMS.registerItem("flint_shard", Item::new, new Item.Properties());
     public static final DeferredItem<Item> OBSIDIAN_SHARD = ITEMS.registerItem("obsidian_shard", Item::new, new Item.Properties());
@@ -252,6 +252,8 @@ public class ModItems {
     public static final DeferredItem<Item> ADAMANTIUM_SHEARS = ITEMS.registerItem("adamantium_shears",(props)-> new Item(ModToolMaterials.shears(props,ModToolMaterials.ADAMANTIUM)));
     public static final DeferredItem<Item> ADAMANTIUM_DAGGER = ITEMS.registerItem("adamantium_dagger",(props)-> new Item(ModToolMaterials.dagger(props,ModToolMaterials.ADAMANTIUM)));
     public static final DeferredItem<Item> ADAMANTIUM_HATCHET = ITEMS.registerItem("adamantium_hatchet",(props)-> new Item(ModToolMaterials.hatchet(props,ModToolMaterials.ADAMANTIUM)));
+
+    public static final DeferredItem<Item> OBSIDIAN_INGOT_MOULD = ITEMS.registerItem("obsidian_ingot_mould",(properties)-> new Item(properties.durability(20).stacksTo(1)));
 
     public static final Map<Item, DeferredItem<Item>> proxyItemMap = Map.ofEntries(
             Map.entry(Items.WOODEN_SHOVEL,

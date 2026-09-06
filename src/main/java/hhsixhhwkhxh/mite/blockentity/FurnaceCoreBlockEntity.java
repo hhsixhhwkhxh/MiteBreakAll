@@ -4,6 +4,8 @@ import hhsixhhwkhxh.mite.MiteBreakAll;
 import hhsixhhwkhxh.mite.Utils;
 import hhsixhhwkhxh.mite.block.FurnaceWallBlock;
 import hhsixhhwkhxh.mite.block.ModBlocks;
+import hhsixhhwkhxh.mite.custom.MeltingCastRecord;
+import hhsixhhwkhxh.mite.item.ModItems;
 import hhsixhhwkhxh.mite.menu.LargeFurnaceMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -13,6 +15,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -178,13 +181,19 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
             int cookingTotalTime = furnace.getCookingTotalTime(i);
 
             ItemStack inputStack = furnace.getItems().get(INGREDIENT_SLOT[i]);
+            ItemStack mouldStack = furnace.getItems().get(MOULD_SLOT[i]);
             if(cookingTotalTime <= 0){
                 //没有任务进行
                 if(inputStack.isEmpty()){
                     continue;
                 }
+                if(!mouldStack.is(ModItems.OBSIDIAN_INGOT_MOULD)||getMeltingRecipe(inputStack.getItem()).isPresent()&&inputStack.getCount()<9){
+                    continue;
+                }
+
                 //开始新任务
-                cookingTotalTime = getItemTotalCookTime(level,inputStack);
+                cookingTotalTime = furnace.getItemTotalCookTime(level,inputStack);
+
                 if(cookingTotalTime<=0){
                     continue;
                 }
@@ -215,7 +224,13 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
                 });
 
                 if(isSucceeded.get()){
-                    inputStack.shrink(1);
+                    if(getMeltingRecipe(inputStack.getItem()).isPresent()){
+                        inputStack.shrink(9);
+                        mouldStack.setDamageValue(mouldStack.getDamageValue() + 1);
+                    }else{
+                        inputStack.shrink(1);
+                    }
+
                     cookingTotalTime = cookingTimer = 0;
                     furnace.setCookingTotalTime(i,cookingTotalTime);
                     furnace.setCookingTimer(i,cookingTimer);
@@ -432,6 +447,12 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
             shadowCores = set;
         });
         dataAccess.set(CORE_QUANTITY,shadowCores.size()+1);
+
+        input.getIntArray("container_data").ifPresent(array->{
+            for (int i = 0; i < array.length; i++) {
+                dataArray[i] = array[i];
+            }
+        });
     }
 
     @Override
@@ -442,6 +463,8 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         ContainerHelper.saveAllItems(output, this.items);
 
         Utils.saveBlockPosCollection(output,"shadow_cores",worldPosition,shadowCores);
+
+        output.putIntArray("container_data",dataArray);
     }
 
     @Override
@@ -540,9 +563,20 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         return null;
     }
 
-    public static int getItemTotalCookTime(ServerLevel level, ItemStack input) {
+    public int getItemTotalCookTime(ServerLevel level, ItemStack input) {
+        var recipe = getMeltingRecipe(input.getItem());
+        if(recipe.isPresent()){
+            return recipe.get().getFinalMeltTicks(wallBlock,getCoreQuantity());
+        }
         SingleRecipeInput singlerecipeinput = new SingleRecipeInput(input);
         return QUICK_CHECK.getRecipeFor(singlerecipeinput, level).map(p_379263_ -> p_379263_.value().cookingTime()).orElse(200);
+    }
+
+    public static Optional<MeltingCastRecord> getMeltingRecipe(Item item){
+        if(!MeltingCastRecord.MeltingCastMap.containsKey(item)){
+            return Optional.empty();
+        }
+        return Optional.of(MeltingCastRecord.MeltingCastMap.get(item));
     }
 
     public static int getBurnDuration(FuelValues fuelValues, ItemStack stack) {
@@ -550,6 +584,10 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     }
 
     public Optional<ItemStack> getBurnOutput(ServerLevel level, ItemStack input){
+        var recipe = getMeltingRecipe(input.getItem());
+        if(recipe.isPresent()){
+            return Optional.of(recipe.get().outputItem().getDefaultInstance()) ;
+        }
         SingleRecipeInput singlerecipeinput = new SingleRecipeInput(input);
         var recipeholder = QUICK_CHECK.getRecipeFor(singlerecipeinput, level).orElse(null);
         if (recipeholder == null) {
@@ -558,6 +596,8 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
         return Optional.of(recipeholder.value().assemble(singlerecipeinput, level.registryAccess()));
     }
+
+
 
     public static class FindResult{
         public static final FindResult FAIL = new FindResult();

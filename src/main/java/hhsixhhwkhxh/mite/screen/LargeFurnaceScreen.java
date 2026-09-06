@@ -24,14 +24,13 @@ import java.util.List;
 
 public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu> {
 
-    //private static final ResourceLocation LIT_PROGRESS_SPRITE = ResourceLocation.withDefaultNamespace("container/furnace/lit_progress");
-    //private static final ResourceLocation BURN_PROGRESS_SPRITE = ResourceLocation.withDefaultNamespace("container/furnace/burn_progress");
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"textures/gui/container/furnace_core.png");
-    //thermometer
     private static final ResourceLocation THERMOMETER_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"container/large_furnace/thermometer");
     private static final ResourceLocation BURN_PROGRESS_DOWN_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"container/large_furnace/burn_progress_down");
     private static final ResourceLocation BURN_PROGRESS_RIGHT_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"container/large_furnace/burn_progress_right");
     private static final ResourceLocation LOCKED_SLOT = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"container/large_furnace/locked_slot");
+    private static final ResourceLocation LIQUID_METAL = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"container/large_furnace/liquid_metal");
+
 
     private boolean hasLockableSlotBeenInitialized = false;
 
@@ -87,19 +86,12 @@ public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu
 
         }
 
+        //4个进度条
         for (int i = 0;i < menu.getCoreQuantity();i++){
             int downSpriteHeight = Mth.ceil(15 * menu.getBurnProgress(i));
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, BURN_PROGRESS_DOWN_SPRITE, 11, 15, 0, 0, leftPos + 75 + 20*i, topPos + 51, 11, downSpriteHeight);
         }
-//
-//        if (this.menu.isLit()) {
-//            int k = 14;
-//            int l = Mth.ceil(this.menu.getLitProgress() * 13.0F) + 1;
-//            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, LIT_PROGRESS_SPRITE, 14, 14, 0, 14 - l, i + 56, j + 36 + 14 - l, 14, l);
-//        }
-//
-//        int i1 = 24;
-//        int j1 = Mth.ceil(this.menu.getBurnProgress() * 24.0F);
-//        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, BURN_PROGRESS_SPRITE, 24, 16, 0, 0, i + 79, j + 34, j1, 16);
+
+
     }
 }

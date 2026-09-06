@@ -2,7 +2,7 @@ package hhsixhhwkhxh.mite.menu;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import hhsixhhwkhxh.mite.blockentity.FurnaceCoreBlockEntity;
+import hhsixhhwkhxh.mite.custom.MeltingCastRecord;
 import hhsixhhwkhxh.mite.slot.CraftingResultSlot;
 import hhsixhhwkhxh.mite.slot.LargeFurnaceFuelSlot;
 import hhsixhhwkhxh.mite.slot.LockableSlot;
@@ -20,7 +20,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
-import java.util.HashMap;
 import java.util.List;
 
 import static hhsixhhwkhxh.mite.blockentity.FurnaceCoreBlockEntity.*;
@@ -149,9 +148,6 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
         }
     }
 
-//    public Slot getResultSlot() {
-//        return this.slots.get(RESULT_SLOT);
-//    }
 
     //客户端 设置槽位锁定状态
     public boolean tryInitLockableSlot(){
@@ -233,6 +229,7 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
     }
 
     public boolean isFuel(ItemStack stack) {
+
         return stack.getBurnTime(this.recipeType, this.level.fuelValues()) > 0;
     }
 
@@ -249,26 +246,6 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
         int cookingTotalTime = this.data.get(COOKING_TOTAL_TIME[index]);
         return cookingTotalTime != 0 && cookingTimer != 0 ? Mth.clamp((float)cookingTimer / cookingTotalTime, 0.0F, 1.0F) : 0.0F;
     }
-
-
-//    public float getBurnProgress() {
-//        int i = this.data.get(2);
-//        int j = this.data.get(3);
-//        return j != 0 && i != 0 ? Mth.clamp((float)i / j, 0.0F, 1.0F) : 0.0F;
-//    }
-//
-//    public float getLitProgress() {
-//        int i = this.data.get(1);
-//        if (i == 0) {
-//            i = 200;
-//        }
-//
-//        return Mth.clamp((float)this.data.get(INGREDIENT_SLOT) / i, 0.0F, 1.0F);
-//    }
-//
-//    public boolean isLit() {
-//        return this.data.get(INGREDIENT_SLOT) > 0;
-//    }
 
     @Override
     public RecipeBookType getRecipeBookType() {
