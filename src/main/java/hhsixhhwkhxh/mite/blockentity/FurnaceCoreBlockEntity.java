@@ -30,10 +30,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -51,6 +48,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     public final Block brickBlock;
     public final Block coreBlock;
     public final Block brickWrapperBlock;
+    private final List<BlockPos> layerUnderFurnacePosList = new ArrayList<>(9);
 
     protected NonNullList<ItemStack> items = NonNullList.withSize(44, ItemStack.EMPTY);
 
@@ -67,6 +65,8 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     public final static int[] IS_SMELTING_RECIPE = new int[4];
     public final static int[] SMELTING_OUTPUT_NAME = new int[4];
     public final static int TEMPERATURE_LIMIT;
+    public final static int LAVA_BLOCK_COUNT;
+    public final static int TICK_COUNTER;
 
     public final static int TEMPERATURE_MULTIPLIER = 10000;
 
@@ -76,6 +76,8 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         CORE_QUANTITY = assignSingleIndex();
         TEMPERATURE = assignSingleIndex();
         TEMPERATURE_LIMIT = assignSingleIndex();
+        LAVA_BLOCK_COUNT = assignSingleIndex();
+        TICK_COUNTER = assignSingleIndex();
 
         assignArrayIndex(FUEL_BURN_TIME_REMAINING);
         assignArrayIndex(COOKING_TIMER);
@@ -151,8 +153,18 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
             return;
         }
 
+        if(furnace.updateTickCounter()){
+            int lavaCount = 0;
+            for (BlockPos bottomPos : furnace.getLayerUnderFurnacePosList()) {
+                if(level.getBlockState(bottomPos).is(Blocks.LAVA)){
+                    lavaCount++;
+                }
+            }
+            furnace.setLavaBlockCount(lavaCount);
+        }
+
         float temperature = furnace.getTemperature();
-        if(temperature <= 0){
+        if(temperature <= 0 && furnace.getLavaBlockCount() <= 0){
             if(state.getValue(LIT)){
                 furnace.setLitWithShadow(level,state,false);
                 return;
@@ -184,6 +196,12 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
                 furnace.setFuelBurnTimeRemaining(i,fuelBurnTimeRemaining);
                 fuelStack.shrink(1);
             }
+        }
+
+        //岩浆
+        int lavaCount = furnace.getLavaBlockCount();
+        if(lavaCount > 0){
+            temperature += (1.5f + 0.075f * Math.max(0, lavaCount - 1))*lavaCount;
         }
 
         if(!hasAnyFuelBurning){
@@ -318,9 +336,10 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
             FindResult findResult = isCenterPos(level,neighbourBlockPos,true);
             if(findResult.isValid){
                 furnaceCentrePos = neighbourBlockPos;
+                initLayerUnderFurnacePosList();
                 setShadow(level,false);
 
-                findResult.wallPosSet.forEach(wallBlockPos-> wrapWallBlock(level,wallBlockPos));
+                findResult.brickPosSet.forEach(wallBlockPos-> wrapBrickBlock(level,wallBlockPos));
 
                 findResult.corePosSet.forEach(coreBlockPos->{
                     final AtomicReference<BlockState> coreBlockState = new AtomicReference<>(level.getBlockState(coreBlockPos).setValue(ACTIVATED, true).setValue(LIT, false));
@@ -363,8 +382,8 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         }
 
         FindResult findResult = isCenterPos(level, furnaceCentrePos, false);
-        findResult.wallPosSet.forEach(wallBlockPos->{
-            unwrapWallBlock(level,wallBlockPos);
+        findResult.brickPosSet.forEach(wallBlockPos->{
+            unwrapBrickBlock(level,wallBlockPos);
         });
 
         findResult.corePosSet.forEach(coreBlockPos->{
@@ -373,7 +392,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
     }
 
-    public void wrapWallBlock(LevelAccessor level, BlockPos blockPos){
+    public void wrapBrickBlock(LevelAccessor level, BlockPos blockPos){
         level.setBlock(blockPos,
                 brickWrapperBlock.defaultBlockState()
                         .setValue(FurnaceWrapperBlock.MATERIAL_TYPE,
@@ -384,7 +403,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         FurnaceWrapperBlock.setRealFurnacePos(level, blockPos, worldPosition);
     }
 
-    public void unwrapWallBlock(LevelAccessor level,BlockPos blockPos){
+    public void unwrapBrickBlock(LevelAccessor level, BlockPos blockPos){
         level.setBlock(blockPos, brickBlock.defaultBlockState(), UPDATE_ALL);
     }
 
@@ -405,7 +424,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         level.setBlock(worldPosition,level.getBlockState(worldPosition).setValue(SHADOW,value),UPDATE_ALL);
     }
 
-    private boolean isWallBlock(LevelAccessor level, BlockPos pos){
+    private boolean isBrickBlock(LevelAccessor level, BlockPos pos){
         return level.getBlockState(pos).is(brickBlock)||level.getBlockState(pos).is(brickWrapperBlock);
     }
 
@@ -415,7 +434,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
 
     private FindResult isLegalPillar(LevelAccessor level, BlockPos pos){
-        FindResult findResult1 = isWallBlockPillar(level,pos);
+        FindResult findResult1 = isBrickBlockPillar(level,pos);
         FindResult findResult2 = isCoreBlockPillar(level,pos);
         if(findResult1.isValid){
             return findResult1;
@@ -429,13 +448,13 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
 
     private FindResult isCenterPos(LevelAccessor level, BlockPos pos, boolean strictMode){
-        BlockPos[] cornerPosList = {pos.offset(-1,0,-1), pos.offset(1,0,1), pos.offset(1,0,-1), pos.offset(-1,0,1)};
+        //BlockPos[] cornerPosList = {pos.offset(-1,0,-1), pos.offset(1,0,1), pos.offset(1,0,-1), pos.offset(-1,0,1)};
 
         FindResult totalResult = new FindResult();
         totalResult.setValid(true);
 
-        for (BlockPos cornerBlockPos : cornerPosList) {
-            FindResult findResult = isWallBlockPillar(level,cornerBlockPos);
+        for (BlockPos cornerBlockPos : Utils.getHorizontalCornerPosList(pos)) {
+            FindResult findResult = isBrickBlockPillar(level,cornerBlockPos);
             if(strictMode&&!findResult.isValid){
                 return FindResult.FAIL;
             }
@@ -463,12 +482,12 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     }
 
     //判断是否存在以pos为中心的1x3的材料方块(材料柱)
-    private FindResult isWallBlockPillar(LevelAccessor level, BlockPos pos){
+    private FindResult isBrickBlockPillar(LevelAccessor level, BlockPos pos){
         FindResult result = new FindResult();
 
         result.setValid(false);
 
-        if((isWallBlock(level,pos))&&hasWallBlockAboveAndBelow(level,pos)){
+        if((isBrickBlock(level,pos))&&hasWallBlockAboveAndBelow(level,pos)){
             result.addWall(pos);
             result.addWall(pos.offset(0,-1,0));
             result.addWall(pos.offset(0,1,0));
@@ -494,14 +513,17 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     }
 
     private boolean hasWallBlockAboveAndBelow(LevelAccessor level, BlockPos pos){
-        return (isWallBlock(level,pos.offset(0,-1,0)))&&(isWallBlock(level,pos.offset(0,1,0)));
+        return (isBrickBlock(level,pos.offset(0,-1,0)))&&(isBrickBlock(level,pos.offset(0,1,0)));
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         Utils.loadBlockPos(input,"real_furnace", worldPosition).ifPresent(pos-> realFurnacePos = pos);
-        Utils.loadBlockPos(input,"furnace_centre", worldPosition).ifPresent(pos-> furnaceCentrePos = pos);
+        Utils.loadBlockPos(input,"furnace_centre", worldPosition).ifPresent((pos)-> {
+            furnaceCentrePos = pos;
+            initLayerUnderFurnacePosList();
+        });
         ContainerHelper.loadAllItems(input, this.items);
 
         Utils.loadBlockPosCollection(input, "shadow_cores", worldPosition, new HashSet<>(3)).ifPresent(set->{
@@ -575,7 +597,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     }
 
     public void setTemperature(float value) {
-        dataAccess.set(TEMPERATURE, Mth.floor(value * TEMPERATURE_MULTIPLIER));
+        dataAccess.set(TEMPERATURE, Mth.floor(Math.min(value, getTemperatureLimit()) * TEMPERATURE_MULTIPLIER));
     }
 
     public int getFuelBurnTimeRemaining(int index){
@@ -688,13 +710,40 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         return  (isMould(mouldStack) && inputStack.getCount()>=9 && temperature >= meltingRecipe.meltingPoint());
     }
 
+    private boolean updateTickCounter(){
+        int counter = dataAccess.get(TICK_COUNTER);
+        if(counter%20==0){
+            dataAccess.set(TICK_COUNTER,0);
+            return true;
+        }
+        return false;
+    }
+
+    public List<BlockPos> getLayerUnderFurnacePosList(){
+        return layerUnderFurnacePosList;
+    }
+
+    public void setLavaBlockCount(int value){
+        dataAccess.set(LAVA_BLOCK_COUNT,value);
+    }
+
+    public int getLavaBlockCount(){
+        return dataAccess.get(LAVA_BLOCK_COUNT);
+    }
+
+    private void initLayerUnderFurnacePosList(){
+        BlockPos bottomCentrePos = furnaceCentrePos.offset(0,-2,0);
+        layerUnderFurnacePosList.addAll(Arrays.asList(Utils.getHorizontalCornerPosList(bottomCentrePos)));
+        layerUnderFurnacePosList.addAll(Arrays.asList(Utils.getHorizontalNeighbourPosList(bottomCentrePos)));
+    }
+
     public static class FindResult{
         public static final FindResult FAIL = new FindResult();
         static {
             FAIL.setValid(false);
         }
         private final Set<BlockPos> corePosSet = new HashSet<>(4);
-        private final Set<BlockPos> wallPosSet = new HashSet<>(22);
+        private final Set<BlockPos> brickPosSet = new HashSet<>(22);
 
         public void setValid(boolean valid) {
             isValid = valid;
@@ -710,12 +759,12 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         }
 
         public void addWall(BlockPos blockPos){
-            wallPosSet.add(blockPos);
+            brickPosSet.add(blockPos);
         }
 
         public void merge(FindResult findResult){
             this.corePosSet.addAll(findResult.corePosSet);
-            this.wallPosSet.addAll(findResult.wallPosSet);
+            this.brickPosSet.addAll(findResult.brickPosSet);
             if(!isValid){
                 return;
             }

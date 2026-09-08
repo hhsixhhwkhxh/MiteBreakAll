@@ -34,7 +34,7 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
     public static final int CRAFT_RESULT_SLOT;
 
     public static int SLOT_COUNT = 0;
-    public static final int DATA_COUNT = 24;
+    public static final int DATA_COUNT = 26;
 
     final Container container;
     private final ContainerData data;

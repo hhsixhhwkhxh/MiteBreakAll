@@ -147,6 +147,10 @@ public final class Utils {
         return new BlockPos[]{pos.east(),pos.south(),pos.west(),pos.north()};
     }
 
+    public static BlockPos[] getHorizontalCornerPosList(BlockPos pos){
+        return new BlockPos[]{pos.offset(-1,0,-1), pos.offset(1,0,1), pos.offset(1,0,-1), pos.offset(-1,0,1)};
+    }
+
     public static Optional<Direction> getRelativeHorizontalDirection(BlockPos basePos, BlockPos neighbourPos){
         if(basePos==null||neighbourPos==null){
             return Optional.empty();
