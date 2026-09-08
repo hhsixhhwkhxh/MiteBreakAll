@@ -2,7 +2,7 @@
   "parent": "minecraft:block/orientable",
   "textures": {
     "front": "mite_break_all:block/large_furnace/stone/front_on",
-    "side": "mite_break_all:block/stone_furnace_core_side",
-    "top": "mite_break_all:block/stone_furnace_core_top"
+    "side": "mite_break_all:block/large_furnace/stone/core",
+    "top": "mite_break_all:block/large_furnace/stone/core_top"
   }
 }

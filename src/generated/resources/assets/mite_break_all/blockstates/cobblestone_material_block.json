@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "minecraft:block/cobblestone"
+      "model": "mite_break_all:block/cobblestone_material_block"
     }
   }
 }

@@ -34,7 +34,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
+import static hhsixhhwkhxh.mite.Utils.getHorizontalNeighbourPosList;
 import static hhsixhhwkhxh.mite.block.FurnaceCore.*;
 import static hhsixhhwkhxh.mite.menu.LargeFurnaceMenu.*;
 import static net.minecraft.world.level.block.Block.UPDATE_ALL;
@@ -206,7 +208,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
                 if(inputStack.isEmpty()){
                     continue;
                 }
-                if(!mouldStack.is(ModItems.OBSIDIAN_INGOT_MOULD)||meltingRecipeOpt.isPresent()&&inputStack.getCount()<9){
+                if(meltingRecipeOpt.isPresent()&&(!mouldStack.is(ModItems.OBSIDIAN_INGOT_MOULD) || inputStack.getCount()<9 || temperature < meltingRecipeOpt.get().meltingPoint())){
                     continue;
                 }
 
@@ -265,6 +267,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
             if (cookingTimer>=0&&(inputStack.isEmpty()||isMeltingRecipe&&!isMould(mouldStack))){
                 cookingTimer--;
+                furnace.setIsNuggetToIngotRecipe(i,false);
             }else{
                 cookingTimer++;
             }
@@ -304,7 +307,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
             return;
         }
 
-        for (BlockPos neighbourBlockPos : getNeighbourPosList(worldPosition)) {
+        for (BlockPos neighbourBlockPos : getHorizontalNeighbourPosList(worldPosition)) {
             FindResult findResult = isCenterPos(level,neighbourBlockPos,true);
             if(findResult.isValid){
                 furnaceCentrePos = neighbourBlockPos;
@@ -313,7 +316,12 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
                 findResult.wallPosSet.forEach(wallBlockPos-> wrapWallBlock(level,wallBlockPos));
 
                 findResult.corePosSet.forEach(coreBlockPos->{
-                    level.setBlock(coreBlockPos,level.getBlockState(coreBlockPos).setValue(ACTIVATED,true),UPDATE_ALL);
+                    final AtomicReference<BlockState> coreBlockState = new AtomicReference<>(level.getBlockState(coreBlockPos).setValue(ACTIVATED, true).setValue(LIT, false));
+                    Utils.getRelativeHorizontalDirection(furnaceCentrePos,coreBlockPos).ifPresent(direction->{
+                        coreBlockState.set(coreBlockState.get().setValue(FACING,direction));
+                    });
+                    level.setBlock(coreBlockPos, coreBlockState.get(),UPDATE_ALL);
+
                     if(coreBlockPos.equals(worldPosition)){
                         return;
                     }
@@ -411,9 +419,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         return FindResult.FAIL;
     }
 
-    public static BlockPos[] getNeighbourPosList(BlockPos pos){
-        return new BlockPos[]{pos.east(),pos.south(),pos.west(),pos.north()};
-    }
+
 
     private FindResult isCenterPos(LevelAccessor level, BlockPos pos, boolean strictMode){
         BlockPos[] cornerPosList = {pos.offset(-1,0,-1), pos.offset(1,0,1), pos.offset(1,0,-1), pos.offset(-1,0,1)};
@@ -429,7 +435,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
             totalResult.merge(findResult);
         }
 
-        for (BlockPos neighbourBlockPos : getNeighbourPosList(pos)) {
+        for (BlockPos neighbourBlockPos : getHorizontalNeighbourPosList(pos)) {
             FindResult findResult = isLegalPillar(level,neighbourBlockPos);
             if(strictMode&&!findResult.isValid){
                 return FindResult.FAIL;
@@ -662,6 +668,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         }
         return false;
     }
+
 
     public static class FindResult{
         public static final FindResult FAIL = new FindResult();

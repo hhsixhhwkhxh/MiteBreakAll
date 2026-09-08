@@ -564,19 +564,14 @@ public class ModModelProvider extends ModelProvider {
                 .put(TextureSlot.TOP, coreTopResourceLocation);
 
 
+
         TexturedModel.Provider modelProvider = TexturedModel.ORIENTABLE_ONLY_TOP;
         MultiVariant multivariant = BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ORIENTABLE.create(coreBlock,textureMapping,blockModels.modelOutput));
 
-        MultiVariant multivariant1 = BlockModelGenerators.plainVariant(
-                modelProvider.get(coreBlock)
-                        .updateTextures(mTextureMapping -> mTextureMapping.put(TextureSlot.FRONT, frontOffResourceLocation))
-                        .createWithSuffix(coreBlock, "_active", blockModels.modelOutput)
-        );
-        MultiVariant multivariant2 = BlockModelGenerators.plainVariant(
-                modelProvider.get(coreBlock)
-                        .updateTextures(mTextureMapping -> mTextureMapping.put(TextureSlot.FRONT, frontOnResourceLocation))
-                        .createWithSuffix(coreBlock, "_lit", blockModels.modelOutput)
-        );
+
+        MultiVariant multivariant1 = BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ORIENTABLE.createWithSuffix(coreBlock,"_active",textureMapping.copy().put(TextureSlot.FRONT, frontOffResourceLocation),blockModels.modelOutput));
+        MultiVariant multivariant2 = BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ORIENTABLE.createWithSuffix(coreBlock,"_lit",textureMapping.copy().put(TextureSlot.FRONT, frontOnResourceLocation),blockModels.modelOutput));
+
 
 
         blockModels.blockStateOutput
@@ -604,7 +599,7 @@ public class ModModelProvider extends ModelProvider {
 
         Function<ResourceLocation, TextureMapping> textureMappingGetter = (TextureMapping::cube);
 
-        ResourceLocation resourceLocation = texturedModel.getTemplate().create(BuiltInRegistries.BLOCK.getKey(vanillaBlock).withPath(name -> "block/" + name), textureMappingGetter.apply(getBlockTextureWithPrefix(vanillaBlock, "","")), blockModels.modelOutput);
+        ResourceLocation resourceLocation = texturedModel.getTemplate().create(ModelLocationUtils.getModelLocation(modBlock), textureMappingGetter.apply(getBlockTextureWithPrefix(vanillaBlock, "","")), blockModels.modelOutput);
         blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(modBlock, BlockModelGenerators.plainVariant(resourceLocation)));
 
     }

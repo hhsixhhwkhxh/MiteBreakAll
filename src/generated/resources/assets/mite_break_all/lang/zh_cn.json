@@ -211,5 +211,6 @@
   "item.mite_break_all.tin_ingot": "锡锭",
   "item.mite_break_all.wild_apple": "野果",
   "itemGroup.mite": "MITE",
-  "tooltip.item.deprecated": "此物品不应当出现在正常生存流程中"
+  "tooltip.item.deprecated": "此物品不应当出现在正常生存流程中",
+  "tooltip.mite.melting_point": "熔点: %s"
 }

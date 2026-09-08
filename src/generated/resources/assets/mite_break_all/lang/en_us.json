@@ -211,5 +211,6 @@
   "item.mite_break_all.tin_ingot": "Tin Ingot",
   "item.mite_break_all.wild_apple": "Wild Apple",
   "itemGroup.mite": "MITE",
-  "tooltip.item.deprecated": "This item is not meant for normal survival mode."
+  "tooltip.item.deprecated": "This item is not meant for normal survival mode.",
+  "tooltip.mite.melting_point": "Melting Point: %s"
 }

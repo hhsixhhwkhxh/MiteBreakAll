@@ -1,6 +1,7 @@
 package hhsixhhwkhxh.mite.screen;
 
 import hhsixhhwkhxh.mite.MiteBreakAll;
+import hhsixhhwkhxh.mite.custom.MeltingCastRecord;
 import hhsixhhwkhxh.mite.item.ModItems;
 import hhsixhhwkhxh.mite.menu.LargeFurnaceMenu;
 import net.minecraft.client.Minecraft;
@@ -13,10 +14,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.registries.DeferredItem;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 
 
 public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu> {
@@ -149,5 +153,14 @@ public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
+    }
+
+    @Override
+    protected @NotNull List<Component> getTooltipFromContainerItem(ItemStack stack) {
+        var list = super.getTooltipFromContainerItem(stack);
+        if(MeltingCastRecord.MeltingCastMap.containsKey(stack.getItem())){
+            list.add(1,MeltingCastRecord.MeltingCastMap.get(stack.getItem()).getMeltingPointToolTip());
+        }
+        return list;
     }
 }

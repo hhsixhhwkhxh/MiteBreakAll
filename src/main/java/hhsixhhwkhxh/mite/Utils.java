@@ -5,7 +5,7 @@ import hhsixhhwkhxh.mite.custom.ModFoodData;
 import hhsixhhwkhxh.mite.custom.PlayerWaterData;
 import hhsixhhwkhxh.mite.packet.ClientboundSetVitalStatMaxValuePacket;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -21,8 +21,6 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public final class Utils {
     public static int getVitalStatMaxValue(int level){
@@ -143,5 +141,23 @@ public final class Utils {
                 .setValue(properties.get(0), offset.getX()+2)
                 .setValue(properties.get(1),offset.getY()+2)
                 .setValue(properties.get(2),offset.getZ()+2);
+    }
+
+    public static BlockPos[] getHorizontalNeighbourPosList(BlockPos pos){
+        return new BlockPos[]{pos.east(),pos.south(),pos.west(),pos.north()};
+    }
+
+    public static Optional<Direction> getRelativeHorizontalDirection(BlockPos basePos, BlockPos neighbourPos){
+        if(basePos==null||neighbourPos==null){
+            return Optional.empty();
+        }
+        final Direction[] directions = new Direction[]{Direction.EAST,Direction.SOUTH,Direction.WEST,Direction.NORTH};
+        BlockPos[] neighbourPosList = getHorizontalNeighbourPosList(basePos);
+        for (int i = 0; i < neighbourPosList.length; i++) {
+            if(neighbourPosList[i].equals(neighbourPos)){
+                return Optional.of(directions[i]);
+            }
+        }
+        return Optional.empty();
     }
 }

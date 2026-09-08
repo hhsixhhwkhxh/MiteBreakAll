@@ -263,5 +263,7 @@ public class ModEnUsLangProvider extends LanguageProvider {
 
         add(ModBlocks.STONE_FURNACE_CORE.get(), "Stone Furnace Core");
         add(ModItems.OBSIDIAN_INGOT_MOULD.get(),"Obsidian Ingot Mould");
+
+        add("tooltip.mite.melting_point","Melting Point: %s");
     }
 }

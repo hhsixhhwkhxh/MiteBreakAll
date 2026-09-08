@@ -1,6 +1,7 @@
 package hhsixhhwkhxh.mite.custom;
 
 import hhsixhhwkhxh.mite.item.ModItems;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 
 public record MeltingCastRecord(Item outputItem, int meltingPoint, int baseMeltTick) {
     public static final HashMap<Item,MeltingCastRecord> MeltingCastMap= new HashMap<>();
+
 
     static {
         MeltingCastMap.put(ModItems.SILVER_NUGGET.get(), new MeltingCastRecord(ModItems.SILVER_INGOT.get(),962,120));
@@ -43,5 +45,9 @@ public record MeltingCastRecord(Item outputItem, int meltingPoint, int baseMeltT
     private int getCoreModifierTicks(int coreQuantity) {
         float var2 = 1.0F + (float)Math.max(0, coreQuantity - 1) * 0.1F;
         return Mth.ceil(baseMeltTick / var2);
+    }
+
+    public Component getMeltingPointToolTip(){
+        return Component.translatable("tooltip.mite.melting_point",meltingPoint);
     }
 }
