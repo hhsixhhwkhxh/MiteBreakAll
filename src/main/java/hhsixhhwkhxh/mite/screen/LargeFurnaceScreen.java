@@ -1,14 +1,13 @@
 package hhsixhhwkhxh.mite.screen;
 
+import com.google.common.collect.Range;
 import hhsixhhwkhxh.mite.MiteBreakAll;
 import hhsixhhwkhxh.mite.custom.MeltingCastRecord;
 import hhsixhhwkhxh.mite.item.ModItems;
 import hhsixhhwkhxh.mite.menu.LargeFurnaceMenu;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -21,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 
 public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu> {
@@ -33,6 +33,8 @@ public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu
     private static final ResourceLocation LIQUID_METAL = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"container/large_furnace/liquid_metal");
 
     private boolean hasLockableSlotBeenInitialized = false;
+
+    private Range<Integer> thermometerRangeX,thermometerRangeY;
 
     private static final HashMap<Integer,ResourceLocation> INGOT_RES_MAP= new HashMap<>();
 
@@ -70,6 +72,8 @@ public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu
     @Override
     public void init() {
         super.init();
+        thermometerRangeX = Range.closed(leftPos + 44,leftPos + 44 + 19);
+        thermometerRangeY = Range.closed(topPos + 19,topPos + 19 + 59);
     }
 
     @Override
@@ -125,7 +129,7 @@ public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu
         super.renderContents(guiGraphics, mouseX, mouseY, partialTick);
 
         for (int i = 0;i < menu.getCoreQuantity();i++){
-            if(!this.menu.isNuggetToIngotRecipe(i)){
+            if(!this.menu.isSmeltingRecipe(i)){
                 continue;
             }
             var progress = menu.getBurnProgress(i);
@@ -138,7 +142,7 @@ public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu
             int liquidMetalSpriteHeight =  Mth.ceil(16 * liquidMetalProgress);
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, LIQUID_METAL, 16, 16, 0, 16-liquidMetalSpriteHeight, x, y + (16-liquidMetalSpriteHeight), 16,liquidMetalSpriteHeight);
 
-            int hash = menu.getOutputIngotName(i);
+            int hash = menu.getSmeltingOutputName(i);
             if(progress<=0.6||!INGOT_RES_MAP.containsKey(hash)){
                 continue;
             }
@@ -153,6 +157,28 @@ public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
+
+        if(this.hoveredSlot!=null&&this.hoveredSlot.hasItem()){
+            return;
+        }
+
+        if (!this.menu.getCarried().isEmpty()) {
+            return;
+        }
+
+        if(!thermometerRangeX.contains(mouseX)||!thermometerRangeY.contains(mouseY)){
+            return;
+        }
+
+        guiGraphics.setTooltipForNextFrame(
+                this.font,
+                List.of(Component.translatable("container.large_furnace.temperature",Math.round(menu.getTemperature()))),
+                Optional.empty(),
+                ItemStack.EMPTY,
+                mouseX,
+                mouseY,
+                null
+        );
     }
 
     @Override

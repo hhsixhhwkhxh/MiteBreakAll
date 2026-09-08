@@ -292,9 +292,9 @@ public class ModModelProvider extends ModelProvider {
 
         createLargeFurnaceCore(blockModels,ModBlocks.STONE_FURNACE_CORE.get(),"stone");
 
-        createWallBlockWrapper(blockModels,Blocks.COBBLESTONE,ModBlocks.COBBLESTONE_MATERIAL_BLOCK.get());
-        createWallBlockWrapper(blockModels,Blocks.OBSIDIAN,ModBlocks.OBSIDIAN_MATERIAL_BLOCK.get());
-        createWallBlockWrapper(blockModels,Blocks.NETHERRACK,ModBlocks.NETHERRACK_MATERIAL_BLOCK.get());
+        createWallBlockWrapper(blockModels,Blocks.COBBLESTONE,ModBlocks.COBBLESTONE_WRAPPER_BLOCK.get());
+        createWallBlockWrapper(blockModels,Blocks.OBSIDIAN,ModBlocks.OBSIDIAN_WRAPPER_BLOCK.get());
+        createWallBlockWrapper(blockModels,Blocks.NETHERRACK,ModBlocks.NETHERRACK_WRAPPER_BLOCK.get());
 
         blockModels.registerSimpleFlatItemModel(ModItems.OBSIDIAN_INGOT_MOULD.get());
     }

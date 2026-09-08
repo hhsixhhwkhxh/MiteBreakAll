@@ -2,7 +2,6 @@ package hhsixhhwkhxh.mite.menu;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import hhsixhhwkhxh.mite.custom.MeltingCastRecord;
 import hhsixhhwkhxh.mite.slot.CraftingResultSlot;
 import hhsixhhwkhxh.mite.slot.LargeFurnaceFuelSlot;
 import hhsixhhwkhxh.mite.slot.LockableSlot;
@@ -35,7 +34,7 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
     public static final int CRAFT_RESULT_SLOT;
 
     public static int SLOT_COUNT = 0;
-    public static final int DATA_COUNT = 23;
+    public static final int DATA_COUNT = 24;
 
     final Container container;
     private final ContainerData data;
@@ -234,7 +233,15 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
     }
 
     public float getTemperatureProgress(){
-        return Mth.clamp((float)data.get(TEMPERATURE)/ TEMPERATURE_MULTIPLIER / TEMPERATURE_LIMIT, 0.0F, 1.0F);
+        return Mth.clamp(getTemperature() / getTemperatureLimit(), 0.0F, 1.0F);
+    }
+
+    public float getTemperature(){
+        return (float) data.get(TEMPERATURE) / TEMPERATURE_MULTIPLIER ;
+    }
+
+    public int getTemperatureLimit(){
+        return data.get(TEMPERATURE_LIMIT) ;
     }
 
     public int getCoreQuantity(){
@@ -247,12 +254,12 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
         return cookingTotalTime != 0 && cookingTimer != 0 ? Mth.clamp((float)cookingTimer / cookingTotalTime, 0.0F, 1.0F) : 0.0F;
     }
 
-    public boolean isNuggetToIngotRecipe(int index){
-        return (data.get(IS_NUGGET_TO_INGOT_RECIPE[index])!=0);
+    public boolean isSmeltingRecipe(int index){
+        return (data.get(IS_SMELTING_RECIPE[index])!=0);
     }
 
-    public int getOutputIngotName(int index){
-        return data.get(OUTPUT_INGOT_NAME[index]);
+    public int getSmeltingOutputName(int index){
+        return data.get(SMELTING_OUTPUT_NAME[index]);
     }
 
     @Override
@@ -260,12 +267,13 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
         return this.recipeBookType;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public PostPlaceAction handlePlacement(
         boolean useMaxItems, boolean isCreative, RecipeHolder<?> recipe, final ServerLevel level, Inventory playerInventory
     ) {
         final List<Slot> list = List.of(this.getSlot(0), this.getSlot(2));
-        return ServerPlaceRecipe.placeRecipe(new ServerPlaceRecipe.CraftingMenuAccess<AbstractCookingRecipe>() {
+        return ServerPlaceRecipe.placeRecipe(new ServerPlaceRecipe.CraftingMenuAccess<>() {
             @Override
             public void fillCraftSlotsStackedContents(StackedItemContents stackedItemContents) {
                 LargeFurnaceMenu.this.fillCraftSlotsStackedContents(stackedItemContents);

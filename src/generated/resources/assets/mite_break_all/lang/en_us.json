@@ -17,6 +17,7 @@
   "block.mite_break_all.stone_furnace_core": "Stone Furnace Core",
   "block.mite_break_all.strawberry_bush": "StrawBerry Bush",
   "block.mite_break_all.tin_ore": "Tin Ore",
+  "container.large_furnace.temperature": "Temperature: %s",
   "container.repair.higher_anvil": "Require higher level anvil",
   "container.repair.unsupported_item": "This item cannot be used here",
   "craft_table.flint": "Flint Crafting Table",

@@ -264,5 +264,6 @@ public class ModZhCnLangProvider extends LanguageProvider {
         add(ModItems.OBSIDIAN_INGOT_MOULD.get(),"黑曜石锭模板");
 
         add("tooltip.mite.melting_point","熔点: %s");
+        add("container.large_furnace.temperature","温度: %s");
     }
 }

@@ -17,5 +17,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "mite_break_all:blocks/cobblestone_material_block"
+  "random_sequence": "mite_break_all:blocks/cobblestone_wrapper_block"
 }

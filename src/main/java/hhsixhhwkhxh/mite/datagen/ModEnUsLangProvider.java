@@ -265,5 +265,6 @@ public class ModEnUsLangProvider extends LanguageProvider {
         add(ModItems.OBSIDIAN_INGOT_MOULD.get(),"Obsidian Ingot Mould");
 
         add("tooltip.mite.melting_point","Melting Point: %s");
+        add("container.large_furnace.temperature","Temperature: %s");
     }
 }

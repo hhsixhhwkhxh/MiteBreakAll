@@ -17,5 +17,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "mite_break_all:blocks/obsidian_material_block"
+  "random_sequence": "mite_break_all:blocks/obsidian_wrapper_block"
 }

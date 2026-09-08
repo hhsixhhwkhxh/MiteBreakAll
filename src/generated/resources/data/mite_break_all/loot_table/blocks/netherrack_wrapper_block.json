@@ -17,5 +17,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "mite_break_all:blocks/netherrack_material_block"
+  "random_sequence": "mite_break_all:blocks/netherrack_wrapper_block"
 }

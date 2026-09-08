@@ -17,7 +17,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.SweetBerryBushBlock;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -26,7 +25,6 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.*;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import org.jetbrains.annotations.NotNull;
 
@@ -95,9 +93,9 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
 
         this.dropSelf(ModBlocks.STONE_FURNACE_CORE.get());
 
-        this.dropOther(ModBlocks.COBBLESTONE_MATERIAL_BLOCK.get(), Blocks.COBBLESTONE.asItem());
-        this.dropOther(ModBlocks.OBSIDIAN_MATERIAL_BLOCK.get(), Blocks.OBSIDIAN.asItem());
-        this.dropOther(ModBlocks.NETHERRACK_MATERIAL_BLOCK.get(), Blocks.NETHERRACK.asItem());
+        this.dropOther(ModBlocks.COBBLESTONE_WRAPPER_BLOCK.get(), Blocks.COBBLESTONE.asItem());
+        this.dropOther(ModBlocks.OBSIDIAN_WRAPPER_BLOCK.get(), Blocks.OBSIDIAN.asItem());
+        this.dropOther(ModBlocks.NETHERRACK_WRAPPER_BLOCK.get(), Blocks.NETHERRACK.asItem());
     }
 
     @Override

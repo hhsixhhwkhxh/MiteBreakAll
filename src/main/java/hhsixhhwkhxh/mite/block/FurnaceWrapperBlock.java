@@ -26,16 +26,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
-public class FurnaceWallBlock extends Block {
+public class FurnaceWrapperBlock extends Block {
 
     public static final EnumProperty<Type> MATERIAL_TYPE = EnumProperty.create("material_type", Type.class);
     public static final List<IntegerProperty> REAL_FURNACE_POS = Utils.createBlockPosProperty("real_furnace");
-    private final Type wallType;
+    private final Type blockType;
 
 
-    public FurnaceWallBlock(Properties properties, Type wallType) {
+    public FurnaceWrapperBlock(Properties properties, Type blockType) {
         super(properties);
-        this.wallType = wallType;
+        this.blockType = blockType;
     }
 
 
@@ -80,7 +80,7 @@ public class FurnaceWallBlock extends Block {
 
     @Override
     public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData, Player player) {
-        return wallType.getBlock().asItem().getDefaultInstance();
+        return blockType.getBlock().asItem().getDefaultInstance();
     }
 
     public enum Type implements StringRepresentable {

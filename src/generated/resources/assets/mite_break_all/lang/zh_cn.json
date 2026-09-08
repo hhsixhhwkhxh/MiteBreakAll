@@ -17,6 +17,7 @@
   "block.mite_break_all.stone_furnace_core": "石熔炉核心",
   "block.mite_break_all.strawberry_bush": "草莓丛",
   "block.mite_break_all.tin_ore": "锡矿",
+  "container.large_furnace.temperature": "温度: %s",
   "container.repair.higher_anvil": "需要更高级的砧",
   "container.repair.unsupported_item": "该物品不支持此操作",
   "craft_table.flint": "燧石工作台",

@@ -2,7 +2,7 @@ package hhsixhhwkhxh.mite.blockentity;
 
 import hhsixhhwkhxh.mite.MiteBreakAll;
 import hhsixhhwkhxh.mite.Utils;
-import hhsixhhwkhxh.mite.block.FurnaceWallBlock;
+import hhsixhhwkhxh.mite.block.FurnaceWrapperBlock;
 import hhsixhhwkhxh.mite.block.ModBlocks;
 import hhsixhhwkhxh.mite.custom.MeltingCastRecord;
 import hhsixhhwkhxh.mite.item.ModItems;
@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Objects;
@@ -47,9 +48,9 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     private BlockPos realFurnacePos = null;
     private Set<BlockPos> shadowCores = new HashSet<>(3);
 
-    public final Block wallBlock;
+    public final Block brickBlock;
     public final Block coreBlock;
-    public final Block wallWrapperBlock;
+    public final Block brickWrapperBlock;
 
     protected NonNullList<ItemStack> items = NonNullList.withSize(44, ItemStack.EMPTY);
 
@@ -63,22 +64,25 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     public final static int[] COOKING_TIMER = new int[4];
     public final static int[] COOKING_TOTAL_TIME = new int[4];
     public final static int CORE_QUANTITY;
-    public final static int[] IS_NUGGET_TO_INGOT_RECIPE = new int[4];
-    public final static int[] OUTPUT_INGOT_NAME = new int[4];
+    public final static int[] IS_SMELTING_RECIPE = new int[4];
+    public final static int[] SMELTING_OUTPUT_NAME = new int[4];
+    public final static int TEMPERATURE_LIMIT;
 
     public final static int TEMPERATURE_MULTIPLIER = 10000;
-    public final static int TEMPERATURE_LIMIT = 2000;
+
 
     private static int dataIndexCounter = 0;
     static {
+        CORE_QUANTITY = assignSingleIndex();
         TEMPERATURE = assignSingleIndex();
+        TEMPERATURE_LIMIT = assignSingleIndex();
+
         assignArrayIndex(FUEL_BURN_TIME_REMAINING);
         assignArrayIndex(COOKING_TIMER);
         assignArrayIndex(COOKING_TOTAL_TIME);
 
-        CORE_QUANTITY = assignSingleIndex();
-        assignArrayIndex(IS_NUGGET_TO_INGOT_RECIPE);
-        assignArrayIndex(OUTPUT_INGOT_NAME);
+        assignArrayIndex(IS_SMELTING_RECIPE);
+        assignArrayIndex(SMELTING_OUTPUT_NAME);
 
         Objects.checkIndex(dataIndexCounter, DATA_COUNT);
     }
@@ -116,23 +120,26 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
     public FurnaceCoreBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.FURNACE_CORE.get(), pos, blockState);
-        this.wallBlock = Blocks.COBBLESTONE;
+        this.brickBlock = Blocks.COBBLESTONE;
         this.coreBlock = ModBlocks.STONE_FURNACE_CORE.get();
-        this.wallWrapperBlock = ModBlocks.COBBLESTONE_MATERIAL_BLOCK.get();
+        this.brickWrapperBlock = ModBlocks.COBBLESTONE_WRAPPER_BLOCK.get();
     }
 
-    public FurnaceCoreBlockEntity(BlockPos pos, BlockState blockState, Block wallBlock, Block coreBlock) {
+    public FurnaceCoreBlockEntity(BlockPos pos, BlockState blockState, Block brickBlock, Block coreBlock) {
         super(ModBlockEntities.FURNACE_CORE.get(), pos, blockState);
-        this.wallBlock = wallBlock;
+        this.brickBlock = brickBlock;
         this.coreBlock = coreBlock;
 
-        var wallBlockState = wallBlock.defaultBlockState();
+        var wallBlockState = brickBlock.defaultBlockState();
         if(wallBlockState.is(Blocks.COBBLESTONE)){
-            wallWrapperBlock = ModBlocks.COBBLESTONE_MATERIAL_BLOCK.get();
+            brickWrapperBlock = ModBlocks.COBBLESTONE_WRAPPER_BLOCK.get();
+            setTemperatureLimit(2000);
         }else if (wallBlockState.is(Blocks.OBSIDIAN)){
-            wallWrapperBlock = ModBlocks.OBSIDIAN_MATERIAL_BLOCK.get();
+            brickWrapperBlock = ModBlocks.OBSIDIAN_WRAPPER_BLOCK.get();
+            setTemperatureLimit(5000);
         }else if (wallBlockState.is(Blocks.NETHERRACK)){
-            wallWrapperBlock = ModBlocks.NETHERRACK_MATERIAL_BLOCK.get();
+            brickWrapperBlock = ModBlocks.NETHERRACK_WRAPPER_BLOCK.get();
+            setTemperatureLimit(7000);
         }else{
             throw new IllegalStateException("Unexcepted wallBlockState: "+wallBlockState);
         }
@@ -167,7 +174,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
                 hasAnyFuelBurning = true;
                 fuelBurnTimeRemaining--;
 
-                if(temperature<TEMPERATURE_LIMIT){
+                if(temperature < furnace.getTemperatureLimit()){
                     temperature+=0.05F;
                 }
 
@@ -196,11 +203,11 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
             ItemStack mouldStack = furnace.getItems().get(MOULD_SLOT[i]);
 
             //检查是否满足粒->锭的条件 用于更新dataAccess 方便客户端Screen获取信息
-            var meltingRecipeOpt = getMeltingRecipe(inputStack.getItem());
-            boolean isMeltingRecipe = (meltingRecipeOpt.isPresent());
-            furnace.setIsNuggetToIngotRecipe(i,isMeltingRecipe);
-            if(isMeltingRecipe){
-                furnace.setOutputIngotName(i,meltingRecipeOpt.get().outputItem().getDescriptionId());
+            var smeltingRecipeOpt = getSmeltingRecipe(inputStack.getItem());
+            boolean isSmeltingRecipe = (smeltingRecipeOpt.isPresent());
+            furnace.setIsSmeltingRecipe(i,isSmeltingRecipe);
+            if(isSmeltingRecipe){
+                furnace.setSmeltingOutputName(i,smeltingRecipeOpt.get().outputItem().getDescriptionId());
             }
 
             if(cookingTotalTime <= 0){
@@ -208,7 +215,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
                 if(inputStack.isEmpty()){
                     continue;
                 }
-                if(meltingRecipeOpt.isPresent()&&(!mouldStack.is(ModItems.OBSIDIAN_INGOT_MOULD) || inputStack.getCount()<9 || temperature < meltingRecipeOpt.get().meltingPoint())){
+                if(isSmeltingRecipe&&!isSmeltingConditionMet(smeltingRecipeOpt.get(),inputStack,mouldStack,temperature)){
                     continue;
                 }
 
@@ -245,7 +252,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
                 });
 
                 if(isSucceeded.get()){
-                    if(meltingRecipeOpt.isPresent()){
+                    if(smeltingRecipeOpt.isPresent()){
                         inputStack.shrink(9);
 
                         int dataDamage = mouldStack.getDamageValue() + 1;
@@ -265,9 +272,9 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
                 continue;
             }
 
-            if (cookingTimer>=0&&(inputStack.isEmpty()||isMeltingRecipe&&!isMould(mouldStack))){
+            if (cookingTimer>=0 && (inputStack.isEmpty()|| (isSmeltingRecipe&&!isSmeltingConditionMet(smeltingRecipeOpt.get(),inputStack,mouldStack,temperature)))){
                 cookingTimer--;
-                furnace.setIsNuggetToIngotRecipe(i,false);
+                furnace.setIsSmeltingRecipe(i,false);
             }else{
                 cookingTimer++;
             }
@@ -368,17 +375,17 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
     public void wrapWallBlock(LevelAccessor level, BlockPos blockPos){
         level.setBlock(blockPos,
-                wallWrapperBlock.defaultBlockState()
-                        .setValue(FurnaceWallBlock.MATERIAL_TYPE,
-                                FurnaceWallBlock.Type.getTypeByBlock(wallBlock)
+                brickWrapperBlock.defaultBlockState()
+                        .setValue(FurnaceWrapperBlock.MATERIAL_TYPE,
+                                FurnaceWrapperBlock.Type.getTypeByBlock(brickBlock)
                         )
                 ,UPDATE_ALL);
 
-        FurnaceWallBlock.setRealFurnacePos(level, blockPos, worldPosition);
+        FurnaceWrapperBlock.setRealFurnacePos(level, blockPos, worldPosition);
     }
 
     public void unwrapWallBlock(LevelAccessor level,BlockPos blockPos){
-        level.setBlock(blockPos, wallBlock.defaultBlockState(), UPDATE_ALL);
+        level.setBlock(blockPos, brickBlock.defaultBlockState(), UPDATE_ALL);
     }
 
 
@@ -399,7 +406,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     }
 
     private boolean isWallBlock(LevelAccessor level, BlockPos pos){
-        return level.getBlockState(pos).is(wallBlock)||level.getBlockState(pos).is(wallWrapperBlock);
+        return level.getBlockState(pos).is(brickBlock)||level.getBlockState(pos).is(brickWrapperBlock);
     }
 
     private boolean isCoreBlock(LevelAccessor level, BlockPos pos){
@@ -618,15 +625,15 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     }
 
     public int getItemTotalCookTime(ServerLevel level, ItemStack input) {
-        var recipe = getMeltingRecipe(input.getItem());
+        var recipe = getSmeltingRecipe(input.getItem());
         if(recipe.isPresent()){
-            return recipe.get().getFinalMeltTicks(wallBlock,getCoreQuantity());
+            return recipe.get().getFinalMeltTicks(brickBlock,getCoreQuantity());
         }
         SingleRecipeInput singlerecipeinput = new SingleRecipeInput(input);
         return QUICK_CHECK.getRecipeFor(singlerecipeinput, level).map(p_379263_ -> p_379263_.value().cookingTime()).orElse(200);
     }
 
-    public static Optional<MeltingCastRecord> getMeltingRecipe(Item item){
+    public static Optional<MeltingCastRecord> getSmeltingRecipe(Item item){
         if(!MeltingCastRecord.MeltingCastMap.containsKey(item)){
             return Optional.empty();
         }
@@ -638,7 +645,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     }
 
     public Optional<ItemStack> getBurnOutput(ServerLevel level, ItemStack input){
-        var recipe = getMeltingRecipe(input.getItem());
+        var recipe = getSmeltingRecipe(input.getItem());
         if(recipe.isPresent()){
             return Optional.of(recipe.get().outputItem().getDefaultInstance()) ;
         }
@@ -651,12 +658,12 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         return Optional.of(recipeholder.value().assemble(singlerecipeinput, level.registryAccess()));
     }
 
-    public void setIsNuggetToIngotRecipe(int index,boolean value){
-        dataAccess.set(IS_NUGGET_TO_INGOT_RECIPE[index],value?1:0);
+    public void setIsSmeltingRecipe(int index, boolean value){
+        dataAccess.set(IS_SMELTING_RECIPE[index],value?1:0);
     }
 
-    public void setOutputIngotName(int index,String value){
-        dataAccess.set(OUTPUT_INGOT_NAME[index],value.hashCode());
+    public void setSmeltingOutputName(int index, String value){
+        dataAccess.set(SMELTING_OUTPUT_NAME[index],value.hashCode());
     }
 
     public static boolean isMould(ItemStack itemStack){
@@ -669,6 +676,17 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         return false;
     }
 
+    public int getTemperatureLimit(){
+        return dataAccess.get(TEMPERATURE_LIMIT) ;
+    }
+
+    private void setTemperatureLimit(int value){
+        dataAccess.set(TEMPERATURE_LIMIT, value); ;
+    }
+
+    private static boolean isSmeltingConditionMet(@Nonnull MeltingCastRecord meltingRecipe, ItemStack inputStack, ItemStack mouldStack,  float temperature){
+        return  (isMould(mouldStack) && inputStack.getCount()>=9 && temperature >= meltingRecipe.meltingPoint());
+    }
 
     public static class FindResult{
         public static final FindResult FAIL = new FindResult();

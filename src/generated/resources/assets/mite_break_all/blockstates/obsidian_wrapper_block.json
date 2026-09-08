@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "mite_break_all:block/obsidian_wrapper_block"
+    }
+  }
+}
