@@ -95,7 +95,7 @@ public class FurnaceCore extends BaseEntityBlock {
     protected void onExplosionHit(BlockState state, ServerLevel level, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> dropConsumer) {
 
         getBlockEntity(level,pos).ifPresent(blockEntity->{
-            blockEntity.deactivationCore(level);
+            blockEntity.deactivationCore(level,pos);
         });
         super.onExplosionHit(state, level, pos, explosion, dropConsumer);
     }
@@ -103,7 +103,7 @@ public class FurnaceCore extends BaseEntityBlock {
     @Override
     public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
         getBlockEntity(level,pos).ifPresent(blockEntity->{
-            blockEntity.deactivationCore(level);
+            blockEntity.deactivationCore(level,pos);
         });
         return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
     }

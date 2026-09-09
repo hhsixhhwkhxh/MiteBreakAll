@@ -54,11 +54,11 @@ public class FurnaceWrapperBlock extends Block {
         level.setBlock(pos,newState,UPDATE_ALL);
     }
 
-    public void onDestroy(LevelAccessor level, BlockPos pos){
+    public void onDestroy(Level level, BlockPos pos){
 
         BlockEntity blockEntity = level.getBlockEntity(Utils.getAbsolutePosFromBlockState(pos,level.getBlockState(pos),REAL_FURNACE_POS));
         if(blockEntity instanceof FurnaceCoreBlockEntity furnaceCoreBlockEntity){
-            furnaceCoreBlockEntity.deactivationCore(level);
+            furnaceCoreBlockEntity.deactivationCore(level,pos);
         }
     }
 

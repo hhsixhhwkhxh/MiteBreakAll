@@ -11,12 +11,15 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -175,5 +178,18 @@ public final class Utils {
             return true;
         }
         return false;
+    }
+
+    public static void dropItem(ItemStack itemStack, Level level, BlockPos pos){
+        Vec3 vec3 = Vec3.atLowerCornerWithOffset(pos, 0.5, 1.01, 0.5).offsetRandom(level.random, 0.7F);
+        ItemEntity itementity = new ItemEntity(level, vec3.x(), vec3.y(), vec3.z(), itemStack);
+        itementity.setDefaultPickUpDelay();
+        level.addFreshEntity(itementity);
+    }
+
+    public static void dropItems(Collection<ItemStack> itemStackCollection, Level level, BlockPos pos){
+        itemStackCollection.forEach(itemStack->{
+            dropItem(itemStack,level,pos);
+        });
     }
 }

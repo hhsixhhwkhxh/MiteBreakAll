@@ -12,6 +12,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -38,6 +39,7 @@ import static hhsixhhwkhxh.mite.Utils.getHorizontalNeighbourPosList;
 import static hhsixhhwkhxh.mite.Utils.isMould;
 import static hhsixhhwkhxh.mite.block.FurnaceCore.*;
 import static hhsixhhwkhxh.mite.menu.LargeFurnaceMenu.*;
+import static net.minecraft.world.Containers.dropItemStack;
 import static net.minecraft.world.level.block.Block.UPDATE_ALL;
 
 public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
@@ -144,7 +146,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
             brickWrapperBlock = ModBlocks.NETHERRACK_WRAPPER_BLOCK.get();
             setTemperatureLimit(7000);
         }else{
-            throw new IllegalStateException("Unexcepted wallBlockState: "+wallBlockState);
+            throw new IllegalStateException("Unexcepted brickBlockState: "+wallBlockState);
         }
     }
 
@@ -367,19 +369,25 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         }
     }
 
-    public void deactivationCore(LevelAccessor level){
+    public void deactivationCore(Level level,@Nullable BlockPos dropItemPos){
         if(level.isClientSide()){
             return;
         }
 
         if(isShadow(level)){
             getBlockEntity(level, realFurnacePos).ifPresent(blockEntity->{
-                blockEntity.deactivationCore(level);
+                blockEntity.deactivationCore(level,worldPosition);
             });
         }
 
         if(furnaceCentrePos==null){
             return;
+        }
+
+        if(dropItemPos!=null){
+            for (int i = 0; i < this.getContainerSize(); i++) {
+                dropItemStack(level, dropItemPos.getX(), dropItemPos.getY(), dropItemPos.getZ(), this.getItem(i));
+            }
         }
 
         FindResult findResult = isCenterPos(level, furnaceCentrePos, false);
