@@ -2,13 +2,11 @@ package hhsixhhwkhxh.mite.block;
 
 import com.mojang.serialization.MapCodec;
 import hhsixhhwkhxh.mite.blockentity.FurnaceCoreBlockEntity;
-import hhsixhhwkhxh.mite.blockentity.MiteAnvilBlockEntity;
 import hhsixhhwkhxh.mite.blockentity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -40,14 +38,15 @@ public class FurnaceCore extends BaseEntityBlock {
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty SHADOW = BooleanProperty.create("shadow");
 
-    public final Block materialBlock = Blocks.COBBLESTONE;
+    public Block brickBlock;
 
 
-    public FurnaceCore(Properties properties) {
+    public FurnaceCore(Properties properties, Block brickBlock) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(ACTIVATED, false)
                 .setValue(LIT, false).setValue(SHADOW,false)
         );
+        this.brickBlock = brickBlock;
     }
 
     @Override
@@ -136,6 +135,6 @@ public class FurnaceCore extends BaseEntityBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new FurnaceCoreBlockEntity(pos,state,materialBlock,this);
+        return new FurnaceCoreBlockEntity(pos,state, brickBlock,this);
     }
 }

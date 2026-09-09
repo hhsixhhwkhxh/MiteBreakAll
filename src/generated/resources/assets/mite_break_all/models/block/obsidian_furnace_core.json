@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "mite_break_all:block/large_furnace/obsidian/core",
+    "side": "mite_break_all:block/large_furnace/obsidian/core",
+    "top": "mite_break_all:block/large_furnace/obsidian/core_top"
+  }
+}

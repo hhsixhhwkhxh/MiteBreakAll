@@ -291,6 +291,8 @@ public class ModModelProvider extends ModelProvider {
         createProxyItemModel(blockModels);
 
         createLargeFurnaceCore(blockModels,ModBlocks.STONE_FURNACE_CORE.get(),"stone");
+        createLargeFurnaceCore(blockModels,ModBlocks.OBSIDIAN_FURNACE_CORE.get(),"obsidian");
+        createLargeFurnaceCore(blockModels,ModBlocks.NETHERRACK_FURNACE_CORE.get(),"netherrack");
 
         createWallBlockWrapper(blockModels,Blocks.COBBLESTONE,ModBlocks.COBBLESTONE_WRAPPER_BLOCK.get());
         createWallBlockWrapper(blockModels,Blocks.OBSIDIAN,ModBlocks.OBSIDIAN_WRAPPER_BLOCK.get());
@@ -563,11 +565,7 @@ public class ModModelProvider extends ModelProvider {
                 .put(TextureSlot.FRONT, coreResourceLocation)
                 .put(TextureSlot.TOP, coreTopResourceLocation);
 
-
-
-        TexturedModel.Provider modelProvider = TexturedModel.ORIENTABLE_ONLY_TOP;
         MultiVariant multivariant = BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ORIENTABLE.create(coreBlock,textureMapping,blockModels.modelOutput));
-
 
         MultiVariant multivariant1 = BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ORIENTABLE.createWithSuffix(coreBlock,"_active",textureMapping.copy().put(TextureSlot.FRONT, frontOffResourceLocation),blockModels.modelOutput));
         MultiVariant multivariant2 = BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ORIENTABLE.createWithSuffix(coreBlock,"_lit",textureMapping.copy().put(TextureSlot.FRONT, frontOnResourceLocation),blockModels.modelOutput));

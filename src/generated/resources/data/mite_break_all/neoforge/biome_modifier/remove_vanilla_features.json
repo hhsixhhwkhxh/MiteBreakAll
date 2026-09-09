@@ -25,7 +25,7 @@
     "minecraft:ore_lapis_buried"
   ],
   "steps": [
-    "local_modifications",
-    "underground_ores"
+    "underground_ores",
+    "local_modifications"
   ]
 }

@@ -92,6 +92,8 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         this.dropSelf(ModBlocks.SILVER_ANVIL.get());
 
         this.dropSelf(ModBlocks.STONE_FURNACE_CORE.get());
+        this.dropSelf(ModBlocks.OBSIDIAN_FURNACE_CORE.get());
+        this.dropSelf(ModBlocks.NETHERRACK_FURNACE_CORE.get());
 
         this.dropOther(ModBlocks.COBBLESTONE_WRAPPER_BLOCK.get(), Blocks.COBBLESTONE.asItem());
         this.dropOther(ModBlocks.OBSIDIAN_WRAPPER_BLOCK.get(), Blocks.OBSIDIAN.asItem());

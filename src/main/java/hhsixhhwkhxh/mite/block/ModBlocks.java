@@ -59,8 +59,15 @@ public class ModBlocks {
     public static final DeferredBlock<Block> MITHRIL_ANVIL = registerAnvil("mithril_anvil",MiteAnvilBlock.AnvilVariant.MITHRIL,9523200);
     public static final DeferredBlock<Block> SILVER_ANVIL = registerAnvil("silver_anvil",MiteAnvilBlock.AnvilVariant.SILVER,198400);
 
-    public static final DeferredBlock<Block> STONE_FURNACE_CORE = registerBlock("stone_furnace_core", FurnaceCore::new,
+    public static final DeferredBlock<Block> STONE_FURNACE_CORE = registerBlock("stone_furnace_core", (properties)-> new FurnaceCore(properties,Blocks.COBBLESTONE),
             BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASS).strength(0.6F).sound(SoundType.STONE).ignitedByLava());
+
+    public static final DeferredBlock<Block> OBSIDIAN_FURNACE_CORE = registerBlock("obsidian_furnace_core",(properties)-> new FurnaceCore(properties,Blocks.OBSIDIAN),
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).instrument(NoteBlockInstrument.BASEDRUM).strength(50.0F, 1200.0F).sound(SoundType.STONE).ignitedByLava());
+
+    public static final DeferredBlock<Block> NETHERRACK_FURNACE_CORE = registerBlock("netherrack_furnace_core", (properties)-> new FurnaceCore(properties,Blocks.NETHERRACK),
+            BlockBehaviour.Properties.of().mapColor(MapColor.NETHER).instrument(NoteBlockInstrument.BASEDRUM).strength(0.4F).sound(SoundType.NETHERRACK).ignitedByLava());
+
 
     public static final DeferredBlock<Block> COBBLESTONE_WRAPPER_BLOCK = registerBlock(
             "cobblestone_wrapper_block",(properties -> new FurnaceWrapperBlock(properties, FurnaceWrapperBlock.Type.COBBLESTONE)),

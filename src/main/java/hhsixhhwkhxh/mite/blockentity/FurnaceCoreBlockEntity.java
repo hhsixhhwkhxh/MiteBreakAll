@@ -135,18 +135,18 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         this.brickBlock = brickBlock;
         this.coreBlock = coreBlock;
 
-        var wallBlockState = brickBlock.defaultBlockState();
-        if(wallBlockState.is(Blocks.COBBLESTONE)){
+        var brickBlockState = brickBlock.defaultBlockState();
+        if(brickBlockState.is(Blocks.COBBLESTONE)){
             brickWrapperBlock = ModBlocks.COBBLESTONE_WRAPPER_BLOCK.get();
             setTemperatureLimit(2000);
-        }else if (wallBlockState.is(Blocks.OBSIDIAN)){
+        }else if (brickBlockState.is(Blocks.OBSIDIAN)){
             brickWrapperBlock = ModBlocks.OBSIDIAN_WRAPPER_BLOCK.get();
             setTemperatureLimit(5000);
-        }else if (wallBlockState.is(Blocks.NETHERRACK)){
+        }else if (brickBlockState.is(Blocks.NETHERRACK)){
             brickWrapperBlock = ModBlocks.NETHERRACK_WRAPPER_BLOCK.get();
             setTemperatureLimit(7000);
         }else{
-            throw new IllegalStateException("Unexcepted brickBlockState: "+wallBlockState);
+            throw new IllegalStateException("Unexcepted brickBlockState: "+brickBlockState);
         }
     }
 
