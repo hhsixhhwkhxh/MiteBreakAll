@@ -3,6 +3,7 @@ package hhsixhhwkhxh.mite;
 import hhsixhhwkhxh.mite.accessor.PlayerMixinAccessor;
 import hhsixhhwkhxh.mite.custom.ModFoodData;
 import hhsixhhwkhxh.mite.custom.PlayerWaterData;
+import hhsixhhwkhxh.mite.item.ModItems;
 import hhsixhhwkhxh.mite.packet.ClientboundSetVitalStatMaxValuePacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -11,6 +12,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.storage.ValueInput;
@@ -163,5 +165,15 @@ public final class Utils {
             }
         }
         return Optional.empty();
+    }
+
+    public static boolean isMould(ItemStack itemStack){
+        if(itemStack == null){
+            return false;
+        }
+        if(itemStack.is(ModItems.OBSIDIAN_INGOT_MOULD)){
+            return true;
+        }
+        return false;
     }
 }

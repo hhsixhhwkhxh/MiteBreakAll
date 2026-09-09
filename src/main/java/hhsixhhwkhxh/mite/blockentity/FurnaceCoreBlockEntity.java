@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static hhsixhhwkhxh.mite.Utils.getHorizontalNeighbourPosList;
+import static hhsixhhwkhxh.mite.Utils.isMould;
 import static hhsixhhwkhxh.mite.block.FurnaceCore.*;
 import static hhsixhhwkhxh.mite.menu.LargeFurnaceMenu.*;
 import static net.minecraft.world.level.block.Block.UPDATE_ALL;
@@ -688,15 +689,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         dataAccess.set(SMELTING_OUTPUT_NAME[index],value.hashCode());
     }
 
-    public static boolean isMould(ItemStack itemStack){
-        if(itemStack == null){
-            return false;
-        }
-        if(itemStack.is(ModItems.OBSIDIAN_INGOT_MOULD)){
-            return true;
-        }
-        return false;
-    }
+
 
     public int getTemperatureLimit(){
         return dataAccess.get(TEMPERATURE_LIMIT) ;

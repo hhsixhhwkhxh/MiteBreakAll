@@ -2,6 +2,8 @@ package hhsixhhwkhxh.mite.menu;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import hhsixhhwkhxh.mite.Utils;
+import hhsixhhwkhxh.mite.custom.MeltingCastRecord;
 import hhsixhhwkhxh.mite.slot.CraftingResultSlot;
 import hhsixhhwkhxh.mite.slot.LargeFurnaceFuelSlot;
 import hhsixhhwkhxh.mite.slot.LockableSlot;
@@ -15,11 +17,14 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.*;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 import static hhsixhhwkhxh.mite.blockentity.FurnaceCoreBlockEntity.*;
 
@@ -47,7 +52,25 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
     private final CraftingResultSlot craftingResultSlot;
 
     private boolean isClientSide = false;
-    private Multimap<Integer,LockableSlot> lazyLockSlotMap = ArrayListMultimap.create();
+    private final Multimap<Integer,LockableSlot> lazyLockSlotMap = ArrayListMultimap.create();
+
+    private final List<Predicate<ItemStack>> itemAssignMethodlist = List.of(
+            (itemStack)->{
+                if(!this.canSmelt(itemStack)&&!hasSmeltingRecipe(itemStack.getItem())){return false;}
+                return this.moveItemStackTo(itemStack, INGREDIENT_SLOT[0], INGREDIENT_SLOT[3] + 1, false);
+            },
+            (itemStack)->{
+                if (!this.isFuel(itemStack)) {return false;}
+                return this.moveItemStackTo(itemStack, FUEL_SLOT[0], FUEL_SLOT[3] + 1, false);
+            },
+            (itemStack)->{
+                if(!Utils.isMould(itemStack)){return false;}
+                return this.moveItemStackTo(itemStack, MOULD_SLOT[0], MOULD_SLOT[3] + 1, false);
+            },
+            (itemStack)->{
+                return this.moveItemStackTo(itemStack, CRAFT_INPUT_SLOT[0], CRAFT_INPUT_SLOT[8] + 1, false);
+            }
+    );
 
     static {
         assignSlotIndex(INGREDIENT_SLOT);
@@ -177,54 +200,46 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
     public ItemStack quickMoveStack(Player player, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
-            ItemStack itemstack1 = slot.getItem();
-            itemstack = itemstack1.copy();
-            if (index == 2) {
-                if (!this.moveItemStackTo(itemstack1, 3, 39, true)) {
-                    return ItemStack.EMPTY;
-                }
 
-                slot.onQuickCraft(itemstack1, itemstack);
-            } else if (index != 1 && index != 0) {
-                if (this.canSmelt(itemstack1)) {
-                    if (!this.moveItemStackTo(itemstack1, 0, 1, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (this.isFuel(itemstack1)) {
-                    if (!this.moveItemStackTo(itemstack1, 1, 2, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index >= 3 && index < 30) {
-                    if (!this.moveItemStackTo(itemstack1, 30, 39, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index >= 30 && index < 39 && !this.moveItemStackTo(itemstack1, 3, 30, false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (!this.moveItemStackTo(itemstack1, 3, 39, false)) {
-                return ItemStack.EMPTY;
-            }
-
-            if (itemstack1.isEmpty()) {
-                slot.setByPlayer(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
-            }
-
-            if (itemstack1.getCount() == itemstack.getCount()) {
-                return ItemStack.EMPTY;
-            }
-
-            slot.onTake(player, itemstack1);
+        if(!slot.hasItem()){
+            return itemstack;
         }
 
-        return itemstack;
+        itemstack = slot.getItem();
+        ItemStack originItemstack = itemstack.copy();
+
+        if(index < SLOT_COUNT){//大熔炉槽位
+            if(!this.moveItemStackTo(itemstack, SLOT_COUNT, SLOT_COUNT + 36, true)){
+                return ItemStack.EMPTY;
+            }
+
+        }else{//背包
+            for (Predicate<ItemStack> itemStackPredicate : itemAssignMethodlist) {
+                itemStackPredicate.test(itemstack);
+                if(itemstack.getCount() == 0){
+                    slot.setByPlayer(ItemStack.EMPTY);
+                    return originItemstack;
+                }
+            }
+
+            if (originItemstack.getCount() == itemstack.getCount()) {
+                return ItemStack.EMPTY;
+            }
+
+
+        }
+        slot.setChanged();
+        return originItemstack;
+
     }
 
 
     protected boolean canSmelt(ItemStack stack) {
         return this.acceptedInputs.test(stack);
+    }
+
+    public static boolean hasSmeltingRecipe(Item item){
+        return MeltingCastRecord.MeltingCastMap.containsKey(item);
     }
 
     public boolean isFuel(ItemStack stack) {
