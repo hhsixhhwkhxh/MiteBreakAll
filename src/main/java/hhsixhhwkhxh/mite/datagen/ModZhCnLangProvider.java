@@ -261,6 +261,8 @@ public class ModZhCnLangProvider extends LanguageProvider {
         add("tooltip.item.deprecated","此物品不应当出现在正常生存流程中");
 
         add(ModBlocks.STONE_FURNACE_CORE.get(), "石熔炉核心");
+        add(ModBlocks.OBSIDIAN_FURNACE_CORE.get(), "黑曜石熔炉核心");
+        add(ModBlocks.NETHERRACK_FURNACE_CORE.get(), "下界岩熔炉核心");
         add(ModItems.OBSIDIAN_INGOT_MOULD.get(),"黑曜石锭模板");
 
         add("tooltip.mite.melting_point","熔点: %s");

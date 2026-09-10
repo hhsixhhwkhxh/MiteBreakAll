@@ -262,6 +262,8 @@ public class ModEnUsLangProvider extends LanguageProvider {
         add("tooltip.item.deprecated","This item is not meant for normal survival mode.");
 
         add(ModBlocks.STONE_FURNACE_CORE.get(), "Stone Furnace Core");
+        add(ModBlocks.OBSIDIAN_FURNACE_CORE.get(), "Obsidian Furnace Core");
+        add(ModBlocks.NETHERRACK_FURNACE_CORE.get(), "Netherrack Furnace Core");
         add(ModItems.OBSIDIAN_INGOT_MOULD.get(),"Obsidian Ingot Mould");
 
         add("tooltip.mite.melting_point","Melting Point: %s");
