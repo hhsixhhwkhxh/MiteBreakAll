@@ -18,6 +18,6 @@ public class ModBlockTags {
 
     private static TagKey<Block> create(String name) {
 
-        return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,name));
+        return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,name));
     }
 }

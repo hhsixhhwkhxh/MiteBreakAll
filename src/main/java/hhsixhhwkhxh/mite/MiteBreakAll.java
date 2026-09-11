@@ -2,15 +2,15 @@ package hhsixhhwkhxh.mite;
 
 import hhsixhhwkhxh.mite.accessor.PlayerMixinAccessor;
 import hhsixhhwkhxh.mite.custom.AnvilItemState;
-import hhsixhhwkhxh.mite.custom.ModFoodData;
 import hhsixhhwkhxh.mite.custom.PlayerWaterData;
-import hhsixhhwkhxh.mite.datacomponent.DeprecatedMarker;
 import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
 import hhsixhhwkhxh.mite.datacomponent.Moisture;
 import hhsixhhwkhxh.mite.datacomponent.ReachBonus;
 import hhsixhhwkhxh.mite.item.ModCreativeModeTabs;
 import hhsixhhwkhxh.mite.packet.ClientboundSetWaterLevelPacket;
 import hhsixhhwkhxh.mite.packet.ClientboundSetVitalStatMaxValuePacket;
+import hhsixhhwkhxh.mite.recipe.ModRecipeSerializers;
+import hhsixhhwkhxh.mite.recipe.ModRecipeTypes;
 import hhsixhhwkhxh.mite.screen.LargeFurnaceScreen;
 import hhsixhhwkhxh.mite.screen.MiteAnvilScreen;
 import hhsixhhwkhxh.mite.screen.MiteCraftingScreen;
@@ -18,31 +18,23 @@ import hhsixhhwkhxh.mite.block.ModBlocks;
 import hhsixhhwkhxh.mite.blockentity.ModBlockEntities;
 import hhsixhhwkhxh.mite.item.ModItems;
 import hhsixhhwkhxh.mite.menu.ModMenuTypes;
-import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlotGroup;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
-import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-import net.neoforged.neoforge.registries.RegisterEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -58,17 +50,15 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
-import java.util.List;
-import java.util.UUID;
-
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
-@Mod(MiteBreakAll.MODID)
+@Mod(MiteBreakAll.MOD_ID)
 public class MiteBreakAll {
     // Define mod id in a common place for everything to reference
-    public static final String MODID = "mite_break_all";
+    public static final String MOD_ID = "mite_break_all";
     // Directly reference a slf4j logger
     public static final Logger LOGGER = LogUtils.getLogger();
 
+    public static final String MOD_VERSION = ModList.get().getModContainerById(MOD_ID).map(container-> container.getModInfo().getVersion().toString()).orElse("1");
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
@@ -82,6 +72,8 @@ public class MiteBreakAll {
         ModBlockEntities.register(modEventBus);
         ModMenuTypes.register(modEventBus);
         ModCreativeModeTabs.register(modEventBus);
+        ModRecipeTypes.register(modEventBus);
+        ModRecipeSerializers.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (MiteBreakAll) to respond directly to events.
@@ -135,7 +127,7 @@ public class MiteBreakAll {
     }
 
     private void registerPayloads(RegisterPayloadHandlersEvent event) {
-        final PayloadRegistrar registrar = event.registrar("1");
+        final PayloadRegistrar registrar = event.registrar(MOD_VERSION);
         registrar.playBidirectional(
                 ClientboundSetWaterLevelPacket.TYPE,
                 ClientboundSetWaterLevelPacket.STREAM_CODEC,
@@ -195,7 +187,7 @@ public class MiteBreakAll {
 
     public void registerSelectProperties(RegisterSelectItemModelPropertyEvent event) {
         event.register(
-                ResourceLocation.fromNamespaceAndPath(MODID, "anvil_stage"),
+                ResourceLocation.fromNamespaceAndPath(MOD_ID, "anvil_stage"),
                 AnvilItemState.TYPE
         );
     }
@@ -210,7 +202,7 @@ public class MiteBreakAll {
         }
         event.addModifier(Attributes.BLOCK_INTERACTION_RANGE,
                 new AttributeModifier(
-                        ResourceLocation.fromNamespaceAndPath(MODID,"dynamic_reach_bonus"),
+                        ResourceLocation.fromNamespaceAndPath(MOD_ID,"dynamic_reach_bonus"),
                         reachBonus.value(),
                         AttributeModifier.Operation.ADD_VALUE
                 ),

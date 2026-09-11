@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 public record ClientboundSetVitalStatMaxValuePacket(int vitalStatMaxValue) implements CustomPacketPayload {
 
     public static final Type<ClientboundSetVitalStatMaxValuePacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID, "vital_stat_max_data"));
+            new Type<>(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID, "vital_stat_max_data"));
 
     public static final StreamCodec<ByteBuf, ClientboundSetVitalStatMaxValuePacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT,

@@ -16,7 +16,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.function.Function;
 
 public class ModBlocks {
-    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MiteBreakAll.MODID);
+    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MiteBreakAll.MOD_ID);
 
 
     public static final DeferredBlock<Block> SILVER_ORE = registerOreBlock("silver_ore", 0,3.0F, 3.0F);

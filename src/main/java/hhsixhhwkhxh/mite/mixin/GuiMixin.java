@@ -31,15 +31,15 @@ public class GuiMixin {
     private int tickCount;
     
     @Unique
-    private static final ResourceLocation WATER_HALF_POISON_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"hud/water_half_poison");
+    private static final ResourceLocation WATER_HALF_POISON_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"hud/water_half_poison");
     @Unique
-    private static final ResourceLocation WATER_FULL_POISON_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"hud/water_full_poison");
+    private static final ResourceLocation WATER_FULL_POISON_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"hud/water_full_poison");
     @Unique
-    private static final ResourceLocation WATER_EMPTY_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"hud/water_empty");
+    private static final ResourceLocation WATER_EMPTY_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"hud/water_empty");
     @Unique
-    private static final ResourceLocation WATER_HALF_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"hud/water_half");
+    private static final ResourceLocation WATER_HALF_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"hud/water_half");
     @Unique
-    private static final ResourceLocation WATER_FULL_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"hud/water_full");
+    private static final ResourceLocation WATER_FULL_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"hud/water_full");
     
     public GuiMixin(RandomSource random) {
         this.random = random;

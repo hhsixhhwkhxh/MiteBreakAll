@@ -27,7 +27,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
     );
 
     public ModItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-        super(output, lookupProvider, MiteBreakAll.MODID);
+        super(output, lookupProvider, MiteBreakAll.MOD_ID);
     }
 
 

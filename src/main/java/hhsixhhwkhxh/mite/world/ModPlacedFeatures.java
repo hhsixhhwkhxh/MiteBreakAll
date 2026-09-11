@@ -64,6 +64,6 @@ public class ModPlacedFeatures {
     }
 
     private static ResourceKey<PlacedFeature> createResourceKey(String path){
-        return ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID, path));
+        return ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID, path));
     }
 }

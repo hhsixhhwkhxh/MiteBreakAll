@@ -2,10 +2,7 @@ package hhsixhhwkhxh.mite.item;
 
 import hhsixhhwkhxh.mite.MiteBreakAll;
 import hhsixhhwkhxh.mite.custom.MaterialFamilyType;
-import hhsixhhwkhxh.mite.datacomponent.DeprecatedMarker;
-import hhsixhhwkhxh.mite.datacomponent.MaterialLevel;
-import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
-import hhsixhhwkhxh.mite.datacomponent.Moisture;
+import hhsixhhwkhxh.mite.datacomponent.*;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.component.TypedDataComponent;
@@ -32,7 +29,7 @@ import java.util.Map;
 import static net.minecraft.world.item.component.Consumables.defaultFood;
 
 public class ModItems {
-    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MiteBreakAll.MODID);
+    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MiteBreakAll.MOD_ID);
     public static final DeferredItem<Item> WILD_APPLE = ITEMS.registerItem("wild_apple", Item::new,new Item.Properties().food(new FoodProperties.Builder()
             .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
 
@@ -45,13 +42,13 @@ public class ModItems {
     public static final DeferredItem<Item> GLASS_SHARD = ITEMS.registerItem("glass_shard", Item::new, new Item.Properties());
     public static final DeferredItem<Item> QUARTZ_SHARD = ITEMS.registerItem("quartz_shard", Item::new, new Item.Properties());
 
-    public static final DeferredItem<Item> ADAMANTIUM_NUGGET = ITEMS.registerItem("adamantium_nugget", Item::new, new Item.Properties());
-    public static final DeferredItem<Item> ANCIENT_METAL_NUGGET = ITEMS.registerItem("ancient_metal_nugget", Item::new, new Item.Properties());
-    public static final DeferredItem<Item> HARD_NUGGET = ITEMS.registerItem("hard_nugget", Item::new, new Item.Properties());
-    public static final DeferredItem<Item> MERCURY_NUGGET = ITEMS.registerItem("mercury_nugget", Item::new, new Item.Properties());
-    public static final DeferredItem<Item> MITHRIL_NUGGET = ITEMS.registerItem("mithril_nugget", Item::new, new Item.Properties());
-    public static final DeferredItem<Item> SILVER_NUGGET = ITEMS.registerItem("silver_nugget", Item::new, new Item.Properties());
-    public static final DeferredItem<Item> COPPER_NUGGET = ITEMS.registerItem("copper_nugget", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> ADAMANTIUM_NUGGET = ITEMS.registerItem("adamantium_nugget", properties -> new Item(properties.component(ModDataComponents.MELTING_CAST,new MeltingCast(6210))));
+    public static final DeferredItem<Item> ANCIENT_METAL_NUGGET = ITEMS.registerItem("ancient_metal_nugget",  properties -> new Item(properties.component(ModDataComponents.MELTING_CAST,new MeltingCast(3550))));
+    public static final DeferredItem<Item> HARD_NUGGET = ITEMS.registerItem("hard_nugget",properties -> new Item(properties.component(ModDataComponents.MELTING_CAST,new MeltingCast(3550))));
+    public static final DeferredItem<Item> MERCURY_NUGGET = ITEMS.registerItem("mercury_nugget", properties -> new Item(properties.component(ModDataComponents.MELTING_CAST,new MeltingCast(0))));
+    public static final DeferredItem<Item> MITHRIL_NUGGET = ITEMS.registerItem("mithril_nugget", properties -> new Item(properties.component(ModDataComponents.MELTING_CAST,new MeltingCast(4630))));
+    public static final DeferredItem<Item> SILVER_NUGGET = ITEMS.registerItem("silver_nugget", properties -> new Item(properties.component(ModDataComponents.MELTING_CAST,new MeltingCast(962))));
+    public static final DeferredItem<Item> COPPER_NUGGET = ITEMS.registerItem("copper_nugget", properties -> new Item(properties.component(ModDataComponents.MELTING_CAST,new MeltingCast(1084))));
 
     public static final DeferredItem<Item> MESH_STRING = ITEMS.registerItem("mesh_string", Item::new, new Item.Properties().durability(16));
     public static final DeferredItem<Item> MESH_LEATHER = ITEMS.registerItem("mesh_leather", Item::new, new Item.Properties().durability(8));
@@ -341,9 +338,9 @@ public class ModItems {
                 }
             );
 
-            deprecatedItemList.forEach(item -> {
-                event.modify(item, builder-> builder.set(ModDataComponents.DEPRECATED_MARKER.get(), new DeprecatedMarker(true)));
-            });
+            deprecatedItemList.forEach(item -> event.modify(item, builder-> builder.set(ModDataComponents.DEPRECATED_MARKER.get(), new DeprecatedMarker(true))));
+
+            modifyVanillaNugget(event);
         });
     }
     public static Item.Properties humanoidArmor(Item.Properties properties, ModArmorMaterials.ModArmorMaterial material, ArmorType type) {
@@ -397,5 +394,10 @@ public class ModItems {
 
     private static <T> void copySingleComponent(DataComponentPatch.Builder builder, TypedDataComponent<T> typedDataComponent) {
         builder.set(typedDataComponent.type(), typedDataComponent.value());
+    }
+
+    public static void modifyVanillaNugget(ModifyDefaultComponentsEvent event){
+        event.modify(Items.IRON_NUGGET,builder -> builder.set(ModDataComponents.MELTING_CAST.get(), new MeltingCast(1535)));
+        event.modify(Items.GOLD_NUGGET,builder -> builder.set(ModDataComponents.MELTING_CAST.get(), new MeltingCast(1070)));
     }
 }

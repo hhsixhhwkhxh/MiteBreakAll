@@ -21,9 +21,9 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import java.util.List;
 
 // This class will not load on dedicated servers. Accessing client side code from here is safe.
-@Mod(value = MiteBreakAll.MODID, dist = Dist.CLIENT)
+@Mod(value = MiteBreakAll.MOD_ID, dist = Dist.CLIENT)
 // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
-@EventBusSubscriber(modid = MiteBreakAll.MODID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = MiteBreakAll.MOD_ID, value = Dist.CLIENT)
 public class MiteBreakAllClient {
 
     private static final Component deprecatedTipComponent = Component.translatable("tooltip.item.deprecated").withColor(0XECFF1E);

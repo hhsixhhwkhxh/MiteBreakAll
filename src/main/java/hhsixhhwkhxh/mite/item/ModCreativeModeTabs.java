@@ -12,7 +12,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class ModCreativeModeTabs {
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MiteBreakAll.MODID);
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MiteBreakAll.MOD_ID);
 
     public static final DeferredHolder<CreativeModeTab,CreativeModeTab> MITE = CREATIVE_MODE_TABS.register("mite",()->{
         return CreativeModeTab.builder().icon(()->{

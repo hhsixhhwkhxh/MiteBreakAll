@@ -1,0 +1,12 @@
+{
+  "type": "mite_break_all:melting",
+  "base_melt_tick": 180,
+  "category": "misc",
+  "experience": 0.1,
+  "ingredient": "minecraft:iron_nugget",
+  "melting_point": 1535,
+  "result": {
+    "count": 1,
+    "id": "minecraft:iron_ingot"
+  }
+}

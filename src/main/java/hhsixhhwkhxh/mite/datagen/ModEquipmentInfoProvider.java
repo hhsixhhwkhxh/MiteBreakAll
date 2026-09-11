@@ -26,7 +26,7 @@ public class ModEquipmentInfoProvider implements DataProvider {
         for(String armorName:armorList){
             registrar.accept(
                     // Must match Equippable#assetId
-                    ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID, armorName),
+                    ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID, armorName),
                     EquipmentClientInfo.builder()
                             // For humanoid head, chest, and feet
                             .addLayers(
@@ -35,7 +35,7 @@ public class ModEquipmentInfoProvider implements DataProvider {
                                     new EquipmentClientInfo.Layer(
                                             // The relative texture of the armor
                                             // Points to assets/examplemod/textures/entity/equipment/humanoid/xxx.png
-                                            ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID, armorName),
+                                            ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID, armorName),
                                             Optional.empty(),
                                             false
                                     )
@@ -45,7 +45,7 @@ public class ModEquipmentInfoProvider implements DataProvider {
                                     EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS,
                                     new EquipmentClientInfo.Layer(
                                             // Points to assets/examplemod/textures/entity/equipment/humanoid_leggings/xxx.png
-                                            ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID, armorName),
+                                            ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID, armorName),
                                             Optional.empty(),
                                             false
                                     )
@@ -69,6 +69,6 @@ public class ModEquipmentInfoProvider implements DataProvider {
 
     @Override
     public String getName() {
-        return "Equipment Client Infos: " + MiteBreakAll.MODID;
+        return "Equipment Client Infos: " + MiteBreakAll.MOD_ID;
     }
 }

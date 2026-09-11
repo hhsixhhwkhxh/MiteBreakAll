@@ -1,0 +1,12 @@
+{
+  "type": "mite_break_all:melting",
+  "base_melt_tick": 300,
+  "category": "misc",
+  "experience": 0.1,
+  "ingredient": "mite_break_all:mithril_nugget",
+  "melting_point": 4630,
+  "result": {
+    "count": 1,
+    "id": "mite_break_all:mithril_ingot"
+  }
+}

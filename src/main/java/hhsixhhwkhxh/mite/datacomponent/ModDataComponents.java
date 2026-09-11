@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 public class ModDataComponents {
 
 
-    public static final DeferredRegister.DataComponents DATACOMPONENTS = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, MiteBreakAll.MODID);
+    public static final DeferredRegister.DataComponents DATACOMPONENTS = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, MiteBreakAll.MOD_ID);
 
     public static final Supplier<DataComponentType<Moisture>> MOISTURE = DATACOMPONENTS.registerComponentType(
             "moisture",
@@ -41,6 +41,13 @@ public class ModDataComponents {
             builder -> builder
                     .persistent(DeprecatedMarker.CODEC)
                     .networkSynchronized(DeprecatedMarker.STREAM_CODEC)
+    );
+
+    public static final Supplier<DataComponentType<MeltingCast>> MELTING_CAST = DATACOMPONENTS.registerComponentType(
+            "melting_cast",
+            builder -> builder
+                    .persistent(MeltingCast.CODEC)
+                    .networkSynchronized(MeltingCast.STREAM_CODEC)
     );
 
     public static void register(IEventBus bus){

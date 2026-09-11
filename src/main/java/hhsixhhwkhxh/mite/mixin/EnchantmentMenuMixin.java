@@ -64,7 +64,7 @@ public abstract class EnchantmentMenuMixin extends AbstractContainerMenu {
         AtomicInteger overpoweredId = new AtomicInteger(1);
         this.access.execute((p_344366_, p_344367_) -> {
             RegistryAccess registryAccess = p_344366_.registryAccess();
-            Optional<Holder.Reference<Enchantment>> overpoweredOptional = registryAccess.lookupOrThrow(Registries.ENCHANTMENT).get(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"overpowered"));
+            Optional<Holder.Reference<Enchantment>> overpoweredOptional = registryAccess.lookupOrThrow(Registries.ENCHANTMENT).get(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"overpowered"));
             if(overpoweredOptional.isEmpty()){
                 return;
             }

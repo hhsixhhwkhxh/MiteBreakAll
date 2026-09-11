@@ -2,7 +2,7 @@ package hhsixhhwkhxh.mite.screen;
 
 import com.google.common.collect.Range;
 import hhsixhhwkhxh.mite.MiteBreakAll;
-import hhsixhhwkhxh.mite.custom.MeltingCastRecord;
+import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
 import hhsixhhwkhxh.mite.item.ModItems;
 import hhsixhhwkhxh.mite.menu.LargeFurnaceMenu;
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,12 +25,12 @@ import java.util.Optional;
 
 public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu> {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"textures/gui/container/furnace_core.png");
-    private static final ResourceLocation THERMOMETER_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"container/large_furnace/thermometer");
-    private static final ResourceLocation BURN_PROGRESS_DOWN_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"container/large_furnace/burn_progress_down");
-    private static final ResourceLocation BURN_PROGRESS_RIGHT_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"container/large_furnace/burn_progress_right");
-    private static final ResourceLocation LOCKED_SLOT = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"container/large_furnace/locked_slot");
-    private static final ResourceLocation LIQUID_METAL = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"container/large_furnace/liquid_metal");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"textures/gui/container/furnace_core.png");
+    private static final ResourceLocation THERMOMETER_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"container/large_furnace/thermometer");
+    private static final ResourceLocation BURN_PROGRESS_DOWN_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"container/large_furnace/burn_progress_down");
+    private static final ResourceLocation BURN_PROGRESS_RIGHT_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"container/large_furnace/burn_progress_right");
+    private static final ResourceLocation LOCKED_SLOT = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"container/large_furnace/locked_slot");
+    private static final ResourceLocation LIQUID_METAL = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"container/large_furnace/liquid_metal");
 
     private boolean hasLockableSlotBeenInitialized = false;
 
@@ -52,7 +52,7 @@ public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu
     }
 
     private static void putIngotResMap(Item item,String name){
-        INGOT_RES_MAP.put(item.getDescriptionId().hashCode(),ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"container/large_furnace/ingots/"+name));
+        INGOT_RES_MAP.put(item.getDescriptionId().hashCode(),ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"container/large_furnace/ingots/"+name));
     }
 
     private static void putIngotResMap(DeferredItem<Item> item, String name){
@@ -184,9 +184,15 @@ public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu
     @Override
     protected @NotNull List<Component> getTooltipFromContainerItem(ItemStack stack) {
         var list = super.getTooltipFromContainerItem(stack);
-        if(MeltingCastRecord.MeltingCastMap.containsKey(stack.getItem())){
-            list.add(1,MeltingCastRecord.MeltingCastMap.get(stack.getItem()).getMeltingPointToolTip());
+        if(!stack.has(ModDataComponents.MELTING_CAST)){
+            return list;
         }
+        var meltingCast = stack.getComponents().get(ModDataComponents.MELTING_CAST);
+        if (meltingCast == null) {
+            return list;
+        }
+        list.add(1,meltingCast.getMeltingPointToolTip());
+
         return list;
     }
 }

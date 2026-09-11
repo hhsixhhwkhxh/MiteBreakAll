@@ -8,7 +8,7 @@ import net.neoforged.neoforge.common.data.LanguageProvider;
 
 public class ModZhCnLangProvider extends LanguageProvider {
     public ModZhCnLangProvider(PackOutput output) {
-        super(output, MiteBreakAll.MODID, "zh_cn");
+        super(output, MiteBreakAll.MOD_ID, "zh_cn");
     }
 
     @Override

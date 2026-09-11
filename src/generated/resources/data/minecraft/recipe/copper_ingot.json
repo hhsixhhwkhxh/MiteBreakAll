@@ -1,0 +1,12 @@
+{
+  "type": "mite_break_all:melting",
+  "base_melt_tick": 140,
+  "category": "misc",
+  "experience": 0.1,
+  "ingredient": "mite_break_all:copper_nugget",
+  "melting_point": 1084,
+  "result": {
+    "count": 1,
+    "id": "minecraft:copper_ingot"
+  }
+}

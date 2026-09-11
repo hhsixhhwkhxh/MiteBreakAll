@@ -91,6 +91,6 @@ public class ModBiomeModifiers {
     }
 
     private static ResourceKey<BiomeModifier> createResourceKey(String path){
-        return ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS,ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID, path));
+        return ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS,ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID, path));
     }
 }

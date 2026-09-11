@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ModRecipePrioritiesProvider extends RecipePrioritiesProvider {
     public ModRecipePrioritiesProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries, MiteBreakAll.MODID);
+        super(output, registries, MiteBreakAll.MOD_ID);
     }
 
     @Override

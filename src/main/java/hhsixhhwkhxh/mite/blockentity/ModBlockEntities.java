@@ -10,7 +10,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.function.Supplier;
 
 public class ModBlockEntities{
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, MiteBreakAll.MODID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, MiteBreakAll.MOD_ID);
 
     public static final Supplier<BlockEntityType<MiteCraftingTableBlockEntity>> MITE_CRAFTING_TABLE = BLOCK_ENTITIES.register("mite_crafting_table",()->{return new BlockEntityType<>(MiteCraftingTableBlockEntity::new,false, ModBlocks.FLINT_CRAFTING_TABLE.get());});
 

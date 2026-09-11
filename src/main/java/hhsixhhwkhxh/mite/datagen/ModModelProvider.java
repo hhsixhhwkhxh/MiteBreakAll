@@ -41,7 +41,7 @@ import java.util.function.Function;
 
 public class ModModelProvider extends ModelProvider {
     public ModModelProvider(PackOutput output) {
-        super(output, MiteBreakAll.MODID);
+        super(output, MiteBreakAll.MOD_ID);
     }
 
     @Override
@@ -338,7 +338,7 @@ public class ModModelProvider extends ModelProvider {
         BiFunction<Block, Block, TextureMapping> textureMappingGetter = (b, block)-> new TextureMapping().put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block))
                 .put(TextureSlot.FRONT,TextureMapping.getBlockTexture(block))
                 .put(TextureSlot.BOTTOM, TextureMapping.getBlockTexture(block,"_top"))
-                .put(TextureSlot.TOP, ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/craft_table/flint/top"));
+                .put(TextureSlot.TOP, ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"block/craft_table/flint/top"));
 
         TextureMapping texturemapping = textureMappingGetter.apply(craftingTableBlock, craftingTableMaterialBlock);
         MultiVariant multivariant = BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ORIENTABLE_TOP_BOTTOM.create(craftingTableBlock, texturemapping,blockModels.modelOutput));
@@ -412,28 +412,28 @@ public class ModModelProvider extends ModelProvider {
     }
 
     public void createSieve(BlockModelGenerators blockModels) {
-        registerSimpleItemModel(blockModels,ModBlocks.SIEVE.asItem(),ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/sieve"));
+        registerSimpleItemModel(blockModels,ModBlocks.SIEVE.asItem(),ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"block/sieve/sieve"));
         blockModels.blockStateOutput
                 .accept(
                         MultiPartGenerator.multiPart(ModBlocks.SIEVE.get())
-                                .with(BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/sieve")))
+                                .with(BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"block/sieve/sieve")))
                                 .with(
-                                        BlockModelGenerators.condition().term(SieveBlock.MESH_TYPE, SieveBlock.MeshType.LEATHER), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/mesh_leather"))
+                                        BlockModelGenerators.condition().term(SieveBlock.MESH_TYPE, SieveBlock.MeshType.LEATHER), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"block/sieve/mesh_leather"))
                                 )
                                 .with(
-                                        BlockModelGenerators.condition().term(SieveBlock.MESH_TYPE, SieveBlock.MeshType.STRING), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/mesh_string"))
+                                        BlockModelGenerators.condition().term(SieveBlock.MESH_TYPE, SieveBlock.MeshType.STRING), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"block/sieve/mesh_string"))
                                 )
                                 .with(
-                                        BlockModelGenerators.condition().term(SieveBlock.GRAVEL_LEVEL, 1), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/gravel_layer1"))
+                                        BlockModelGenerators.condition().term(SieveBlock.GRAVEL_LEVEL, 1), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"block/sieve/gravel_layer1"))
                                 )
                                 .with(
-                                        BlockModelGenerators.condition().term(SieveBlock.GRAVEL_LEVEL, 2), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/gravel_layer2"))
+                                        BlockModelGenerators.condition().term(SieveBlock.GRAVEL_LEVEL, 2), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"block/sieve/gravel_layer2"))
                                 )
                                 .with(
-                                        BlockModelGenerators.condition().term(SieveBlock.GRAVEL_LEVEL, 3), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/gravel_layer3"))
+                                        BlockModelGenerators.condition().term(SieveBlock.GRAVEL_LEVEL, 3), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"block/sieve/gravel_layer3"))
                                 )
                                 .with(
-                                        BlockModelGenerators.condition().term(SieveBlock.GRAVEL_LEVEL, 4), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,"block/sieve/gravel_layer4"))
+                                        BlockModelGenerators.condition().term(SieveBlock.GRAVEL_LEVEL, 4), BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"block/sieve/gravel_layer4"))
                                 )
 
                 );
@@ -445,29 +445,29 @@ public class ModModelProvider extends ModelProvider {
     }
 
     public static ResourceKey<EquipmentAsset> createEquipmentAssetId(String name) {
-        return ResourceKey.create(EquipmentAssets.ROOT_ID, ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,name));
+        return ResourceKey.create(EquipmentAssets.ROOT_ID, ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,name));
     }
 
 
     public void createAnvil(BlockModelGenerators blockModels, DeferredBlock<Block> anvilBlock) {
-        final ModelTemplate ANVIL = ModelTemplates.create(MiteBreakAll.MODID+":anvils/template_anvil", TextureSlot.PARTICLE,TextureSlot.ALL);
+        final ModelTemplate ANVIL = ModelTemplates.create(MiteBreakAll.MOD_ID +":anvils/template_anvil", TextureSlot.PARTICLE,TextureSlot.ALL);
         final TexturedModel.Provider MITE_ANVIL = TexturedModel.createDefault(ModModelProvider::anvil, ANVIL);
 
         ResourceLocation resourceLocationBase = MITE_ANVIL.create(anvilBlock.get(), blockModels.modelOutput);
 
         ResourceLocation resourceLocationTop0 =
                 TexturedModel.createDefault(ModModelProvider::anvilTop,
-                        ModelTemplates.create(MiteBreakAll.MODID+":anvils/anvil_top_0", TextureSlot.ALL,TextureSlot.PARTICLE,TextureSlot.LAYER0,TextureSlot.LAYER1,TextureSlot.LAYER2)
+                        ModelTemplates.create(MiteBreakAll.MOD_ID +":anvils/anvil_top_0", TextureSlot.ALL,TextureSlot.PARTICLE,TextureSlot.LAYER0,TextureSlot.LAYER1,TextureSlot.LAYER2)
                 ).createWithSuffix(anvilBlock.get(), "_top_0",blockModels.modelOutput);
 
         ResourceLocation resourceLocationTop1 =
                 TexturedModel.createDefault(ModModelProvider::anvilTop,
-                        ModelTemplates.create(MiteBreakAll.MODID+":anvils/anvil_top_1", TextureSlot.ALL,TextureSlot.PARTICLE,TextureSlot.LAYER0,TextureSlot.LAYER1,TextureSlot.LAYER2)
+                        ModelTemplates.create(MiteBreakAll.MOD_ID +":anvils/anvil_top_1", TextureSlot.ALL,TextureSlot.PARTICLE,TextureSlot.LAYER0,TextureSlot.LAYER1,TextureSlot.LAYER2)
                 ).createWithSuffix(anvilBlock.get(), "_top_1",blockModels.modelOutput);
 
         ResourceLocation resourceLocationTop2 =
                 TexturedModel.createDefault(ModModelProvider::anvilTop,
-                        ModelTemplates.create(MiteBreakAll.MODID+":anvils/anvil_top_2", TextureSlot.ALL,TextureSlot.PARTICLE,TextureSlot.LAYER0,TextureSlot.LAYER1,TextureSlot.LAYER2)
+                        ModelTemplates.create(MiteBreakAll.MOD_ID +":anvils/anvil_top_2", TextureSlot.ALL,TextureSlot.PARTICLE,TextureSlot.LAYER0,TextureSlot.LAYER1,TextureSlot.LAYER2)
                 ).createWithSuffix(anvilBlock.get(), "_top_2",blockModels.modelOutput);
 
         MultiPartGenerator generator = MultiPartGenerator.multiPart(anvilBlock.get());
@@ -556,10 +556,10 @@ public class ModModelProvider extends ModelProvider {
     public void createLargeFurnaceCore(BlockModelGenerators blockModels, Block coreBlock, String material) {
 
         final String prefix = "block/large_furnace/";
-        ResourceLocation coreResourceLocation = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,prefix + material + "/core");
-        ResourceLocation coreTopResourceLocation = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,prefix + material + "/core_top");
-        ResourceLocation frontOffResourceLocation = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,prefix + material + "/front_off");
-        ResourceLocation frontOnResourceLocation = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,prefix + material + "/front_on");
+        ResourceLocation coreResourceLocation = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,prefix + material + "/core");
+        ResourceLocation coreTopResourceLocation = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,prefix + material + "/core_top");
+        ResourceLocation frontOffResourceLocation = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,prefix + material + "/front_off");
+        ResourceLocation frontOnResourceLocation = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,prefix + material + "/front_on");
 
         TextureMapping textureMapping = new TextureMapping().put(TextureSlot.SIDE, coreResourceLocation)
                 .put(TextureSlot.FRONT, coreResourceLocation)

@@ -1,0 +1,12 @@
+{
+  "type": "mite_break_all:melting",
+  "base_melt_tick": 100,
+  "category": "misc",
+  "experience": 0.1,
+  "ingredient": "minecraft:gold_nugget",
+  "melting_point": 1070,
+  "result": {
+    "count": 1,
+    "id": "minecraft:gold_ingot"
+  }
+}

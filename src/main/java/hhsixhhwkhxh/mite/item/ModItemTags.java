@@ -27,7 +27,7 @@ public class ModItemTags {
     public static final TagKey<Item> NULL = bind("null");
 
     private static TagKey<Item> bind(String name) {
-        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID,name));
+        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,name));
     }
 
 

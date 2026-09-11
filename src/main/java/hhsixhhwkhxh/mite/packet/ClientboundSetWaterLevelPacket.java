@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 public record ClientboundSetWaterLevelPacket (int waterLevel) implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<ClientboundSetWaterLevelPacket> TYPE =
-            new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MODID, "water_level_data"));
+            new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID, "water_level_data"));
 
     public static final StreamCodec<ByteBuf, ClientboundSetWaterLevelPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT,

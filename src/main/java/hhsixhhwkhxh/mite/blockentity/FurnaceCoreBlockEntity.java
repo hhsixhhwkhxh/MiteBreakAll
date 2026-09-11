@@ -4,20 +4,18 @@ import hhsixhhwkhxh.mite.MiteBreakAll;
 import hhsixhhwkhxh.mite.Utils;
 import hhsixhhwkhxh.mite.block.FurnaceWrapperBlock;
 import hhsixhhwkhxh.mite.block.ModBlocks;
-import hhsixhhwkhxh.mite.custom.MeltingCastRecord;
-import hhsixhhwkhxh.mite.item.ModItems;
 import hhsixhhwkhxh.mite.menu.LargeFurnaceMenu;
+import hhsixhhwkhxh.mite.recipe.MeltingRecipe;
+import hhsixhhwkhxh.mite.recipe.ModRecipeTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -28,6 +26,7 @@ import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,8 +54,8 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
     protected NonNullList<ItemStack> items = NonNullList.withSize(44, ItemStack.EMPTY);
 
-    public static RecipeType<SmeltingRecipe> RECIPE_TYPE = RecipeType.SMELTING;
-    private final static RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> QUICK_CHECK =RecipeManager.createCheck(RECIPE_TYPE);
+    private final static RecipeManager.CachedCheck<SingleRecipeInput, SmeltingRecipe> QUICK_CHECK_SMELTING = RecipeManager.createCheck(RecipeType.SMELTING);
+    private final static RecipeManager.CachedCheck<SingleRecipeInput, MeltingRecipe> QUICK_CHECK_MELTING = RecipeManager.createCheck(ModRecipeTypes.MELTING_RECIPE.get());
 
     private final int[] dataArray = new int[DATA_COUNT];
 
@@ -90,6 +89,8 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         assignArrayIndex(SMELTING_OUTPUT_NAME);
 
         Objects.checkIndex(dataIndexCounter, DATA_COUNT);
+
+        //RecipeManager.
     }
 
     public static void assignArrayIndex(int[] array){
@@ -224,11 +225,11 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
             ItemStack mouldStack = furnace.getItems().get(MOULD_SLOT[i]);
 
             //检查是否满足粒->锭的条件 用于更新dataAccess 方便客户端Screen获取信息
-            var smeltingRecipeOpt = getSmeltingRecipe(inputStack.getItem());
+            var smeltingRecipeOpt = getMeltingRecipe(level,new SingleRecipeInput(inputStack));
             boolean isSmeltingRecipe = (smeltingRecipeOpt.isPresent());
             furnace.setIsSmeltingRecipe(i,isSmeltingRecipe);
             if(isSmeltingRecipe){
-                furnace.setSmeltingOutputName(i,smeltingRecipeOpt.get().outputItem().getDescriptionId());
+                furnace.setSmeltingOutputName(i,smeltingRecipeOpt.get().getResult().getItem().getDescriptionId());
             }
 
             if(cookingTotalTime <= 0){
@@ -236,7 +237,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
                 if(inputStack.isEmpty()){
                     continue;
                 }
-                if(isSmeltingRecipe&&!isSmeltingConditionMet(smeltingRecipeOpt.get(),inputStack,mouldStack,temperature)){
+                if(isSmeltingRecipe&&!isMeltingConditionMet(smeltingRecipeOpt.get(),inputStack,mouldStack,temperature)){
                     continue;
                 }
 
@@ -293,7 +294,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
                 continue;
             }
 
-            if (cookingTimer>=0 && (inputStack.isEmpty()|| (isSmeltingRecipe&&!isSmeltingConditionMet(smeltingRecipeOpt.get(),inputStack,mouldStack,temperature)))){
+            if (cookingTimer>=0 && (inputStack.isEmpty()|| (isSmeltingRecipe&&!isMeltingConditionMet(smeltingRecipeOpt.get(),inputStack,mouldStack,temperature)))){
                 cookingTimer--;
                 furnace.setIsSmeltingRecipe(i,false);
             }else{
@@ -331,7 +332,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     }
 
     public void trySpawnLargeFurnace(LevelAccessor level){
-        if(!hasWallBlockAboveAndBelow(level,worldPosition)){
+        if(!hasBrickBlockAboveAndBelow(level,worldPosition)){
             return;
         }
 
@@ -346,9 +347,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
                 findResult.corePosSet.forEach(coreBlockPos->{
                     final AtomicReference<BlockState> coreBlockState = new AtomicReference<>(level.getBlockState(coreBlockPos).setValue(ACTIVATED, true).setValue(LIT, false));
-                    Utils.getRelativeHorizontalDirection(furnaceCentrePos,coreBlockPos).ifPresent(direction->{
-                        coreBlockState.set(coreBlockState.get().setValue(FACING,direction));
-                    });
+                    Utils.getRelativeHorizontalDirection(furnaceCentrePos,coreBlockPos).ifPresent(direction-> coreBlockState.set(coreBlockState.get().setValue(FACING,direction)));
                     level.setBlock(coreBlockPos, coreBlockState.get(),UPDATE_ALL);
 
                     if(coreBlockPos.equals(worldPosition)){
@@ -375,9 +374,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         }
 
         if(isShadow(level)){
-            getBlockEntity(level, realFurnacePos).ifPresent(blockEntity->{
-                blockEntity.deactivationCore(level,worldPosition);
-            });
+            getBlockEntity(level, realFurnacePos).ifPresent(blockEntity-> blockEntity.deactivationCore(level,worldPosition));
         }
 
         if(furnaceCentrePos==null){
@@ -391,9 +388,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         }
 
         FindResult findResult = isCenterPos(level, furnaceCentrePos, false);
-        findResult.brickPosSet.forEach(wallBlockPos->{
-            unwrapBrickBlock(level,wallBlockPos);
-        });
+        findResult.brickPosSet.forEach(wallBlockPos-> unwrapBrickBlock(level,wallBlockPos));
 
         findResult.corePosSet.forEach(coreBlockPos->{
             level.setBlock(coreBlockPos,level.getBlockState(coreBlockPos).setValue(ACTIVATED,false),UPDATE_ALL);
@@ -457,7 +452,6 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
 
     private FindResult isCenterPos(LevelAccessor level, BlockPos pos, boolean strictMode){
-        //BlockPos[] cornerPosList = {pos.offset(-1,0,-1), pos.offset(1,0,1), pos.offset(1,0,-1), pos.offset(-1,0,1)};
 
         FindResult totalResult = new FindResult();
         totalResult.setValid(true);
@@ -478,9 +472,9 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
             totalResult.merge(findResult);
         }
 
-        if(hasWallBlockAboveAndBelow(level,pos)){
-            totalResult.addWall(pos.offset(0,-1,0));
-            totalResult.addWall(pos.offset(0,1,0));
+        if(hasBrickBlockAboveAndBelow(level,pos)){
+            totalResult.addBrick(pos.offset(0,-1,0));
+            totalResult.addBrick(pos.offset(0,1,0));
             return totalResult;
         }
 
@@ -496,10 +490,10 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
         result.setValid(false);
 
-        if((isBrickBlock(level,pos))&&hasWallBlockAboveAndBelow(level,pos)){
-            result.addWall(pos);
-            result.addWall(pos.offset(0,-1,0));
-            result.addWall(pos.offset(0,1,0));
+        if((isBrickBlock(level,pos))&& hasBrickBlockAboveAndBelow(level,pos)){
+            result.addBrick(pos);
+            result.addBrick(pos.offset(0,-1,0));
+            result.addBrick(pos.offset(0,1,0));
             result.setValid(true);
         }
 
@@ -511,22 +505,22 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
         result.setValid(false);
 
-        if((isCoreBlock(level,pos))&&hasWallBlockAboveAndBelow(level,pos)){
+        if((isCoreBlock(level,pos))&& hasBrickBlockAboveAndBelow(level,pos)){
             result.addCore(pos);
-            result.addWall(pos.offset(0,-1,0));
-            result.addWall(pos.offset(0,1,0));
+            result.addBrick(pos.offset(0,-1,0));
+            result.addBrick(pos.offset(0,1,0));
             result.setValid(true);
         }
 
         return result;
     }
 
-    private boolean hasWallBlockAboveAndBelow(LevelAccessor level, BlockPos pos){
+    private boolean hasBrickBlockAboveAndBelow(LevelAccessor level, BlockPos pos){
         return (isBrickBlock(level,pos.offset(0,-1,0)))&&(isBrickBlock(level,pos.offset(0,1,0)));
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
+    protected void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
         Utils.loadBlockPos(input,"real_furnace", worldPosition).ifPresent(pos-> realFurnacePos = pos);
         Utils.loadBlockPos(input,"furnace_centre", worldPosition).ifPresent((pos)-> {
@@ -540,15 +534,11 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         });
         dataAccess.set(CORE_QUANTITY,shadowCores.size()+1);
 
-        input.getIntArray("container_data").ifPresent(array->{
-            for (int i = 0; i < array.length; i++) {
-                dataArray[i] = array[i];
-            }
-        });
+        input.getIntArray("container_data").ifPresent(array-> System.arraycopy(array, 0, dataArray, 0, array.length));
     }
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
+    protected void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
         Utils.saveBlockPos(output,"real_furnace", worldPosition, realFurnacePos);
         Utils.saveBlockPos(output,"furnace_centre", worldPosition, furnaceCentrePos);
@@ -560,27 +550,27 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return Component.empty();
     }
 
     @Override
-    protected Component getDefaultName() {
+    protected @NotNull Component getDefaultName() {
         return Component.empty();
     }
 
     @Override
-    protected NonNullList<ItemStack> getItems() {
+    protected @NotNull NonNullList<ItemStack> getItems() {
         return items;
     }
 
     @Override
-    protected void setItems(NonNullList<ItemStack> items) {
+    protected void setItems(@NotNull NonNullList<ItemStack> items) {
 
     }
 
     @Override
-    protected AbstractContainerMenu createMenu(int containerId, Inventory inventory) {
+    protected @NotNull AbstractContainerMenu createMenu(int containerId, Inventory inventory) {
         LevelAccessor levelAccessor = inventory.player.level();
         if (isShadow(levelAccessor)) {
             Optional<FurnaceCoreBlockEntity> blockEntity = getBlockEntity(levelAccessor,realFurnacePos);
@@ -656,37 +646,40 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     }
 
     public int getItemTotalCookTime(ServerLevel level, ItemStack input) {
-        var recipe = getSmeltingRecipe(input.getItem());
-        if(recipe.isPresent()){
-            return recipe.get().getFinalMeltTicks(brickBlock,getCoreQuantity());
+        SingleRecipeInput singleRecipeInput = new SingleRecipeInput(input);
+        var meltingRecipe = getMeltingRecipe(level, singleRecipeInput);
+        if(meltingRecipe.isPresent()){
+            return meltingRecipe.get().getFinalMeltTicks(brickBlock,getCoreQuantity());
         }
-        SingleRecipeInput singlerecipeinput = new SingleRecipeInput(input);
-        return QUICK_CHECK.getRecipeFor(singlerecipeinput, level).map(p_379263_ -> p_379263_.value().cookingTime()).orElse(200);
+
+        var smeltingRecipe = getSmeltingRecipe(level, singleRecipeInput);
+
+        return smeltingRecipe.map(AbstractCookingRecipe::cookingTime).orElse(200);
     }
 
-    public static Optional<MeltingCastRecord> getSmeltingRecipe(Item item){
-        if(!MeltingCastRecord.MeltingCastMap.containsKey(item)){
-            return Optional.empty();
-        }
-        return Optional.of(MeltingCastRecord.MeltingCastMap.get(item));
+
+
+    public static Optional<MeltingRecipe> getMeltingRecipe(ServerLevel level, SingleRecipeInput singleRecipeInput){
+        return QUICK_CHECK_MELTING.getRecipeFor(singleRecipeInput, level).map(RecipeHolder::value);
+    }
+
+    public static Optional<SmeltingRecipe> getSmeltingRecipe(ServerLevel level, SingleRecipeInput singleRecipeInput){
+        return QUICK_CHECK_SMELTING.getRecipeFor(singleRecipeInput, level).map(RecipeHolder::value);
     }
 
     public static int getBurnDuration(FuelValues fuelValues, ItemStack stack) {
-        return stack.getBurnTime(RECIPE_TYPE, fuelValues);
+        return stack.getBurnTime(RecipeType.SMELTING, fuelValues);
     }
 
     public Optional<ItemStack> getBurnOutput(ServerLevel level, ItemStack input){
-        var recipe = getSmeltingRecipe(input.getItem());
-        if(recipe.isPresent()){
-            return Optional.of(recipe.get().outputItem().getDefaultInstance()) ;
+        SingleRecipeInput singleRecipeInput = new SingleRecipeInput(input);
+        var meltingRecipeOpt = getMeltingRecipe(level,singleRecipeInput);
+        if(meltingRecipeOpt.isPresent()){
+            return Optional.of(meltingRecipeOpt.get().getResult());
         }
-        SingleRecipeInput singlerecipeinput = new SingleRecipeInput(input);
-        var recipeholder = QUICK_CHECK.getRecipeFor(singlerecipeinput, level).orElse(null);
-        if (recipeholder == null) {
-            return Optional.empty();
-        }
+        var smeltingRecipeOpt = getSmeltingRecipe(level, singleRecipeInput);
+        return smeltingRecipeOpt.map(recipe -> recipe.assemble(singleRecipeInput, level.registryAccess()));
 
-        return Optional.of(recipeholder.value().assemble(singlerecipeinput, level.registryAccess()));
     }
 
     public void setIsSmeltingRecipe(int index, boolean value){
@@ -704,11 +697,11 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     }
 
     private void setTemperatureLimit(int value){
-        dataAccess.set(TEMPERATURE_LIMIT, value); ;
+        dataAccess.set(TEMPERATURE_LIMIT, value);
     }
 
-    private static boolean isSmeltingConditionMet(@Nonnull MeltingCastRecord meltingRecipe, ItemStack inputStack, ItemStack mouldStack,  float temperature){
-        return  (isMould(mouldStack) && inputStack.getCount()>=9 && temperature >= meltingRecipe.meltingPoint());
+    private static boolean isMeltingConditionMet(@Nonnull MeltingRecipe meltingRecipe, ItemStack inputStack, ItemStack mouldStack, float temperature){
+        return  (isMould(mouldStack) && inputStack.getCount()>=9 && temperature >= meltingRecipe.getMeltingPoint());
     }
 
     private boolean updateTickCounter(){
@@ -759,7 +752,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
             corePosSet.add(blockPos);
         }
 
-        public void addWall(BlockPos blockPos){
+        public void addBrick(BlockPos blockPos){
             brickPosSet.add(blockPos);
         }
 

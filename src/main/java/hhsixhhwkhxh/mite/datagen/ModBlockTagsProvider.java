@@ -10,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ModBlockTagsProvider extends BlockTagsProvider {
     public ModBlockTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-        super(output, lookupProvider, MiteBreakAll.MODID);
+        super(output, lookupProvider, MiteBreakAll.MOD_ID);
     }
 
     @Override
