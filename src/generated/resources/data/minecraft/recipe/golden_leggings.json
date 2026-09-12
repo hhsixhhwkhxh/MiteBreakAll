@@ -1,0 +1,18 @@
+{
+  "type": "mite_break_all:large_furnace_crafting_recipe",
+  "category": "equipment",
+  "craft_time": 2800,
+  "key": {
+    "#": "minecraft:gold_ingot"
+  },
+  "melting_point": 1070,
+  "pattern": [
+    "###",
+    "# #",
+    "# #"
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:golden_leggings"
+  }
+}

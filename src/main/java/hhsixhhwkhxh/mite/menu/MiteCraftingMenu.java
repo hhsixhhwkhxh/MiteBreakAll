@@ -59,14 +59,17 @@ public class MiteCraftingMenu extends AbstractCraftingMenu {
         this.addDataSlot(DataSlot.forContainer(data,IS_RESULT_LOCKED));
 
         if(this.player instanceof ServerPlayer serverPlayer){
-            craftingResultSlot.setOnClickListener((slot)->{
+            craftingResultSlot.setOnAttemptPickup((mayPickUp)->{
+                if(mayPickUp){
+                    return true;
+                }
                 if(data.get(IS_CRAFTING)==1){
-                    return;
+                    return false;
                 }
                 data.set(IS_CRAFTING,1);
                 data.set(CRAFT_TIME,0);
                 data.set(CRAFT_TIME_TOTAL,2*20);
-
+                return false;
             });
         }
 

@@ -1,0 +1,18 @@
+{
+  "type": "mite_break_all:large_furnace_crafting_recipe",
+  "category": "equipment",
+  "craft_time": 51200,
+  "key": {
+    "#": "mite_break_all:mithril_ingot"
+  },
+  "melting_point": 4630,
+  "pattern": [
+    "# #",
+    "###",
+    "###"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mite_break_all:mithril_chestplate"
+  }
+}

@@ -25,6 +25,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static net.minecraft.world.item.component.Consumables.defaultFood;
 
@@ -42,23 +43,23 @@ public class ModItems {
     public static final DeferredItem<Item> GLASS_SHARD = ITEMS.registerItem("glass_shard", Item::new, new Item.Properties());
     public static final DeferredItem<Item> QUARTZ_SHARD = ITEMS.registerItem("quartz_shard", Item::new, new Item.Properties());
 
-    public static final DeferredItem<Item> ADAMANTIUM_NUGGET = ITEMS.registerItem("adamantium_nugget", properties -> new Item(properties.component(ModDataComponents.MELTING_CAST,new MeltingCast(6210))));
-    public static final DeferredItem<Item> ANCIENT_METAL_NUGGET = ITEMS.registerItem("ancient_metal_nugget",  properties -> new Item(properties.component(ModDataComponents.MELTING_CAST,new MeltingCast(3550))));
-    public static final DeferredItem<Item> HARD_NUGGET = ITEMS.registerItem("hard_nugget",properties -> new Item(properties.component(ModDataComponents.MELTING_CAST,new MeltingCast(3550))));
-    public static final DeferredItem<Item> MERCURY_NUGGET = ITEMS.registerItem("mercury_nugget", properties -> new Item(properties.component(ModDataComponents.MELTING_CAST,new MeltingCast(0))));
-    public static final DeferredItem<Item> MITHRIL_NUGGET = ITEMS.registerItem("mithril_nugget", properties -> new Item(properties.component(ModDataComponents.MELTING_CAST,new MeltingCast(4630))));
-    public static final DeferredItem<Item> SILVER_NUGGET = ITEMS.registerItem("silver_nugget", properties -> new Item(properties.component(ModDataComponents.MELTING_CAST,new MeltingCast(962))));
-    public static final DeferredItem<Item> COPPER_NUGGET = ITEMS.registerItem("copper_nugget", properties -> new Item(properties.component(ModDataComponents.MELTING_CAST,new MeltingCast(1084))));
+    public static final DeferredItem<Item> ADAMANTIUM_NUGGET = ITEMS.registerItem("adamantium_nugget", properties -> new Item(meltingPoint(6210, properties)));
+    public static final DeferredItem<Item> ANCIENT_METAL_NUGGET = ITEMS.registerItem("ancient_metal_nugget",  properties -> new Item(meltingPoint(3550, properties)));
+    public static final DeferredItem<Item> HARD_NUGGET = ITEMS.registerItem("hard_nugget",properties -> new Item(meltingPoint(3550, properties)));
+    public static final DeferredItem<Item> MERCURY_NUGGET = ITEMS.registerItem("mercury_nugget", properties -> new Item(meltingPoint(0, properties)));
+    public static final DeferredItem<Item> MITHRIL_NUGGET = ITEMS.registerItem("mithril_nugget", properties -> new Item(meltingPoint(4630, properties)));
+    public static final DeferredItem<Item> SILVER_NUGGET = ITEMS.registerItem("silver_nugget", properties -> new Item(meltingPoint(962, properties)));
+    public static final DeferredItem<Item> COPPER_NUGGET = ITEMS.registerItem("copper_nugget", properties -> new Item(meltingPoint(1084, properties)));
 
     public static final DeferredItem<Item> MESH_STRING = ITEMS.registerItem("mesh_string", Item::new, new Item.Properties().durability(16));
     public static final DeferredItem<Item> MESH_LEATHER = ITEMS.registerItem("mesh_leather", Item::new, new Item.Properties().durability(8));
 
-    public static final DeferredItem<Item> ADAMANTIUM_INGOT = ITEMS.registerItem("adamantium_ingot",Item::new,new Item.Properties());
-    public static final DeferredItem<Item> ANCIENT_METAL_INGOT = ITEMS.registerItem("ancient_metal_ingot",Item::new,new Item.Properties());
-    public static final DeferredItem<Item> HARD_INGOT = ITEMS.registerItem("hard_ingot",Item::new,new Item.Properties());
-    public static final DeferredItem<Item> MERCURY_INGOT = ITEMS.registerItem("mercury_ingot",Item::new,new Item.Properties());
-    public static final DeferredItem<Item> MITHRIL_INGOT = ITEMS.registerItem("mithril_ingot",Item::new,new Item.Properties());
-    public static final DeferredItem<Item> SILVER_INGOT = ITEMS.registerItem("silver_ingot",Item::new,new Item.Properties());
+    public static final DeferredItem<Item> ADAMANTIUM_INGOT = ITEMS.registerItem("adamantium_ingot",properties -> new Item(meltingPoint(6210, properties)));
+    public static final DeferredItem<Item> ANCIENT_METAL_INGOT = ITEMS.registerItem("ancient_metal_ingot",properties -> new Item(meltingPoint(3550, properties)));
+    public static final DeferredItem<Item> HARD_INGOT = ITEMS.registerItem("hard_ingot",properties -> new Item(meltingPoint(3550, properties)));
+    public static final DeferredItem<Item> MERCURY_INGOT = ITEMS.registerItem("mercury_ingot",properties -> new Item(meltingPoint(0, properties)));
+    public static final DeferredItem<Item> MITHRIL_INGOT = ITEMS.registerItem("mithril_ingot",properties -> new Item(meltingPoint(4630, properties)));
+    public static final DeferredItem<Item> SILVER_INGOT = ITEMS.registerItem("silver_ingot",properties -> new Item(meltingPoint(962, properties)));
     public static final DeferredItem<Item> TIN_INGOT = ITEMS.registerItem("tin_ingot",Item::new,new Item.Properties());
 
     public static final DeferredItem<Item> ADAMANTIUM_HELMET = ITEMS.registerItem("adamantium_helmet",(props)-> new Item(humanoidArmor(props,ModArmorMaterials.ADAMANTIUM, ArmorType.HELMET).component(ModDataComponents.MATERIAL_LEVEL, new MaterialLevel(MaterialFamilyType.ADAMANTIUM.level))));
@@ -288,7 +289,7 @@ public class ModItems {
             )
     );
 
-    public static final List<Item> deprecatedItemList = List.of(
+    public static final Set<Item> deprecatedItemList = Set.of(
             Items.WOODEN_AXE,Items.WOODEN_HOE,Items.WOODEN_PICKAXE,Items.WOODEN_SWORD,
             Items.DIAMOND_AXE,Items.DIAMOND_HOE,Items.DIAMOND_PICKAXE,Items.DIAMOND_SWORD,Items.DIAMOND_SHOVEL,
             Blocks.CRAFTING_TABLE.asItem(),Blocks.ANVIL.asItem(),
@@ -340,7 +341,7 @@ public class ModItems {
 
             deprecatedItemList.forEach(item -> event.modify(item, builder-> builder.set(ModDataComponents.DEPRECATED_MARKER.get(), new DeprecatedMarker(true))));
 
-            modifyVanillaNugget(event);
+            modifyVanillaNuggetAndIngot(event);
         });
     }
     public static Item.Properties humanoidArmor(Item.Properties properties, ModArmorMaterials.ModArmorMaterial material, ArmorType type) {
@@ -396,8 +397,17 @@ public class ModItems {
         builder.set(typedDataComponent.type(), typedDataComponent.value());
     }
 
-    public static void modifyVanillaNugget(ModifyDefaultComponentsEvent event){
-        event.modify(Items.IRON_NUGGET,builder -> builder.set(ModDataComponents.MELTING_CAST.get(), new MeltingCast(1535)));
-        event.modify(Items.GOLD_NUGGET,builder -> builder.set(ModDataComponents.MELTING_CAST.get(), new MeltingCast(1070)));
+    public static void modifyVanillaNuggetAndIngot(ModifyDefaultComponentsEvent event){
+        event.modify(Items.IRON_NUGGET,builder -> builder.set(ModDataComponents.MELTING_POINT.get(), new MeltingPoint(1535)));
+        event.modify(Items.GOLD_NUGGET,builder -> builder.set(ModDataComponents.MELTING_POINT.get(), new MeltingPoint(1070)));
+
+        event.modify(Items.COPPER_INGOT,builder -> builder.set(ModDataComponents.MELTING_POINT.get(), new MeltingPoint(1084)));
+        event.modify(Items.IRON_INGOT,builder -> builder.set(ModDataComponents.MELTING_POINT.get(), new MeltingPoint(1535)));
+        event.modify(Items.GOLD_INGOT,builder -> builder.set(ModDataComponents.MELTING_POINT.get(), new MeltingPoint(1070)));
+    }
+
+
+    public static Item.Properties meltingPoint(int value, Item.Properties properties) {
+        return properties.component(ModDataComponents.MELTING_POINT,new MeltingPoint(value));
     }
 }

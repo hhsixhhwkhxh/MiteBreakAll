@@ -43,11 +43,11 @@ public class ModDataComponents {
                     .networkSynchronized(DeprecatedMarker.STREAM_CODEC)
     );
 
-    public static final Supplier<DataComponentType<MeltingCast>> MELTING_CAST = DATACOMPONENTS.registerComponentType(
-            "melting_cast",
+    public static final Supplier<DataComponentType<MeltingPoint>> MELTING_POINT = DATACOMPONENTS.registerComponentType(
+            "melting_point",
             builder -> builder
-                    .persistent(MeltingCast.CODEC)
-                    .networkSynchronized(MeltingCast.STREAM_CODEC)
+                    .persistent(MeltingPoint.CODEC)
+                    .networkSynchronized(MeltingPoint.STREAM_CODEC)
     );
 
     public static void register(IEventBus bus){

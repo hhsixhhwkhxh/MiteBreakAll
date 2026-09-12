@@ -1,0 +1,18 @@
+{
+  "type": "mite_break_all:large_furnace_crafting_recipe",
+  "category": "equipment",
+  "craft_time": 204800,
+  "key": {
+    "#": "mite_break_all:adamantium_ingot"
+  },
+  "melting_point": 6210,
+  "pattern": [
+    "# #",
+    "###",
+    "###"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mite_break_all:adamantium_chestplate"
+  }
+}

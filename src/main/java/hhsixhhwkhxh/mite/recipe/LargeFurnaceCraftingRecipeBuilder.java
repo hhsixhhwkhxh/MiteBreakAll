@@ -35,33 +35,34 @@ public class LargeFurnaceCraftingRecipeBuilder implements RecipeBuilder {
     private final List<String> rows = Lists.newArrayList();
     private final Map<Character, Ingredient> key = Maps.newLinkedHashMap();
     private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
+    private final int craftTime;
+    private int meltPoint = 0;
     @Nullable
     private String group;
     private boolean showNotification = true;
 
-    private LargeFurnaceCraftingRecipeBuilder(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count) {
-        this(items, category, new ItemStack(result, count));
+    private LargeFurnaceCraftingRecipeBuilder(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count, int craftTime) {
+        this(items, category, new ItemStack(result, count),craftTime);
     }
 
-    private LargeFurnaceCraftingRecipeBuilder(HolderGetter<Item> items, RecipeCategory category, ItemStack result) {
+    private LargeFurnaceCraftingRecipeBuilder(HolderGetter<Item> items, RecipeCategory category, ItemStack result, int craftTime) {
         this.items = items;
         this.category = category;
         this.result = result.getItem();
         this.count = result.getCount();
         this.resultStack = result;
+        this.craftTime = craftTime;
     }
 
-    public static LargeFurnaceCraftingRecipeBuilder shaped(HolderGetter<Item> items, RecipeCategory category, ItemLike result) {
-        return shaped(items, category, result, 1);
+    public static LargeFurnaceCraftingRecipeBuilder shaped(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int craftTime) {
+        return shaped(items, category, result, 1, craftTime);
     }
 
-    public static LargeFurnaceCraftingRecipeBuilder shaped(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count) {
-        return new LargeFurnaceCraftingRecipeBuilder(items, category, result, count);
+    public static LargeFurnaceCraftingRecipeBuilder shaped(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count, int craftTime) {
+        return new LargeFurnaceCraftingRecipeBuilder(items, category, result, count, craftTime);
     }
 
-    public static LargeFurnaceCraftingRecipeBuilder shaped(HolderGetter<Item> p_365019_, RecipeCategory p_251325_, ItemStack result) {
-        return new LargeFurnaceCraftingRecipeBuilder(p_365019_, p_251325_, result);
-    }
+
 
     /**
      * Adds a key to the recipe pattern.
@@ -103,6 +104,11 @@ public class LargeFurnaceCraftingRecipeBuilder implements RecipeBuilder {
         }
     }
 
+    public LargeFurnaceCraftingRecipeBuilder meltPoint(int value){
+        this.meltPoint = value;
+        return this;
+    }
+
     public LargeFurnaceCraftingRecipeBuilder unlockedBy(String name, Criterion<?> criterion) {
         this.criteria.put(name, criterion);
         return this;
@@ -136,7 +142,8 @@ public class LargeFurnaceCraftingRecipeBuilder implements RecipeBuilder {
             RecipeBuilder.determineBookCategory(this.category),
             shapedrecipepattern,
             this.resultStack,
-            this.showNotification
+            this.showNotification,
+            craftTime,meltPoint
         );
         output.accept(resourceKey, largeFurnaceCraftingRecipe, advancement$builder.build(resourceKey.location().withPrefix("recipes/" + this.category.getFolderName() + "/")));
     }

@@ -1,0 +1,18 @@
+{
+  "type": "mite_break_all:large_furnace_crafting_recipe",
+  "category": "equipment",
+  "craft_time": 2800,
+  "key": {
+    "#": "minecraft:copper_ingot"
+  },
+  "melting_point": 1084,
+  "pattern": [
+    "###",
+    "# #",
+    "# #"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mite_break_all:copper_leggings"
+  }
+}

@@ -28,16 +28,20 @@ public class LargeFurnaceCraftingRecipe implements CraftingRecipe {
     @Nullable
     private PlacementInfo placementInfo;
 
-    public LargeFurnaceCraftingRecipe(String group, CraftingBookCategory category, ShapedRecipePattern pattern, ItemStack result, boolean showNotification) {
+    private final int craftTime,meltPoint;
+
+    public LargeFurnaceCraftingRecipe(String group, CraftingBookCategory category, ShapedRecipePattern pattern, ItemStack result, boolean showNotification,int craftTime,int meltPoint) {
         this.group = group;
         this.category = category;
         this.pattern = pattern;
         this.result = result;
         this.showNotification = showNotification;
+        this.craftTime = craftTime;
+        this.meltPoint = meltPoint;
     }
 
     public LargeFurnaceCraftingRecipe(String group, CraftingBookCategory category, ShapedRecipePattern pattern, ItemStack result) {
-        this(group, category, pattern, result, true);
+        this(group, category, pattern, result, true,100,0);
     }
 
     @Override
@@ -95,6 +99,15 @@ public class LargeFurnaceCraftingRecipe implements CraftingRecipe {
         return this.pattern.height();
     }
 
+    public int getCraftTime() {
+        return craftTime;
+    }
+
+    public int getMeltPoint() {
+        return meltPoint;
+    }
+
+
     @Override
     public List<RecipeDisplay> display() {
         return List.of(
@@ -110,14 +123,16 @@ public class LargeFurnaceCraftingRecipe implements CraftingRecipe {
 
     public static class Serializer implements RecipeSerializer<LargeFurnaceCraftingRecipe> {
         public static final MapCodec<LargeFurnaceCraftingRecipe> CODEC = RecordCodecBuilder.mapCodec(
-            p_340778_ -> p_340778_.group(
-                    Codec.STRING.optionalFieldOf("group", "").forGetter(p_311729_ -> p_311729_.group),
-                    CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(p_311732_ -> p_311732_.category),
-                    ShapedRecipePattern.MAP_CODEC.forGetter(p_311733_ -> p_311733_.pattern),
-                    ItemStack.STRICT_CODEC.fieldOf("result").forGetter(p_311730_ -> p_311730_.result),
-                    Codec.BOOL.optionalFieldOf("show_notification", true).forGetter(p_311731_ -> p_311731_.showNotification)
+            recipeInstance -> recipeInstance.group(
+                    Codec.STRING.optionalFieldOf("group", "").forGetter(recipe -> recipe.group),
+                    CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(recipe -> recipe.category),
+                    ShapedRecipePattern.MAP_CODEC.forGetter(recipe -> recipe.pattern),
+                    ItemStack.STRICT_CODEC.fieldOf("result").forGetter(recipe -> recipe.result),
+                    Codec.BOOL.optionalFieldOf("show_notification", true).forGetter(recipe -> recipe.showNotification),
+                    Codec.INT.optionalFieldOf("craft_time",100).forGetter(recipe-> recipe.craftTime),
+                    Codec.INT.optionalFieldOf("melting_point",100).forGetter(recipe-> recipe.meltPoint)
                 )
-                .apply(p_340778_, LargeFurnaceCraftingRecipe::new)
+                .apply(recipeInstance, LargeFurnaceCraftingRecipe::new)
         );
         public static final StreamCodec<RegistryFriendlyByteBuf, LargeFurnaceCraftingRecipe> STREAM_CODEC = StreamCodec.of(
             LargeFurnaceCraftingRecipe.Serializer::toNetwork, LargeFurnaceCraftingRecipe.Serializer::fromNetwork
@@ -139,7 +154,9 @@ public class LargeFurnaceCraftingRecipe implements CraftingRecipe {
             ShapedRecipePattern shapedrecipepattern = ShapedRecipePattern.STREAM_CODEC.decode(buffer);
             ItemStack itemstack = ItemStack.STREAM_CODEC.decode(buffer);
             boolean flag = buffer.readBoolean();
-            return new LargeFurnaceCraftingRecipe(s, craftingbookcategory, shapedrecipepattern, itemstack, flag);
+            int craftTime = buffer.readInt();
+            int meltingPoint = buffer.readInt();
+            return new LargeFurnaceCraftingRecipe(s, craftingbookcategory, shapedrecipepattern, itemstack, flag, craftTime, meltingPoint);
         }
 
         private static void toNetwork(RegistryFriendlyByteBuf buffer, LargeFurnaceCraftingRecipe recipe) {
@@ -148,6 +165,8 @@ public class LargeFurnaceCraftingRecipe implements CraftingRecipe {
             ShapedRecipePattern.STREAM_CODEC.encode(buffer, recipe.pattern);
             ItemStack.STREAM_CODEC.encode(buffer, recipe.result);
             buffer.writeBoolean(recipe.showNotification);
+            buffer.writeInt(recipe.craftTime);
+            buffer.writeInt(recipe.meltPoint);
         }
     }
 }

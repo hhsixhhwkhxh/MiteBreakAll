@@ -5,8 +5,11 @@ import hhsixhhwkhxh.mite.custom.ModFoodData;
 import hhsixhhwkhxh.mite.custom.PlayerWaterData;
 import hhsixhhwkhxh.mite.item.ModItems;
 import hhsixhhwkhxh.mite.packet.ClientboundSetVitalStatMaxValuePacket;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -191,5 +194,29 @@ public final class Utils {
         itemStackCollection.forEach(itemStack->{
             dropItem(itemStack,level,pos);
         });
+    }
+
+    public static void drawBottomToTopProgressBar(GuiGraphics guiGraphics, ResourceLocation spriteResourceLocation, int textureWidth, int textureHeight, int x, int y, float progress){
+        if(progress==0){
+            return;
+        }
+        int spriteHeight = Mth.ceil(progress * textureHeight);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, spriteResourceLocation, textureWidth, textureHeight, 0, textureHeight-spriteHeight, x, y + (textureHeight-spriteHeight), textureWidth, spriteHeight);
+    }
+
+    public static void drawTopToBottomProgressBar(GuiGraphics guiGraphics, ResourceLocation spriteResourceLocation, int textureWidth, int textureHeight, int x, int y, float progress){
+        if(progress==0){
+            return;
+        }
+        int spriteHeight = Mth.ceil(progress * textureHeight);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, spriteResourceLocation, textureWidth, textureHeight, 0, textureHeight-spriteHeight, x, y +(textureHeight-spriteHeight), textureWidth, spriteHeight);
+    }
+
+    public static void drawLeftToRightProgressBar(GuiGraphics guiGraphics, ResourceLocation spriteResourceLocation, int textureWidth, int textureHeight, int x, int y, float progress){
+        if(progress==0){
+            return;
+        }
+        int spriteWidth = Mth.ceil(progress * textureWidth);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, spriteResourceLocation, textureWidth, textureHeight, 0, 0, x, y, spriteWidth, textureHeight);
     }
 }

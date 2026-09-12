@@ -33,6 +33,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 import static hhsixhhwkhxh.mite.Utils.getHorizontalNeighbourPosList;
 import static hhsixhhwkhxh.mite.Utils.isMould;
@@ -57,6 +58,8 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     private final static RecipeManager.CachedCheck<SingleRecipeInput, SmeltingRecipe> QUICK_CHECK_SMELTING = RecipeManager.createCheck(RecipeType.SMELTING);
     private final static RecipeManager.CachedCheck<SingleRecipeInput, MeltingRecipe> QUICK_CHECK_MELTING = RecipeManager.createCheck(ModRecipeTypes.MELTING_RECIPE.get());
 
+    private final List<Consumer<Integer>> slotChangeListeners = new ArrayList<>();
+
     private final int[] dataArray = new int[DATA_COUNT];
 
     public final static int TEMPERATURE;
@@ -64,11 +67,14 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     public final static int[] COOKING_TIMER = new int[4];
     public final static int[] COOKING_TOTAL_TIME = new int[4];
     public final static int CORE_QUANTITY;
-    public final static int[] IS_SMELTING_RECIPE = new int[4];
-    public final static int[] SMELTING_OUTPUT_NAME = new int[4];
+    public final static int[] IS_MELTING_RECIPE = new int[4];
+    public final static int[] MELTING_OUTPUT_NAME = new int[4];
     public final static int TEMPERATURE_LIMIT;
     public final static int LAVA_BLOCK_COUNT;
     public final static int TICK_COUNTER;
+    public final static int CRAFTING_TIMER;
+    public final static int CRAFTING_TOTAL_TIME;
+    public final static int MIN_CRAFTING_TEMPERATURE;
 
     public final static int TEMPERATURE_MULTIPLIER = 10000;
 
@@ -85,12 +91,14 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         assignArrayIndex(COOKING_TIMER);
         assignArrayIndex(COOKING_TOTAL_TIME);
 
-        assignArrayIndex(IS_SMELTING_RECIPE);
-        assignArrayIndex(SMELTING_OUTPUT_NAME);
+        assignArrayIndex(IS_MELTING_RECIPE);
+        assignArrayIndex(MELTING_OUTPUT_NAME);
+
+        CRAFTING_TIMER = assignSingleIndex();
+        CRAFTING_TOTAL_TIME = assignSingleIndex();
+        MIN_CRAFTING_TEMPERATURE = assignSingleIndex();
 
         Objects.checkIndex(dataIndexCounter, DATA_COUNT);
-
-        //RecipeManager.
     }
 
     public static void assignArrayIndex(int[] array){
@@ -227,9 +235,9 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
             //检查是否满足粒->锭的条件 用于更新dataAccess 方便客户端Screen获取信息
             var smeltingRecipeOpt = getMeltingRecipe(level,new SingleRecipeInput(inputStack));
             boolean isSmeltingRecipe = (smeltingRecipeOpt.isPresent());
-            furnace.setIsSmeltingRecipe(i,isSmeltingRecipe);
+            furnace.setIsMeltingRecipe(i,isSmeltingRecipe);
             if(isSmeltingRecipe){
-                furnace.setSmeltingOutputName(i,smeltingRecipeOpt.get().getResult().getItem().getDescriptionId());
+                furnace.setMeltingOutputName(i,smeltingRecipeOpt.get().getResult().getItem().getDescriptionId());
             }
 
             if(cookingTotalTime <= 0){
@@ -296,11 +304,20 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
             if (cookingTimer>=0 && (inputStack.isEmpty()|| (isSmeltingRecipe&&!isMeltingConditionMet(smeltingRecipeOpt.get(),inputStack,mouldStack,temperature)))){
                 cookingTimer--;
-                furnace.setIsSmeltingRecipe(i,false);
+                furnace.setIsMeltingRecipe(i,false);
             }else{
                 cookingTimer++;
             }
             furnace.setCookingTimer(i,cookingTimer);
+        }
+
+        if(furnace.getCraftingTotalTime()>0){
+            if(temperature<furnace.getMinCraftingTemperature()){
+                furnace.setCraftingTimer(0);
+            }else{
+                int craftingTimer = furnace.getCraftingTimer();
+                furnace.setCraftingTimer(craftingTimer+1);
+            }
         }
 
         furnace.setTemperature(temperature);
@@ -327,7 +344,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         }else{
             delta = 0.083F;
         }
-        currentTemp -= delta;
+        currentTemp -= delta * getCoreQuantity();
         return (currentTemp);
     }
 
@@ -395,6 +412,8 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         });
 
     }
+
+
 
     public void wrapBrickBlock(LevelAccessor level, BlockPos blockPos){
         level.setBlock(blockPos,
@@ -682,14 +701,13 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
     }
 
-    public void setIsSmeltingRecipe(int index, boolean value){
-        dataAccess.set(IS_SMELTING_RECIPE[index],value?1:0);
+    public void setIsMeltingRecipe(int index, boolean value){
+        dataAccess.set(IS_MELTING_RECIPE[index],value?1:0);
     }
 
-    public void setSmeltingOutputName(int index, String value){
-        dataAccess.set(SMELTING_OUTPUT_NAME[index],value.hashCode());
+    public void setMeltingOutputName(int index, String value){
+        dataAccess.set(MELTING_OUTPUT_NAME[index],value.hashCode());
     }
-
 
 
     public int getTemperatureLimit(){
@@ -729,6 +747,40 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         BlockPos bottomCentrePos = furnaceCentrePos.offset(0,-2,0);
         layerUnderFurnacePosList.addAll(Arrays.asList(Utils.getHorizontalCornerPosList(bottomCentrePos)));
         layerUnderFurnacePosList.addAll(Arrays.asList(Utils.getHorizontalNeighbourPosList(bottomCentrePos)));
+    }
+
+    public int getCraftingTimer(){
+        return dataAccess.get(CRAFTING_TIMER);
+    }
+
+    public void setCraftingTimer(int value){
+        dataAccess.set(CRAFTING_TIMER,value);
+    }
+
+    public int getCraftingTotalTime(){
+        return dataAccess.get(CRAFTING_TOTAL_TIME);
+    }
+
+    public void setCraftingTotalTime(int value){
+        dataAccess.set(CRAFTING_TOTAL_TIME,value);
+    }
+
+    public int getMinCraftingTemperature(){
+        return dataAccess.get(MIN_CRAFTING_TEMPERATURE);
+    }
+
+    @Override
+    public void setItem(int slot, ItemStack stack) {
+        super.setItem(slot, stack);
+        slotChangeListeners.forEach(consumer-> consumer.accept(slot));
+    }
+
+    public void addSlotListener(Consumer<Integer> consumer){
+        slotChangeListeners.add(consumer);
+    }
+
+    public void removeSlotListener(Consumer<Integer> consumer){
+        slotChangeListeners.remove(consumer);
     }
 
     public static class FindResult{

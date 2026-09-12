@@ -2,6 +2,7 @@ package hhsixhhwkhxh.mite.screen;
 
 import com.google.common.collect.Range;
 import hhsixhhwkhxh.mite.MiteBreakAll;
+import hhsixhhwkhxh.mite.Utils;
 import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
 import hhsixhhwkhxh.mite.item.ModItems;
 import hhsixhhwkhxh.mite.menu.LargeFurnaceMenu;
@@ -29,6 +30,7 @@ public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu
     private static final ResourceLocation THERMOMETER_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"container/large_furnace/thermometer");
     private static final ResourceLocation BURN_PROGRESS_DOWN_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"container/large_furnace/burn_progress_down");
     private static final ResourceLocation BURN_PROGRESS_RIGHT_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"container/large_furnace/burn_progress_right");
+    private static final ResourceLocation LIT_PROGRESS_SPRITE = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"container/large_furnace/lit_progress");
     private static final ResourceLocation LOCKED_SLOT = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"container/large_furnace/locked_slot");
     private static final ResourceLocation LIQUID_METAL = ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID,"container/large_furnace/liquid_metal");
 
@@ -122,6 +124,12 @@ public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu
         }
 
 
+        var craftingProgress = menu.getCraftingProgress();
+        //Utils.drawBottomToTopProgressBar(guiGraphics,LIT_PROGRESS_SPRITE,14,14,leftPos + 77, topPos + 109, craftingProgress);
+        Utils.drawLeftToRightProgressBar(guiGraphics,BURN_PROGRESS_RIGHT_SPRITE,15,12,leftPos + 76, topPos + 123, menu.getCraftingProgress());
+        if(craftingProgress!=0&&craftingProgress!=1){
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, LIT_PROGRESS_SPRITE, 14,14, 0, 0, leftPos + 77, topPos + 109, 14, 14);
+        }
     }
 
     @Override
@@ -129,7 +137,7 @@ public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu
         super.renderContents(guiGraphics, mouseX, mouseY, partialTick);
 
         for (int i = 0;i < menu.getCoreQuantity();i++){
-            if(!this.menu.isSmeltingRecipe(i)){
+            if(!this.menu.isMeltingRecipe(i)){
                 continue;
             }
             var progress = menu.getBurnProgress(i);
@@ -142,7 +150,7 @@ public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu
             int liquidMetalSpriteHeight =  Mth.ceil(16 * liquidMetalProgress);
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, LIQUID_METAL, 16, 16, 0, 16-liquidMetalSpriteHeight, x, y + (16-liquidMetalSpriteHeight), 16,liquidMetalSpriteHeight);
 
-            int hash = menu.getSmeltingOutputName(i);
+            int hash = menu.getMeltingOutputName(i);
             if(progress<=0.6||!INGOT_RES_MAP.containsKey(hash)){
                 continue;
             }
@@ -184,10 +192,10 @@ public class LargeFurnaceScreen extends AbstractContainerScreen<LargeFurnaceMenu
     @Override
     protected @NotNull List<Component> getTooltipFromContainerItem(ItemStack stack) {
         var list = super.getTooltipFromContainerItem(stack);
-        if(!stack.has(ModDataComponents.MELTING_CAST)){
+        if(!stack.has(ModDataComponents.MELTING_POINT)){
             return list;
         }
-        var meltingCast = stack.getComponents().get(ModDataComponents.MELTING_CAST);
+        var meltingCast = stack.getComponents().get(ModDataComponents.MELTING_POINT);
         if (meltingCast == null) {
             return list;
         }

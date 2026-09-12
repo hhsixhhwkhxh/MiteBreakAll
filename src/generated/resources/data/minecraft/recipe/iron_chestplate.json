@@ -1,0 +1,18 @@
+{
+  "type": "mite_break_all:large_furnace_crafting_recipe",
+  "category": "equipment",
+  "craft_time": 6400,
+  "key": {
+    "#": "minecraft:iron_ingot"
+  },
+  "melting_point": 1535,
+  "pattern": [
+    "# #",
+    "###",
+    "###"
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:iron_chestplate"
+  }
+}
