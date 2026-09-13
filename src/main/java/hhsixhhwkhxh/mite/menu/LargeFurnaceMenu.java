@@ -212,7 +212,8 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
     }
 
     private boolean canPickUpCraftingResultSlot(){
-        return getCraftingTotalTime()<=0||getCraftingProgress()==1;
+
+        return getCraftingProgress()==1;
     }
 
 
@@ -266,10 +267,7 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
 
 
     public void onSlotsChanged(int slotId) {
-        if(belongsToSlots(slotId,INGREDIENT_SLOT, MOULD_SLOT)){
-            onFurnaceSlotsChanged();
-            return;
-        }
+
 
         if(belongsToSlots(slotId,CRAFT_INPUT_SLOT)&&!placingRecipe){
             onCraftSlotsChanged();
@@ -277,7 +275,7 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
         }
     }
 
-    private void onFurnaceSlotsChanged(){}
+
     private void onCraftSlotsChanged(){
         if(!(level instanceof ServerLevel serverLevel)){
             return;
@@ -380,17 +378,17 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
     }
 
 
-    public boolean belongsToSlots(int index, int[] target){
+    public static boolean belongsToSlots(int index, int[] target){
         return (index>=target[0]&&index<=target[target.length-1]);
     }
 
-    public boolean belongsToSlots(int index, int[]... targets){
+    public static boolean belongsToSlots(int index, int[]... targets){
         for (int[] target : targets) {
-            if(!belongsToSlots(index,target)){
-                return false;
+            if(belongsToSlots(index,target)){
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     public boolean belongsToSlot(int index, int target){
@@ -430,6 +428,14 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
         int cookingTimer = this.data.get(COOKING_TIMER[index]);
         int cookingTotalTime = this.data.get(COOKING_TOTAL_TIME[index]);
         return cookingTotalTime != 0 && cookingTimer != 0 ? Mth.clamp((float)cookingTimer / cookingTotalTime, 0.0F, 1.0F) : 0.0F;
+    }
+
+    public int getCookingTimer(int index){
+        return this.data.get(COOKING_TIMER[index]);
+    }
+
+    public int getCookingTotalTime(int index){
+        return this.data.get(COOKING_TOTAL_TIME[index]);
     }
 
     public boolean isMeltingRecipe(int index){

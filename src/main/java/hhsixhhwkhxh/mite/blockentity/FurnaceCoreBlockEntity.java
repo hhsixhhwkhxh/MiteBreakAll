@@ -232,32 +232,14 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
             ItemStack inputStack = furnace.getItems().get(INGREDIENT_SLOT[i]);
             ItemStack mouldStack = furnace.getItems().get(MOULD_SLOT[i]);
 
-            //检查是否满足粒->锭的条件 用于更新dataAccess 方便客户端Screen获取信息
-            var smeltingRecipeOpt = getMeltingRecipe(level,new SingleRecipeInput(inputStack));
-            boolean isSmeltingRecipe = (smeltingRecipeOpt.isPresent());
-            furnace.setIsMeltingRecipe(i,isSmeltingRecipe);
-            if(isSmeltingRecipe){
-                furnace.setMeltingOutputName(i,smeltingRecipeOpt.get().getResult().getItem().getDescriptionId());
-            }
-
             if(cookingTotalTime <= 0){
                 //没有任务进行
-                if(inputStack.isEmpty()){
-                    continue;
+                if(cookingTimer>0){
+                    cookingTimer--;
+                    furnace.setCookingTimer(i,cookingTimer);
                 }
-                if(isSmeltingRecipe&&!isMeltingConditionMet(smeltingRecipeOpt.get(),inputStack,mouldStack,temperature)){
-                    continue;
-                }
-
-                //开始新任务
-                cookingTotalTime = furnace.getItemTotalCookTime(level,inputStack);
-
-                if(cookingTotalTime<=0){
-                    continue;
-                }
-                furnace.setCookingTimer(i,0);
-                furnace.setCookingTotalTime(i,cookingTotalTime);
                 continue;
+
             }
             if(cookingTimer >= cookingTotalTime){
                 //尝试结算
@@ -282,7 +264,8 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
                 });
 
                 if(isSucceeded.get()){
-                    if(smeltingRecipeOpt.isPresent()){
+                    var meltingRecipe = getMeltingRecipe(level,new SingleRecipeInput(inputStack));
+                    if(meltingRecipe.isPresent()){
                         inputStack.shrink(9);
 
                         int dataDamage = mouldStack.getDamageValue() + 1;
@@ -298,16 +281,13 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
                     cookingTotalTime = cookingTimer = 0;
                     furnace.setCookingTotalTime(i,cookingTotalTime);
                     furnace.setCookingTimer(i,cookingTimer);
+                    furnace.onFurnaceSlotsChanged();
                 }
                 continue;
             }
 
-            if (cookingTimer>=0 && (inputStack.isEmpty()|| (isSmeltingRecipe&&!isMeltingConditionMet(smeltingRecipeOpt.get(),inputStack,mouldStack,temperature)))){
-                cookingTimer--;
-                furnace.setIsMeltingRecipe(i,false);
-            }else{
-                cookingTimer++;
-            }
+
+            cookingTimer++;
             furnace.setCookingTimer(i,cookingTimer);
         }
 
@@ -686,6 +666,8 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         return QUICK_CHECK_SMELTING.getRecipeFor(singleRecipeInput, level).map(RecipeHolder::value);
     }
 
+
+
     public static int getBurnDuration(FuelValues fuelValues, ItemStack stack) {
         return stack.getBurnTime(RecipeType.SMELTING, fuelValues);
     }
@@ -701,7 +683,7 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
     }
 
-    public void setIsMeltingRecipe(int index, boolean value){
+    public void setMeltingRecipe(int index, boolean value){
         dataAccess.set(IS_MELTING_RECIPE[index],value?1:0);
     }
 
@@ -772,6 +754,14 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     @Override
     public void setItem(int slot, ItemStack stack) {
         super.setItem(slot, stack);
+
+        //熔炉槽位的变化由本方块实体处理
+        if(LargeFurnaceMenu.belongsToSlots(slot, INGREDIENT_SLOT, MOULD_SLOT)){
+            onFurnaceSlotsChanged();
+            return;
+        }
+
+        //其他分发出去(Menu)
         slotChangeListeners.forEach(consumer-> consumer.accept(slot));
     }
 
@@ -781,6 +771,41 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
 
     public void removeSlotListener(Consumer<Integer> consumer){
         slotChangeListeners.remove(consumer);
+    }
+
+    private void onFurnaceSlotsChanged(){
+        if(!(level instanceof ServerLevel serverLevel)){
+            return;
+        }
+        for (int i = 0; i < getCoreQuantity(); i++) {
+            //int cookingTimer = getCookingTimer(i);
+            int cookingTotalTime = 0;
+            boolean isMeltingRecipe = false;
+
+            ItemStack inputStack = getItems().get(INGREDIENT_SLOT[i]);
+            ItemStack mouldStack = getItems().get(MOULD_SLOT[i]);
+
+            SingleRecipeInput singleRecipeInput = new SingleRecipeInput(inputStack);
+            var meltingRecipe = getMeltingRecipe(serverLevel, singleRecipeInput);
+            var smeltingRecipe = getSmeltingRecipe(serverLevel, singleRecipeInput);
+
+            if(meltingRecipe.isEmpty() && smeltingRecipe.isEmpty()){
+                setCookingTotalTime(i,0);
+                setMeltingRecipe(i,false);
+                continue;
+            }
+
+            if(meltingRecipe.isPresent()&&isMeltingConditionMet(meltingRecipe.get(),inputStack,mouldStack,getTemperature())){
+                cookingTotalTime = meltingRecipe.get().getFinalMeltTicks(coreBlock,getCoreQuantity());
+                isMeltingRecipe = true;
+                setMeltingOutputName(i,meltingRecipe.get().getResult().getItem().getDescriptionId());
+            }else if(smeltingRecipe.isPresent()){
+                cookingTotalTime = smeltingRecipe.get().cookingTime();
+            }
+
+            setCookingTotalTime(i,cookingTotalTime);
+            setMeltingRecipe(i,isMeltingRecipe);
+        }
     }
 
     public static class FindResult{
