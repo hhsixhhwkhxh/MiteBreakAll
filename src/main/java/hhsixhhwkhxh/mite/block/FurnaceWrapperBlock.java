@@ -1,5 +1,8 @@
 package hhsixhhwkhxh.mite.block;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import hhsixhhwkhxh.mite.Utils;
 import hhsixhhwkhxh.mite.blockentity.FurnaceCoreBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -14,6 +17,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -32,13 +36,23 @@ public class FurnaceWrapperBlock extends Block {
     public static final List<IntegerProperty> REAL_FURNACE_POS = Utils.createBlockPosProperty("real_furnace");
     private final Type blockType;
 
+    public static final MapCodec<FurnaceWrapperBlock> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(
+                    BlockBehaviour.Properties.CODEC.fieldOf("properties")
+                            .forGetter(BlockBehaviour::properties),
+                    Type.CODEC.fieldOf("material_type")
+                            .forGetter(FurnaceWrapperBlock::getBlockType)
+            ).apply(instance, FurnaceWrapperBlock::new)
+    );
 
     public FurnaceWrapperBlock(Properties properties, Type blockType) {
         super(properties);
         this.blockType = blockType;
     }
 
-
+    public Type getBlockType() {
+        return blockType;
+    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -105,6 +119,9 @@ public class FurnaceWrapperBlock extends Block {
         public @NotNull String getSerializedName() {
             return name;
         }
+
+        public static final Codec<Type> CODEC = StringRepresentable.fromEnum(Type::values);
+
 
         public Block getBlock(){
             return block;

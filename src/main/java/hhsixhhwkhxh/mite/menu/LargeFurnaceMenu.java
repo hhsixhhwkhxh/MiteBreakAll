@@ -24,6 +24,7 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -474,13 +475,13 @@ public class LargeFurnaceMenu extends RecipeBookMenu {
     }
 
     @Override
-    public RecipeBookType getRecipeBookType() {
+    public @NotNull RecipeBookType getRecipeBookType() {
         return this.recipeBookType;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public PostPlaceAction handlePlacement(
+    public @NotNull PostPlaceAction handlePlacement(
         boolean useMaxItems, boolean isCreative, RecipeHolder<?> recipe, final ServerLevel level, Inventory playerInventory
     ) {
         final List<Slot> list = List.of(this.getSlot(0), this.getSlot(2));

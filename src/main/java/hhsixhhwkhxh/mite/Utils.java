@@ -9,6 +9,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -18,6 +20,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.storage.ValueInput;
@@ -218,5 +221,22 @@ public final class Utils {
         }
         int spriteWidth = Mth.ceil(progress * textureWidth);
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, spriteResourceLocation, textureWidth, textureHeight, 0, 0, x, y, spriteWidth, textureHeight);
+    }
+
+    public static Optional<Block> tryLoadBlock(ValueInput input, String key){
+        return input.getString(key).flatMap(idStr -> {
+            ResourceLocation id = ResourceLocation.tryParse(idStr);
+            if (id == null) {
+                return Optional.empty();
+            }
+            return BuiltInRegistries.BLOCK.get(id).map(Holder.Reference::value);
+        });
+    }
+
+    public static void trySaveBlock(ValueOutput output, String key,@Nullable Block block){
+        if(block==null){
+            return;
+        }
+        output.putString(key, BuiltInRegistries.BLOCK.getKey(block).toString());
     }
 }

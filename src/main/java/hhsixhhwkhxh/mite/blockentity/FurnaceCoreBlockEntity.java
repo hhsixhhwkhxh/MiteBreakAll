@@ -48,9 +48,9 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
     private BlockPos realFurnacePos = null;
     private Set<BlockPos> shadowCores = new HashSet<>(3);
 
-    public final Block brickBlock;
-    public final Block coreBlock;
-    public final Block brickWrapperBlock;
+    public Block brickBlock;
+    public Block coreBlock;
+    public Block brickWrapperBlock;
     private final List<BlockPos> layerUnderFurnacePosList = new ArrayList<>(9);
 
     protected NonNullList<ItemStack> items = NonNullList.withSize(44, ItemStack.EMPTY);
@@ -527,6 +527,10 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
             initLayerUnderFurnacePosList();
         });
         ContainerHelper.loadAllItems(input, this.items);
+        Utils.tryLoadBlock(input,"brick_block").ifPresent(block->this.brickBlock = block);
+        Utils.tryLoadBlock(input,"core_block").ifPresent(block->this.coreBlock = block);
+        Utils.tryLoadBlock(input,"brick_wrapper_block").ifPresent(block->this.brickWrapperBlock = block);
+
 
         Utils.loadBlockPosCollection(input, "shadow_cores", worldPosition, new HashSet<>(3)).ifPresent(set->{
             shadowCores = set;
@@ -542,6 +546,11 @@ public class FurnaceCoreBlockEntity extends BaseContainerBlockEntity {
         Utils.saveBlockPos(output,"real_furnace", worldPosition, realFurnacePos);
         Utils.saveBlockPos(output,"furnace_centre", worldPosition, furnaceCentrePos);
         ContainerHelper.saveAllItems(output, this.items);
+
+        Utils.trySaveBlock(output,"brick_block",this.brickBlock);
+        Utils.trySaveBlock(output,"core_block",this.coreBlock);
+        Utils.trySaveBlock(output,"brick_wrapper_block",this.brickWrapperBlock);
+
 
         Utils.saveBlockPosCollection(output,"shadow_cores",worldPosition,shadowCores);
 
