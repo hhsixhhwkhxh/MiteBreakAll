@@ -15,26 +15,19 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
-
 public class MiteCraftingTableBlockEntity extends BlockEntity implements MenuProvider {
 
-    int craftTime = 0,craftTimeTotal = 10,isCrafting = 0,isResultLocked = 1;
-    public static final int CRAFT_TIME = 0;
-    public static final int CRAFT_TIME_TOTAL = 1;
-    public static final int IS_CRAFTING = 2;
-    public static final int IS_RESULT_LOCKED = 3;
-    public AtomicReference<Supplier<Boolean>> onCraftFinishedSupplier = new AtomicReference<>();
+    private int craftingTimer = 0, craftTotalTime = 0;
+    public static final int CRAFTING_TIMER = 0;
+    public static final int CRAFTING_TOTAL_TIME = 1;
+    public Runnable onCraftFinishedListener = null;
 
-    protected final ContainerData dataAccess = new ContainerData() {
+    private final ContainerData dataAccess = new ContainerData() {
         @Override
         public int get(int index) {
             return switch (index) {
-                case CRAFT_TIME -> craftTime;
-                case CRAFT_TIME_TOTAL -> craftTimeTotal;
-                case IS_CRAFTING -> isCrafting;
-                case IS_RESULT_LOCKED -> isResultLocked;
+                case CRAFTING_TIMER -> craftingTimer;
+                case CRAFTING_TOTAL_TIME -> craftTotalTime;
                 default -> 0;
             };
         }
@@ -42,24 +35,18 @@ public class MiteCraftingTableBlockEntity extends BlockEntity implements MenuPro
         @Override
         public void set(int index, int value) {
             switch (index) {
-                case CRAFT_TIME:
-                    craftTime = value;
+                case CRAFTING_TIMER:
+                    craftingTimer = value;
                     break;
-                case CRAFT_TIME_TOTAL:
-                    craftTimeTotal = value;
-                    break;
-                case IS_CRAFTING:
-                    isCrafting = value;
-                    break;
-                case IS_RESULT_LOCKED:
-                    isResultLocked = value;
+                case CRAFTING_TOTAL_TIME:
+                    craftTotalTime = value;
                     break;
             }
         }
 
         @Override
         public int getCount() {
-            return 4;
+            return 2;
         }
     };
 
@@ -74,28 +61,43 @@ public class MiteCraftingTableBlockEntity extends BlockEntity implements MenuPro
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return new MiteCraftingMenu(containerId, playerInventory, ContainerLevelAccess.create(level, worldPosition),dataAccess,onCraftFinishedSupplier);
+        return new MiteCraftingMenu(containerId, playerInventory, ContainerLevelAccess.create(level, worldPosition),dataAccess, this);
     }
 
-    public boolean isCrafting(){
-        return (dataAccess.get(IS_CRAFTING)!=0);
-    }
 
     public static void serverTick(ServerLevel level, BlockPos pos, BlockState state, MiteCraftingTableBlockEntity craftTable) {
-        if(!craftTable.isCrafting()){
+        int craftingTotalTime = craftTable.getCraftTotalTime();
+        if(craftingTotalTime<=0){
             return;
         }
-        //craftTable.craftTime++;
-        craftTable.dataAccess.set(CRAFT_TIME,craftTable.dataAccess.get(CRAFT_TIME)+1);
-        if(craftTable.dataAccess.get(CRAFT_TIME) < craftTable.dataAccess.get(CRAFT_TIME_TOTAL)){
-            return;
-        }
-        //craftTable.dataAccess.set(IS_CRAFTING,0);
-        craftTable.dataAccess.set(IS_RESULT_LOCKED,0);
-        craftTable.dataAccess.set(CRAFT_TIME,0);
 
-        if(craftTable.onCraftFinishedSupplier.get()!=null){
-            craftTable.onCraftFinishedSupplier.get().get();
+        int craftingTimer = craftTable.getCraftingTimer();
+        craftingTimer++;
+        craftTable.setCraftingTimer(craftingTimer);
+
+        if(craftingTimer < craftingTotalTime){
+            return;
         }
+
+        //结算
+        if(craftTable.onCraftFinishedListener != null){
+            craftTable.onCraftFinishedListener.run();
+        }
+    }
+
+    public void setOnCraftFinishedListener(Runnable listener){
+        this.onCraftFinishedListener = listener;
+    }
+
+    public int getCraftingTimer(){
+        return dataAccess.get(CRAFTING_TIMER);
+    }
+
+    public void setCraftingTimer(int value){
+        dataAccess.set(CRAFTING_TIMER, value);
+    }
+
+    public int getCraftTotalTime(){
+        return dataAccess.get(CRAFTING_TOTAL_TIME);
     }
 }

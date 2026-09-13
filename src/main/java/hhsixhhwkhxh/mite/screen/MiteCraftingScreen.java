@@ -46,7 +46,7 @@ public class MiteCraftingScreen extends AbstractRecipeBookScreen<MiteCraftingMen
 
 
         int i1 = 24;
-        int j1 = Mth.ceil(this.menu.getCraftProgress() * 24.0F);
+        int j1 = Mth.ceil(this.menu.getCraftingProgress() * 24.0F);
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, BURN_PROGRESS_SPRITE, 24, 16, 0, 0, i + 89, j + 34, j1, 16);
 
     }

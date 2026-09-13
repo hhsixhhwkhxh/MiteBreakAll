@@ -29,63 +29,65 @@ public class MiteCraftingMenu extends AbstractCraftingMenu {
     private final Player player;
     private boolean placingRecipe;
     private final CraftingResultSlot craftingResultSlot;
-    protected final ContainerData data;
+    private final ContainerData data;
 
-    public static final int CRAFT_TIME = MiteCraftingTableBlockEntity.CRAFT_TIME;
-    public static final int CRAFT_TIME_TOTAL = MiteCraftingTableBlockEntity.CRAFT_TIME_TOTAL;
-    public static final int IS_CRAFTING = MiteCraftingTableBlockEntity.IS_CRAFTING;
-    public static final int IS_RESULT_LOCKED = MiteCraftingTableBlockEntity.IS_RESULT_LOCKED;
+    public static final int CRAFTING_TIMER = MiteCraftingTableBlockEntity.CRAFTING_TIMER;
+    public static final int CRAFTING_TOTAL_TIME = MiteCraftingTableBlockEntity.CRAFTING_TOTAL_TIME;
 
 
     public MiteCraftingMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, ContainerLevelAccess.NULL,new SimpleContainerData(4),null);
+        this(containerId, playerInventory, ContainerLevelAccess.NULL,new SimpleContainerData(2),null);
     }
 
-    public MiteCraftingMenu(int containerId, Inventory playerInventory, ContainerLevelAccess access, ContainerData data, AtomicReference<Supplier<Boolean>> onCraftFinishedSupplier) {
+    public MiteCraftingMenu(int containerId, Inventory playerInventory, ContainerLevelAccess access, ContainerData data,@Nullable MiteCraftingTableBlockEntity blockEntity) {
         super(ModMenuTypes.MITE_CRAFTING_MENU.get(), containerId, 3, 3);
 
         this.access = access;
         this.player = playerInventory.player;
         //this.addResultSlot(this.player, 124, 35);
         craftingResultSlot =new CraftingResultSlot(player, this.craftSlots, this.resultSlots, 0,  124, 35);
+        craftingResultSlot.setMayPickup(false);
         this.addSlot(craftingResultSlot);
         this.addCraftingGridSlots(30, 17);
         this.addStandardInventorySlots(playerInventory, 8, 84);
 
         this.data = data;
-        this.addDataSlot(DataSlot.forContainer(data,CRAFT_TIME));
-        this.addDataSlot(DataSlot.forContainer(data,CRAFT_TIME_TOTAL));
-        this.addDataSlot(DataSlot.forContainer(data,IS_CRAFTING));
-        this.addDataSlot(DataSlot.forContainer(data,IS_RESULT_LOCKED));
+        this.addDataSlot(DataSlot.forContainer(data, CRAFTING_TIMER));
+        this.addDataSlot(DataSlot.forContainer(data, CRAFTING_TOTAL_TIME));
 
         if(this.player instanceof ServerPlayer serverPlayer){
             craftingResultSlot.setOnAttemptPickup((mayPickUp)->{
+                //给super.clicked开绿灯
                 if(mayPickUp){
                     return true;
                 }
-                if(data.get(IS_CRAFTING)==1){
+
+                if(getCraftingProgress()!=0){
                     return false;
+                }else{
+                    setCraftingTimer(0);
+                    setCraftingTotalTime(-getCraftTotalTime());
                 }
-                data.set(IS_CRAFTING,1);
-                data.set(CRAFT_TIME,0);
-                data.set(CRAFT_TIME_TOTAL,2*20);
                 return false;
             });
         }
 
-        Supplier<Boolean> onCraftFinished = ()->{
-            ItemStack itemStack = this.quickMoveStack(player,0);
-
-            if(itemStack==ItemStack.EMPTY){
-                craftingResultSlot.setMayPickup(true);
-                super.clicked(0,0,ClickType.THROW,player);
-                return false;
-            }
-            return true;
-        };
-        if(onCraftFinishedSupplier!=null){
-            onCraftFinishedSupplier.set(onCraftFinished);
+        if(blockEntity!=null){
+            blockEntity.setOnCraftFinishedListener(this::onCraftFinished);
         }
+
+    }
+
+    public void onCraftFinished(){
+        ItemStack itemStack = this.quickMoveStack(player,0);
+
+        if(itemStack == ItemStack.EMPTY){
+            craftingResultSlot.setMayPickup(true);
+            super.clicked(0,0,ClickType.THROW,player);
+            craftingResultSlot.setMayPickup(false);
+            return;
+        }
+        return;
     }
 
 
@@ -113,10 +115,10 @@ public class MiteCraftingMenu extends AbstractCraftingMenu {
 
         resultSlots.setItem(0, itemstack);
         if(!itemstack.isEmpty()){
-            data.set(IS_RESULT_LOCKED,1);
-        }else {
-            data.set(IS_CRAFTING,0);
-            data.set(CRAFT_TIME,0);
+            setCraftingTotalTime(-40);
+        }else{
+            setCraftingTimer(0);
+            setCraftingTotalTime(0);
         }
 
         this.setRemoteSlot(0, itemstack);
@@ -146,7 +148,7 @@ public class MiteCraftingMenu extends AbstractCraftingMenu {
     @Override
     public void finishPlacingRecipe(ServerLevel level, RecipeHolder<CraftingRecipe> recipe) {
         this.placingRecipe = false;
-        slotChangedCraftingGrid( level, recipe);
+        slotChangedCraftingGrid(level, recipe);
     }
 
     /**
@@ -156,9 +158,9 @@ public class MiteCraftingMenu extends AbstractCraftingMenu {
     public void removed(Player player) {
         super.removed(player);
         this.access.execute((p_39371_, p_39372_) -> this.clearContainer(player, this.craftSlots));
-        data.set(IS_CRAFTING,0);
-        data.set(CRAFT_TIME,0);
-        data.set(IS_RESULT_LOCKED,0);
+
+        setCraftingTimer(0);
+        setCraftingTotalTime(0);
     }
 
     /**
@@ -248,15 +250,26 @@ public class MiteCraftingMenu extends AbstractCraftingMenu {
     }
 
 
-    public float getCraftProgress(){
-        int craftTime = this.data.get(CRAFT_TIME);
-        int craftTimeTotal = this.data.get(CRAFT_TIME_TOTAL);
+    public float getCraftingProgress(){
+        int craftTime = this.data.get(CRAFTING_TIMER);
+        int craftTimeTotal = this.data.get(CRAFTING_TOTAL_TIME);
         return craftTimeTotal != 0 && craftTime != 0 ? Mth.clamp((float)craftTime / craftTimeTotal, 0.0F, 1.0F) : 0.0F;
     }
 
-    @Override
-    public void clicked(int slotId, int button, ClickType clickType, Player player) {
-        craftingResultSlot.setMayPickup(data.get(IS_RESULT_LOCKED)==0);
-        super.clicked(slotId, button, clickType, player);
+
+    public int getCraftingTimer(){
+        return data.get(CRAFTING_TIMER);
+    }
+
+    public void setCraftingTimer(int value){
+        data.set(CRAFTING_TIMER, value);
+    }
+
+    public void setCraftingTotalTime(int value){
+        data.set(CRAFTING_TOTAL_TIME, value);
+    }
+
+    public int getCraftTotalTime(){
+        return data.get(CRAFTING_TOTAL_TIME);
     }
 }
