@@ -2,6 +2,7 @@ package hhsixhhwkhxh.mite.datagen;
 
 import hhsixhhwkhxh.mite.MiteBreakAll;
 import hhsixhhwkhxh.mite.block.ModBlocks;
+import hhsixhhwkhxh.mite.entity.ModEntityTypes;
 import hhsixhhwkhxh.mite.item.ModItems;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
@@ -267,5 +268,11 @@ public class ModZhCnLangProvider extends LanguageProvider {
 
         add("tooltip.mite.melting_point","熔点: %s");
         add("container.large_furnace.temperature","温度: %s");
+
+        add(ModEntityTypes.BROWN_BEAR.get(),"棕熊");
+
+        add(ModItems.RAW_BEAR_MEAT.get(),"生熊肉");
+        add(ModItems.COOKED_BEAR_MEAT.get(),"熟熊肉");
+        add(ModItems.BURNT_BEAR_MEAT.get(),"烧糊的熊肉");
     }
 }

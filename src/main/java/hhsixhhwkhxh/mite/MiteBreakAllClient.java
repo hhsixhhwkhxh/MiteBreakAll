@@ -2,6 +2,8 @@ package hhsixhhwkhxh.mite;
 
 import hhsixhhwkhxh.mite.datacomponent.DeprecatedMarker;
 import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
+import hhsixhhwkhxh.mite.entity.ModEntityTypes;
+import hhsixhhwkhxh.mite.entity.renderer.BrownBearRenderer;
 import hhsixhhwkhxh.mite.packet.ModClientPayloadHandler;
 import hhsixhhwkhxh.mite.packet.ClientboundSetVitalStatMaxValuePacket;
 import hhsixhhwkhxh.mite.packet.ClientboundSetWaterLevelPacket;
@@ -13,6 +15,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
@@ -69,4 +72,10 @@ public class MiteBreakAllClient {
         tooltip.add(1,deprecatedTipComponent);
 
     }
+
+    @SubscribeEvent
+    public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(ModEntityTypes.BROWN_BEAR.get(), BrownBearRenderer::new);
+    }
+
 }

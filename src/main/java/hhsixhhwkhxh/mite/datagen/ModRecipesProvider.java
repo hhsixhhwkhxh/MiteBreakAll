@@ -92,6 +92,10 @@ public class ModRecipesProvider extends RecipeProvider {
         createChestplateRecipe(ModItems.MITHRIL_INGOT, ModItems.MITHRIL_CHESTPLATE, 51200);
         createLeggingsRecipe(ModItems.MITHRIL_INGOT, ModItems.MITHRIL_LEGGINGS, 44800);
         createBootsRecipe(ModItems.MITHRIL_INGOT, ModItems.MITHRIL_BOOTS, 25600);
+
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(ModItems.RAW_BEAR_MEAT), RecipeCategory.FOOD, ModItems.COOKED_BEAR_MEAT, 0.35F, 200)
+                .unlockedBy("has_raw_bear_meat", this.has(ModItems.RAW_BEAR_MEAT))
+                .save(this.output);
     }
 
     public LargeFurnaceCraftingRecipeBuilder addFurnaceCraftingRecipe(RecipeCategory category, ItemLike result, int craftTime){

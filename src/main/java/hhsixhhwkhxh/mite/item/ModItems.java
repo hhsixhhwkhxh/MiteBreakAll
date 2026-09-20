@@ -3,6 +3,7 @@ package hhsixhhwkhxh.mite.item;
 import hhsixhhwkhxh.mite.MiteBreakAll;
 import hhsixhhwkhxh.mite.custom.MaterialFamilyType;
 import hhsixhhwkhxh.mite.datacomponent.*;
+import hhsixhhwkhxh.mite.entity.ModEntityTypes;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.component.TypedDataComponent;
@@ -12,6 +13,7 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.item.enchantment.Enchantable;
@@ -252,6 +254,19 @@ public class ModItems {
     public static final DeferredItem<Item> ADAMANTIUM_HATCHET = ITEMS.registerItem("adamantium_hatchet",(props)-> new Item(ModToolMaterials.hatchet(props,ModToolMaterials.ADAMANTIUM)));
 
     public static final DeferredItem<Item> OBSIDIAN_INGOT_MOULD = ITEMS.registerItem("obsidian_ingot_mould",(properties)-> new Item(properties.durability(20).stacksTo(1)));
+
+    public static final DeferredItem<Item> RAW_BEAR_MEAT = ITEMS.registerItem("raw_bear_meat",Item::new,new Item.Properties().food(new FoodProperties.Builder().nutrition(6).saturationModifier(0.5F).build()));
+    public static final DeferredItem<Item> COOKED_BEAR_MEAT = ITEMS.registerItem("cooked_bear_meat",Item::new,new Item.Properties().food(new FoodProperties.Builder().nutrition(12).saturationModifier(0.5F).build()));
+    public static final DeferredItem<Item> BURNT_BEAR_MEAT = ITEMS.registerItem("burnt_bear_meat",Item::new,new Item.Properties().food(
+            new FoodProperties.Builder().nutrition(1).saturationModifier(0.5F).build(),
+            defaultFood().onConsume(new ApplyStatusEffectsConsumeEffect(
+                    new MobEffectInstance(MobEffects.POISON, 200, 0), 0.5F)
+                    )
+            .build()
+    ));
+
+    public static final DeferredItem<Item> BROWN_BEAR_SPAWN_EGG = ITEMS.registerItem("brown_bear_spawn_egg", properties -> new SpawnEggItem(ModEntityTypes.BROWN_BEAR.get(), properties));
+
 
     public static final Map<Item, DeferredItem<Item>> proxyItemMap = Map.ofEntries(
             Map.entry(Items.WOODEN_SHOVEL,

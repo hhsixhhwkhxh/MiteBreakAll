@@ -37,8 +37,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 
-
-
 public class ModModelProvider extends ModelProvider {
     public ModModelProvider(PackOutput output) {
         super(output, MiteBreakAll.MOD_ID);
@@ -299,6 +297,12 @@ public class ModModelProvider extends ModelProvider {
         createWallBlockWrapper(blockModels,Blocks.NETHERRACK,ModBlocks.NETHERRACK_WRAPPER_BLOCK.get());
 
         blockModels.registerSimpleFlatItemModel(ModItems.OBSIDIAN_INGOT_MOULD.get());
+
+        generateSimpleFlatItem(blockModels,ModItems.RAW_BEAR_MEAT.get(),FolderType.MEAT);
+        generateSimpleFlatItem(blockModels,ModItems.COOKED_BEAR_MEAT.get(),FolderType.MEAT);
+        generateSimpleFlatItem(blockModels,ModItems.BURNT_BEAR_MEAT.get(),FolderType.MEAT);
+
+        blockModels.registerSimpleFlatItemModel(ModItems.BROWN_BEAR_SPAWN_EGG.get());
     }
 
     public enum FolderType{
@@ -309,7 +313,8 @@ public class ModModelProvider extends ModelProvider {
         INGOTS("ingots/"),
         ARMOR("armor/"),
         TOOLS("tools/"),
-        LARGE_FURNACE("large_furnace")
+        LARGE_FURNACE("large_furnace"),
+        MEAT("meat/");
         ;
         String path;
         FolderType(String path) {

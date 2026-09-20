@@ -32,9 +32,14 @@ public class ModDataGenerator {
 
         event.addProvider(
                 new LootTableProvider(
-                        packOutput, Collections.emptySet(), List.of(new LootTableProvider.SubProviderEntry(ModBlockLootTablesProvider::new, LootContextParamSets.BLOCK)),provider
+                        packOutput, Collections.emptySet(), List.of(
+                                new LootTableProvider.SubProviderEntry(ModBlockLootTablesProvider::new, LootContextParamSets.BLOCK),
+                                new LootTableProvider.SubProviderEntry(ModEntityLootTablesProvider::new, LootContextParamSets.ENTITY)
+                ),provider
                 )
         );
+
+
 
         event.addProvider(new ModEnUsLangProvider(packOutput));
         event.addProvider(new ModZhCnLangProvider(packOutput));

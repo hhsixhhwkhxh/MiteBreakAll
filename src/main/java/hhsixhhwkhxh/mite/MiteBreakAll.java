@@ -6,6 +6,8 @@ import hhsixhhwkhxh.mite.custom.PlayerWaterData;
 import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
 import hhsixhhwkhxh.mite.datacomponent.Moisture;
 import hhsixhhwkhxh.mite.datacomponent.ReachBonus;
+import hhsixhhwkhxh.mite.entity.BrownBear;
+import hhsixhhwkhxh.mite.entity.ModEntityTypes;
 import hhsixhhwkhxh.mite.item.ModCreativeModeTabs;
 import hhsixhhwkhxh.mite.packet.ClientboundSetWaterLevelPacket;
 import hhsixhhwkhxh.mite.packet.ClientboundSetVitalStatMaxValuePacket;
@@ -30,6 +32,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
@@ -74,6 +77,7 @@ public class MiteBreakAll {
         ModCreativeModeTabs.register(modEventBus);
         ModRecipeTypes.register(modEventBus);
         ModRecipeSerializers.register(modEventBus);
+        ModEntityTypes.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (MiteBreakAll) to respond directly to events.
@@ -83,6 +87,7 @@ public class MiteBreakAll {
         modEventBus.addListener(this::onRegisterMenuScreens);
         modEventBus.addListener(this::registerPayloads);
         modEventBus.addListener(this::registerSelectProperties);
+        modEventBus.addListener(this::onEntityAttributeCreation);
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
@@ -208,6 +213,11 @@ public class MiteBreakAll {
                 ),
                 EquipmentSlotGroup.MAINHAND
         );
+    }
+
+    //关联实体类型与对应的属性
+    private void onEntityAttributeCreation(EntityAttributeCreationEvent event) {
+        event.put(ModEntityTypes.BROWN_BEAR.get(), BrownBear.createAttributes().build());
     }
 
 
