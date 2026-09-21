@@ -1,9 +1,8 @@
 package hhsixhhwkhxh.mite.entity;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -12,6 +11,8 @@ import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.entity.animal.PolarBear;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+
+import javax.annotation.Nullable;
 
 public class BrownBear extends PolarBear {
     public BrownBear(EntityType<? extends PolarBear> entityType, Level level) {
@@ -34,6 +35,12 @@ public class BrownBear extends PolarBear {
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, null));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Fox.class, 10, true, true, null));
         this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
+    }
+
+    @Nullable
+    @Override
+    public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
+        return ModEntityTypes.BROWN_BEAR.get().create(level, EntitySpawnReason.BREEDING);
     }
 
     class BrownBearAttackPlayersGoal extends NearestAttackableTargetGoal<Player> {

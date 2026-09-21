@@ -3,16 +3,11 @@ package hhsixhhwkhxh.mite.entity.renderer;
 import hhsixhhwkhxh.mite.MiteBreakAll;
 import hhsixhhwkhxh.mite.entity.BrownBear;
 import hhsixhhwkhxh.mite.entity.model.BrownBearModel;
-import net.minecraft.client.model.PolarBearModel;
-import net.minecraft.client.model.geom.ModelLayers;
+import hhsixhhwkhxh.mite.entity.model.ModModelLayers;
 import net.minecraft.client.renderer.entity.AgeableMobRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.entity.state.PolarBearRenderState;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.animal.PolarBear;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 //@OnlyIn(Dist.CLIENT)
 public class BrownBearRenderer extends AgeableMobRenderer<BrownBear, BearRenderState, BrownBearModel> {
@@ -21,24 +16,24 @@ public class BrownBearRenderer extends AgeableMobRenderer<BrownBear, BearRenderS
     public BrownBearRenderer(EntityRendererProvider.Context context) {
         super(
             context,
-            new BrownBearModel(context.bakeLayer(ModelLayers.POLAR_BEAR)),
-            new BrownBearModel(context.bakeLayer(ModelLayers.POLAR_BEAR_BABY)),
+            new BrownBearModel(context.bakeLayer(ModModelLayers.BROWN_BEAR)),
+            new BrownBearModel(context.bakeLayer(ModModelLayers.BROWN_BEAR_BABY)),
             0.9F
         );
     }
 
 
-    public BearRenderState createRenderState() {
+    public @NotNull BearRenderState createRenderState() {
         return new BearRenderState();
     }
 
-    public void extractRenderState(BrownBear brownBear, BearRenderState bearRenderState, float p_363931_) {
-        super.extractRenderState( brownBear, bearRenderState, p_363931_);
+    public void extractRenderState(@NotNull BrownBear brownBear, @NotNull BearRenderState bearRenderState, float p_363931_) {
+        super.extractRenderState(brownBear, bearRenderState, p_363931_);
         bearRenderState.standScale = brownBear.getStandingAnimationScale(p_363931_);
     }
 
     @Override
-    public ResourceLocation getTextureLocation(BearRenderState renderState) {
+    public @NotNull ResourceLocation getTextureLocation(@NotNull BearRenderState renderState) {
         return BEAR_LOCATION;
     }
 }

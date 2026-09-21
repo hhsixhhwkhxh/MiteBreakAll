@@ -187,3 +187,23 @@ idea {
         downloadJavadoc = true
     }
 }
+
+//这些任务在执行时无法获取到neoforge-21.8.54-moddev-config.json 导致失败
+tasks.named("prepareClientRun").configure {
+    enabled = false
+}
+tasks.named("prepareDataRun").configure {
+    enabled = false
+}
+tasks.named("writeGameTestServerLegacyClasspath").configure {
+    enabled = false
+}
+tasks.named("prepareGameTestServerRun").configure {
+    enabled = false
+}
+tasks.named("writeServerLegacyClasspath").configure {
+    enabled = false
+}
+tasks.named("prepareServerRun").configure {
+    enabled = false
+}

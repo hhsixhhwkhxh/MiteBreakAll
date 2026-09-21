@@ -253,6 +253,10 @@ public class ModCreativeModeTabs {
 
             output.accept(ModItems.OBSIDIAN_INGOT_MOULD);
 
+            output.accept(ModItems.RAW_BEAR_MEAT);
+            output.accept(ModItems.COOKED_BEAR_MEAT);
+            output.accept(ModItems.BURNT_BEAR_MEAT);
+
         }).build();
     });
 

@@ -8,6 +8,8 @@ import hhsixhhwkhxh.mite.datacomponent.Moisture;
 import hhsixhhwkhxh.mite.datacomponent.ReachBonus;
 import hhsixhhwkhxh.mite.entity.BrownBear;
 import hhsixhhwkhxh.mite.entity.ModEntityTypes;
+import hhsixhhwkhxh.mite.entity.model.BrownBearModel;
+import hhsixhhwkhxh.mite.entity.model.ModModelLayers;
 import hhsixhhwkhxh.mite.item.ModCreativeModeTabs;
 import hhsixhhwkhxh.mite.packet.ClientboundSetWaterLevelPacket;
 import hhsixhhwkhxh.mite.packet.ClientboundSetVitalStatMaxValuePacket;
@@ -29,6 +31,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
@@ -88,6 +91,7 @@ public class MiteBreakAll {
         modEventBus.addListener(this::registerPayloads);
         modEventBus.addListener(this::registerSelectProperties);
         modEventBus.addListener(this::onEntityAttributeCreation);
+        modEventBus.addListener(this::onRegisterLayerDefinitions);
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
@@ -218,6 +222,18 @@ public class MiteBreakAll {
     //关联实体类型与对应的属性
     private void onEntityAttributeCreation(EntityAttributeCreationEvent event) {
         event.put(ModEntityTypes.BROWN_BEAR.get(), BrownBear.createAttributes().build());
+    }
+
+
+    private void onRegisterLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(
+                ModModelLayers.BROWN_BEAR,
+                ()->BrownBearModel.createBodyLayer(false)
+        );
+        event.registerLayerDefinition(
+                ModModelLayers.BROWN_BEAR_BABY,
+                ()->BrownBearModel.createBodyLayer(true)
+        );
     }
 
 
