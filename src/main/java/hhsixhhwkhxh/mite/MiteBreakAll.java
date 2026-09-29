@@ -7,8 +7,10 @@ import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
 import hhsixhhwkhxh.mite.datacomponent.Moisture;
 import hhsixhhwkhxh.mite.datacomponent.ReachBonus;
 import hhsixhhwkhxh.mite.entity.BrownBear;
+import hhsixhhwkhxh.mite.entity.Elephant;
 import hhsixhhwkhxh.mite.entity.ModEntityTypes;
 import hhsixhhwkhxh.mite.entity.model.BrownBearModel;
+import hhsixhhwkhxh.mite.entity.model.ElephantModel;
 import hhsixhhwkhxh.mite.entity.model.ModModelLayers;
 import hhsixhhwkhxh.mite.item.ModCreativeModeTabs;
 import hhsixhhwkhxh.mite.packet.ClientboundSetWaterLevelPacket;
@@ -22,6 +24,9 @@ import hhsixhhwkhxh.mite.block.ModBlocks;
 import hhsixhhwkhxh.mite.blockentity.ModBlockEntities;
 import hhsixhhwkhxh.mite.item.ModItems;
 import hhsixhhwkhxh.mite.menu.ModMenuTypes;
+import net.minecraft.client.model.WolfModel;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -222,6 +227,8 @@ public class MiteBreakAll {
     //关联实体类型与对应的属性
     private void onEntityAttributeCreation(EntityAttributeCreationEvent event) {
         event.put(ModEntityTypes.BROWN_BEAR.get(), BrownBear.createAttributes().build());
+        event.put(ModEntityTypes.ELEPHANT.get(), Elephant.createAttributes().build());
+
     }
 
 
@@ -234,6 +241,17 @@ public class MiteBreakAll {
                 ModModelLayers.BROWN_BEAR_BABY,
                 ()->BrownBearModel.createBodyLayer(true)
         );
+
+        event.registerLayerDefinition(
+                ModModelLayers.ELEPHANT,
+                ()->LayerDefinition.create(ElephantModel.createMeshDefinition(CubeDeformation.NONE), 128, 256)
+        );
+
+        event.registerLayerDefinition(
+                ModModelLayers.ELEPHANT_BABY,
+                ()->LayerDefinition.create(ElephantModel.createMeshDefinition(CubeDeformation.NONE).apply(ElephantModel.BABY_TRANSFORMER), 128, 256)
+        );
+
     }
 
 

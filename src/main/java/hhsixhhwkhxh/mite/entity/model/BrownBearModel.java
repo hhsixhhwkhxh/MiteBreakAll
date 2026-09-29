@@ -23,9 +23,9 @@ public class BrownBearModel extends QuadrupedModel<BearRenderState> {
     }
 
     public static LayerDefinition createBodyLayer(boolean isBaby) {
-        MeshDefinition meshdefinition = new MeshDefinition();
-        PartDefinition partdefinition = meshdefinition.getRoot();
-        partdefinition.addOrReplaceChild(
+        MeshDefinition meshDefinition = new MeshDefinition();
+        PartDefinition meshDefinitionRoot = meshDefinition.getRoot();
+        meshDefinitionRoot.addOrReplaceChild(
             "head",
             CubeListBuilder.create()
                 .texOffs(0, 0)
@@ -39,7 +39,7 @@ public class BrownBearModel extends QuadrupedModel<BearRenderState> {
                 .addBox("left_ear", 2.5F, -4.0F, -1.0F, 2.0F, 2.0F, 1.0F),
             PartPose.offset(0.0F, 10.0F, -16.0F)
         );
-        partdefinition.addOrReplaceChild(
+        meshDefinitionRoot.addOrReplaceChild(
             "body",
             CubeListBuilder.create()
                 .texOffs(0, 19)
@@ -50,12 +50,12 @@ public class BrownBearModel extends QuadrupedModel<BearRenderState> {
         );
         int i = 10;
         CubeListBuilder cubelistbuilder = CubeListBuilder.create().texOffs(50, 22).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 10.0F, 8.0F);
-        partdefinition.addOrReplaceChild("right_hind_leg", cubelistbuilder, PartPose.offset(-4.5F, 14.0F, 6.0F));
-        partdefinition.addOrReplaceChild("left_hind_leg", cubelistbuilder, PartPose.offset(4.5F, 14.0F, 6.0F));
+        meshDefinitionRoot.addOrReplaceChild("right_hind_leg", cubelistbuilder, PartPose.offset(-4.5F, 14.0F, 6.0F));
+        meshDefinitionRoot.addOrReplaceChild("left_hind_leg", cubelistbuilder, PartPose.offset(4.5F, 14.0F, 6.0F));
         CubeListBuilder cubelistbuilder1 = CubeListBuilder.create().texOffs(50, 40).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 10.0F, 6.0F);
-        partdefinition.addOrReplaceChild("right_front_leg", cubelistbuilder1, PartPose.offset(-3.5F, 14.0F, -8.0F));
-        partdefinition.addOrReplaceChild("left_front_leg", cubelistbuilder1, PartPose.offset(3.5F, 14.0F, -8.0F));
-        return LayerDefinition.create(meshdefinition, 128, 64)
+        meshDefinitionRoot.addOrReplaceChild("right_front_leg", cubelistbuilder1, PartPose.offset(-3.5F, 14.0F, -8.0F));
+        meshDefinitionRoot.addOrReplaceChild("left_front_leg", cubelistbuilder1, PartPose.offset(3.5F, 14.0F, -8.0F));
+        return LayerDefinition.create(meshDefinition, 128, 64)
             .apply(isBaby ? BABY_TRANSFORMER : MeshTransformer.IDENTITY)
             .apply(MeshTransformer.scaling(1.2F));
     }

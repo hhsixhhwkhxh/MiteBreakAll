@@ -4,6 +4,7 @@ import hhsixhhwkhxh.mite.datacomponent.DeprecatedMarker;
 import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
 import hhsixhhwkhxh.mite.entity.ModEntityTypes;
 import hhsixhhwkhxh.mite.entity.renderer.BrownBearRenderer;
+import hhsixhhwkhxh.mite.entity.renderer.ElephantRenderer;
 import hhsixhhwkhxh.mite.packet.ModClientPayloadHandler;
 import hhsixhhwkhxh.mite.packet.ClientboundSetVitalStatMaxValuePacket;
 import hhsixhhwkhxh.mite.packet.ClientboundSetWaterLevelPacket;
@@ -76,6 +77,7 @@ public class MiteBreakAllClient {
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntityTypes.BROWN_BEAR.get(), BrownBearRenderer::new);
+        event.registerEntityRenderer(ModEntityTypes.ELEPHANT.get(), ElephantRenderer::new);
     }
 
 }
