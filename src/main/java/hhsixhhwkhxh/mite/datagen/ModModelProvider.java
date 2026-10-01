@@ -303,6 +303,13 @@ public class ModModelProvider extends ModelProvider {
         generateSimpleFlatItem(blockModels,ModItems.BURNT_BEAR_MEAT.get(),FolderType.MEAT);
 
         blockModels.registerSimpleFlatItemModel(ModItems.BROWN_BEAR_SPAWN_EGG.get());
+
+        generateSimpleFlatItem(blockModels,ModItems.RAW_ELEPHANT_MEAT.get(),FolderType.MEAT);
+        generateSimpleFlatItem(blockModels,ModItems.COOKED_ELEPHANT_MEAT.get(),FolderType.MEAT);
+        generateSimpleFlatItem(blockModels,ModItems.BURNT_ELEPHANT_MEAT.get(),FolderType.MEAT);
+
+        blockModels.registerSimpleFlatItemModel(ModItems.ELEPHANT_SPAWN_EGG.get());
+
     }
 
     public enum FolderType{

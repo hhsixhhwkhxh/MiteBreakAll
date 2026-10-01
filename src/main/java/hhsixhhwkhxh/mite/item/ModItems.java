@@ -268,6 +268,22 @@ public class ModItems {
     public static final DeferredItem<Item> BROWN_BEAR_SPAWN_EGG = ITEMS.registerItem("brown_bear_spawn_egg", properties -> new SpawnEggItem(ModEntityTypes.BROWN_BEAR.get(), properties));
 
 
+    public static final DeferredItem<Item> RAW_ELEPHANT_MEAT = ITEMS.registerItem("raw_elephant_meat",Item::new,new Item.Properties().food(new FoodProperties.Builder().nutrition(7).saturationModifier(0.5F).build()));
+    public static final DeferredItem<Item> COOKED_ELEPHANT_MEAT = ITEMS.registerItem("cooked_elephant_meat",Item::new,new Item.Properties().food(
+            new FoodProperties.Builder().nutrition(14).saturationModifier(0.5F).build(),
+            defaultFood().onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.RESISTANCE, 200, 0), 1.0F)).build()
+    ));
+    public static final DeferredItem<Item> BURNT_ELEPHANT_MEAT = ITEMS.registerItem("burnt_elephant_meat",Item::new,new Item.Properties().food(
+            new FoodProperties.Builder().nutrition(1).saturationModifier(0.5F).build(),
+            defaultFood().onConsume(new ApplyStatusEffectsConsumeEffect(
+                            new MobEffectInstance(MobEffects.POISON, 200, 0), 0.5F)
+                    )
+                    .build()
+    ));
+
+    public static final DeferredItem<Item> ELEPHANT_SPAWN_EGG = ITEMS.registerItem("elephant_spawn_egg", properties -> new SpawnEggItem(ModEntityTypes.ELEPHANT.get(), properties));
+
+
     public static final Map<Item, DeferredItem<Item>> proxyItemMap = Map.ofEntries(
             Map.entry(Items.WOODEN_SHOVEL,
                     ITEMS.registerItem("proxy_wooden_shovel",(props)-> new Item(ModToolMaterials.shovel(props,ModToolMaterials.WOOD)))

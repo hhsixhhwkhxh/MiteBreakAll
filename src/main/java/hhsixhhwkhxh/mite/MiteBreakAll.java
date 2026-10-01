@@ -24,7 +24,7 @@ import hhsixhhwkhxh.mite.block.ModBlocks;
 import hhsixhhwkhxh.mite.blockentity.ModBlockEntities;
 import hhsixhhwkhxh.mite.item.ModItems;
 import hhsixhhwkhxh.mite.menu.ModMenuTypes;
-import net.minecraft.client.model.WolfModel;
+import hhsixhhwkhxh.mite.sound.ModSoundEvents;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.core.component.DataComponents;
@@ -86,6 +86,7 @@ public class MiteBreakAll {
         ModRecipeTypes.register(modEventBus);
         ModRecipeSerializers.register(modEventBus);
         ModEntityTypes.register(modEventBus);
+        ModSoundEvents.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (MiteBreakAll) to respond directly to events.

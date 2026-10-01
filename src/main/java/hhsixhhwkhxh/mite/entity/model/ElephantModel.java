@@ -18,7 +18,7 @@ import java.util.Set;
 
 public class ElephantModel extends EntityModel<ElephantRenderState>{
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final MeshTransformer BABY_TRANSFORMER = new BabyModelTransform(Set.of("head"));
+	public static final MeshTransformer BABY_TRANSFORMER = new BabyModelTransform(true,10,2,2,1.5F,12,Set.of("head"));
 	private final ModelPart head;
 	private final ModelPart left_ear;
 	private final ModelPart right_ear;
@@ -162,13 +162,8 @@ public class ElephantModel extends EntityModel<ElephantRenderState>{
 		this.rightFrontLeg.xRot = Mth.cos(walkAnimationPos * 0.6662F + (float) Math.PI) * 1.4F * walkAnimationSpeed;
 		this.leftFrontLeg.xRot = Mth.cos(walkAnimationPos * 0.6662F) * 1.4F * walkAnimationSpeed;
 
-		//this.realHead.zRot = renderState.headRollAngle + renderState.getBodyRollAngle(0.0F);
-		//this.upperBody.zRot = renderState.getBodyRollAngle(-0.08F);
-		//this.body.zRot = renderState.getBodyRollAngle(-0.16F);
-		//this.tail.zRot = renderState.getBodyRollAngle(-0.2F);
 		this.head.xRot = renderState.xRot * (float) (Math.PI / 180.0);
 		this.head.yRot = renderState.yRot * (float) (Math.PI / 180.0);
-		//this.tail.xRot = renderState.tailAngle;
 
 		earFlapAnimation.apply(renderState.earFlapAnimationState, renderState.ageInTicks);
 		tailFlickAnimation.apply(renderState.tailFlickAnimationState, renderState.ageInTicks);
@@ -177,9 +172,4 @@ public class ElephantModel extends EntityModel<ElephantRenderState>{
 
 	}
 
-//	@Override
-//	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-//		head.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-//		body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-//	}
 }

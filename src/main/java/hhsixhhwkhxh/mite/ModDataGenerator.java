@@ -62,7 +62,7 @@ public class ModDataGenerator {
                 )
         );
 
-
+        event.createProvider(ModSoundDefinitionsProvider::new);
 
 
     }

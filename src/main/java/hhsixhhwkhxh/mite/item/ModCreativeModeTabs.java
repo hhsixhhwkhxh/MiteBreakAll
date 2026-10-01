@@ -256,6 +256,12 @@ public class ModCreativeModeTabs {
             output.accept(ModItems.RAW_BEAR_MEAT);
             output.accept(ModItems.COOKED_BEAR_MEAT);
             output.accept(ModItems.BURNT_BEAR_MEAT);
+            output.accept(ModItems.BROWN_BEAR_SPAWN_EGG);
+
+            output.accept(ModItems.RAW_ELEPHANT_MEAT);
+            output.accept(ModItems.COOKED_ELEPHANT_MEAT);
+            output.accept(ModItems.BURNT_ELEPHANT_MEAT);
+            output.accept(ModItems.ELEPHANT_SPAWN_EGG);
 
         }).build();
     });

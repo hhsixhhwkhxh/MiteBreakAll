@@ -1,0 +1,35 @@
+{
+  "elephant_baby_idle": {
+    "sounds": [
+      "mite_break_all:elephant/baby_idle1",
+      "mite_break_all:elephant/baby_idle2"
+    ],
+    "subtitle": "subtitles.entity.elephant.idle"
+  },
+  "elephant_death": {
+    "sounds": [
+      "mite_break_all:elephant/death"
+    ],
+    "subtitle": "subtitles.entity.elephant.death"
+  },
+  "elephant_hurt": {
+    "sounds": [
+      "mite_break_all:elephant/hurt1",
+      "mite_break_all:elephant/hurt2"
+    ],
+    "subtitle": "subtitles.entity.elephant.hurt"
+  },
+  "elephant_idle": {
+    "sounds": [
+      "mite_break_all:elephant/idle1",
+      "mite_break_all:elephant/idle2",
+      "mite_break_all:elephant/idle3",
+      "mite_break_all:elephant/idle4",
+      "mite_break_all:elephant/idle5",
+      "mite_break_all:elephant/idle6",
+      "mite_break_all:elephant/idle7",
+      "mite_break_all:elephant/idle8"
+    ],
+    "subtitle": "subtitles.entity.elephant.idle"
+  }
+}

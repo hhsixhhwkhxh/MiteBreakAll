@@ -274,5 +274,17 @@ public class ModEnUsLangProvider extends LanguageProvider {
         add(ModItems.RAW_BEAR_MEAT.get(),"Raw Bear Meat");
         add(ModItems.COOKED_BEAR_MEAT.get(),"Cooked Bear Meat");
         add(ModItems.BURNT_BEAR_MEAT.get(),"Burnt Bear Meat");
+        add(ModItems.BROWN_BEAR_SPAWN_EGG.get(), "Brown Bear Spawn Egg");
+
+        add(ModEntityTypes.ELEPHANT.get(),"Elephant");
+
+        add(ModItems.RAW_ELEPHANT_MEAT.get(),"Raw Elephant Meat");
+        add(ModItems.COOKED_ELEPHANT_MEAT.get(),"Cooked Elephant Meat");
+        add(ModItems.BURNT_ELEPHANT_MEAT.get(),"Burnt Elephant Meat");
+        add(ModItems.ELEPHANT_SPAWN_EGG.get(), "Elephant Spawn Egg");
+
+        add("subtitles.entity.elephant.death","Elephants dies");
+        add("subtitles.entity.elephant.hurt","Elephant hurts");
+        add("subtitles.entity.elephant.idle","Elephant mutters");
     }
 }

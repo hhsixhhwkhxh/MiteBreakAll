@@ -274,5 +274,17 @@ public class ModZhCnLangProvider extends LanguageProvider {
         add(ModItems.RAW_BEAR_MEAT.get(),"生熊肉");
         add(ModItems.COOKED_BEAR_MEAT.get(),"熟熊肉");
         add(ModItems.BURNT_BEAR_MEAT.get(),"烧糊的熊肉");
+        add(ModItems.BROWN_BEAR_SPAWN_EGG.get(), "棕熊刷怪蛋");
+
+        add(ModEntityTypes.ELEPHANT.get(),"大象");
+
+        add(ModItems.RAW_ELEPHANT_MEAT.get(),"生象肉");
+        add(ModItems.COOKED_ELEPHANT_MEAT.get(),"熟象肉");
+        add(ModItems.BURNT_ELEPHANT_MEAT.get(),"烧糊的象肉");
+        add(ModItems.ELEPHANT_SPAWN_EGG.get(), "大象刷怪蛋");
+
+        add("subtitles.entity.elephant.death","大象：死亡");
+        add("subtitles.entity.elephant.hurt","大象：受伤");
+        add("subtitles.entity.elephant.idle","大象：低语");
     }
 }

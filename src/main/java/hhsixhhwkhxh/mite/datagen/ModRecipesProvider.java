@@ -96,6 +96,10 @@ public class ModRecipesProvider extends RecipeProvider {
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(ModItems.RAW_BEAR_MEAT), RecipeCategory.FOOD, ModItems.COOKED_BEAR_MEAT, 0.35F, 200)
                 .unlockedBy("has_raw_bear_meat", this.has(ModItems.RAW_BEAR_MEAT))
                 .save(this.output);
+
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(ModItems.RAW_ELEPHANT_MEAT), RecipeCategory.FOOD, ModItems.COOKED_ELEPHANT_MEAT, 0.35F, 200)
+                .unlockedBy("has_raw_elephant_meat", this.has(ModItems.RAW_ELEPHANT_MEAT))
+                .save(this.output);
     }
 
     public LargeFurnaceCraftingRecipeBuilder addFurnaceCraftingRecipe(RecipeCategory category, ItemLike result, int craftTime){
