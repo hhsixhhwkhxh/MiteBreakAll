@@ -20,7 +20,7 @@ public class ModEntityTypes {
     )));
 
     public static final Supplier<EntityType<Elephant>> ELEPHANT = ENTITY_TYPES.register("elephant",()->EntityType.Builder.of(Elephant::new, MobCategory.CREATURE)
-            .sized(2F, 2.8F).clientTrackingRange(10)
+            .sized(1.8F, 2.6F).clientTrackingRange(10)
             .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID, "elephant")
     )));
 

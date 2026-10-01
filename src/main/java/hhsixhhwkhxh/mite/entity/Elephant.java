@@ -1,20 +1,11 @@
 package hhsixhhwkhxh.mite.entity;
 
-import hhsixhhwkhxh.mite.entity.renderer.ElephantRenderState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponentGetter;
-import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -25,253 +16,82 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Turtle;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
-import net.minecraft.world.entity.animal.horse.Llama;
-import net.minecraft.world.entity.animal.wolf.WolfSoundVariant;
-import net.minecraft.world.entity.animal.wolf.WolfSoundVariants;
-import net.minecraft.world.entity.animal.wolf.WolfVariant;
-import net.minecraft.world.entity.animal.wolf.WolfVariants;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.monster.AbstractSkeleton;
-import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.variant.SpawnContext;
-import net.minecraft.world.entity.variant.VariantUtils;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.PathType;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 import java.util.UUID;
 
-public class Elephant extends TamableAnimal implements NeutralMob {
-    private static final EntityDataAccessor<Boolean> DATA_INTERESTED_ID = SynchedEntityData.defineId(Elephant.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(Elephant.class, EntityDataSerializers.INT);
+public class Elephant extends Animal implements NeutralMob {
     private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Elephant.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Holder<WolfVariant>> DATA_VARIANT_ID = SynchedEntityData.defineId(Elephant.class, EntityDataSerializers.WOLF_VARIANT);
-    private static final EntityDataAccessor<Holder<WolfSoundVariant>> DATA_SOUND_VARIANT_ID = SynchedEntityData.defineId(
-        Elephant.class, EntityDataSerializers.WOLF_SOUND_VARIANT
-    );
-    public static final TargetingConditions.Selector PREY_SELECTOR = (p_423321_, p_423322_) -> {
-        EntityType<?> entitytype = p_423321_.getType();
-        return entitytype == EntityType.SHEEP || entitytype == EntityType.RABBIT || entitytype == EntityType.FOX;
-    };
-    private static final float START_HEALTH = 8.0F;
-    private static final float TAME_HEALTH = 40.0F;
-    private static final float ARMOR_REPAIR_UNIT = 0.125F;
-    public static final float DEFAULT_TAIL_ANGLE = (float) (Math.PI / 5);
-    private static final DyeColor DEFAULT_COLLAR_COLOR = DyeColor.RED;
-    private float interestedAngle;
-    private float interestedAngleO;
-    private boolean isWet;
-    private boolean isShaking;
-    private float shakeAnim;
-    private float shakeAnimO;
+
+
     private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
     @Nullable
     private UUID persistentAngerTarget;
 
+    public AnimationState earFlapAnimationState = new AnimationState();
+    public AnimationState tailFlickAnimationState = new AnimationState();
+    public AnimationState trunkCurlAnimationState = new AnimationState();
+
+
     public Elephant(EntityType<? extends Elephant> entityType, Level level) {
         super(entityType, level);
-        this.setTame(false, false);
         this.setPathfindingMalus(PathType.POWDER_SNOW, -1.0F);
         this.setPathfindingMalus(PathType.DANGER_POWDER_SNOW, -1.0F);
     }
 
     @Override
-    protected void registerGoals() {
-        this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new TamableAnimalPanicGoal(1.5, DamageTypeTags.PANIC_ENVIRONMENTAL_CAUSES));
-        this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
-        this.goalSelector.addGoal(3, new Elephant.WolfAvoidEntityGoal<>(this, Llama.class, 24.0F, 1.5, 1.5));
-        this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
-        this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0, true));
-        this.goalSelector.addGoal(6, new FollowOwnerGoal(this, 1.0, 10.0F, 2.0F));
-        this.goalSelector.addGoal(7, new BreedGoal(this, 1.0));
-        this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 1.0));
-        //this.goalSelector.addGoal(9, new BegGoal(this, 8.0F));
-        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(10, new RandomLookAroundGoal(this));
-        this.targetSelector.addGoal(1, new OwnerHurtByTargetGoal(this));
-        this.targetSelector.addGoal(2, new OwnerHurtTargetGoal(this));
-        this.targetSelector.addGoal(3, new HurtByTargetGoal(this).setAlertOthers());
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
-        this.targetSelector.addGoal(5, new NonTameRandomTargetGoal<>(this, Animal.class, false, PREY_SELECTOR));
-        this.targetSelector.addGoal(6, new NonTameRandomTargetGoal<>(this, Turtle.class, false, Turtle.BABY_ON_LAND_SELECTOR));
-        this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, AbstractSkeleton.class, false));
-        this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
-    }
-
-    public ResourceLocation getTexture() {
-        WolfVariant wolfvariant = this.getVariant().value();
-        if (this.isTame()) {
-            return wolfvariant.assetInfo().tame().texturePath();
-        } else {
-            return this.isAngry() ? wolfvariant.assetInfo().angry().texturePath() : wolfvariant.assetInfo().wild().texturePath();
-        }
-
-    }
-
-    private Holder<WolfVariant> getVariant() {
-        return this.entityData.get(DATA_VARIANT_ID);
-    }
-
-    private void setVariant(Holder<WolfVariant> variant) {
-        this.entityData.set(DATA_VARIANT_ID, variant);
-    }
-
-    private Holder<WolfSoundVariant> getSoundVariant() {
-        return this.entityData.get(DATA_SOUND_VARIANT_ID);
-    }
-
-    private void setSoundVariant(Holder<WolfSoundVariant> soundVariant) {
-        this.entityData.set(DATA_SOUND_VARIANT_ID, soundVariant);
-    }
-
-    @Nullable
-    @Override
-    public <T> T get(DataComponentType<? extends T> component) {
-        if (component == DataComponents.WOLF_VARIANT) {
-            return castComponentValue((DataComponentType<T>)component, this.getVariant());
-        } else if (component == DataComponents.WOLF_SOUND_VARIANT) {
-            return castComponentValue((DataComponentType<T>)component, this.getSoundVariant());
-        } else {
-            return component == DataComponents.WOLF_COLLAR ? castComponentValue((DataComponentType<T>)component, this.getCollarColor()) : super.get(component);
-        }
-    }
-
-    @Override
-    protected void applyImplicitComponents(DataComponentGetter componentGetter) {
-        this.applyImplicitComponentIfPresent(componentGetter, DataComponents.WOLF_VARIANT);
-        this.applyImplicitComponentIfPresent(componentGetter, DataComponents.WOLF_SOUND_VARIANT);
-        this.applyImplicitComponentIfPresent(componentGetter, DataComponents.WOLF_COLLAR);
-        super.applyImplicitComponents(componentGetter);
-    }
-
-    @Override
-    protected <T> boolean applyImplicitComponent(DataComponentType<T> component, T value) {
-        if (component == DataComponents.WOLF_VARIANT) {
-            this.setVariant(castComponentValue(DataComponents.WOLF_VARIANT, value));
-            return true;
-        } else if (component == DataComponents.WOLF_SOUND_VARIANT) {
-            this.setSoundVariant(castComponentValue(DataComponents.WOLF_SOUND_VARIANT, value));
-            return true;
-        } else if (component == DataComponents.WOLF_COLLAR) {
-            this.setCollarColor(castComponentValue(DataComponents.WOLF_COLLAR, value));
-            return true;
-        } else {
-            return super.applyImplicitComponent(component, value);
-        }
-    }
-
-    public static AttributeSupplier.Builder createAttributes() {
-        return Animal.createAnimalAttributes().add(Attributes.MOVEMENT_SPEED, 0.3F).add(Attributes.MAX_HEALTH, 8.0).add(Attributes.ATTACK_DAMAGE, 4.0);
-    }
-
-    @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        Registry<WolfSoundVariant> registry = this.registryAccess().lookupOrThrow(Registries.WOLF_SOUND_VARIANT);
-        builder.define(DATA_VARIANT_ID, VariantUtils.getDefaultOrAny(this.registryAccess(), WolfVariants.DEFAULT));
-        builder.define(DATA_SOUND_VARIANT_ID, registry.get(WolfSoundVariants.CLASSIC).or(registry::getAny).orElseThrow());
-        builder.define(DATA_INTERESTED_ID, false);
-        builder.define(DATA_COLLAR_COLOR, DEFAULT_COLLAR_COLOR.getId());
         builder.define(DATA_REMAINING_ANGER_TIME, 0);
     }
 
     @Override
-    protected void playStepSound(BlockPos pos, BlockState state) {
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new FloatGoal(this));
+        //this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
+        this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0F, true));
+        this.goalSelector.addGoal(7, new BreedGoal(this, 1.0F));
+        this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 1.0F));
+        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(10, new RandomLookAroundGoal(this));
+
+
+        this.targetSelector.addGoal(3, new HurtByTargetGoal(this).setAlertOthers());
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
+        this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
+    }
+
+
+    public static AttributeSupplier.Builder createAttributes() {
+        return Animal.createAnimalAttributes().add(Attributes.MOVEMENT_SPEED, 0.2F).add(Attributes.MAX_HEALTH, 8.0).add(Attributes.ATTACK_DAMAGE, 4.0);
+    }
+
+
+    @Override
+    protected void playStepSound(@NotNull BlockPos pos, @NotNull BlockState state) {
         this.playSound(SoundEvents.WOLF_STEP, 0.15F, 1.0F);
     }
 
-    @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
-        super.addAdditionalSaveData(output);
-        output.store("CollarColor", DyeColor.LEGACY_ID_CODEC, this.getCollarColor());
-        VariantUtils.writeVariant(output, this.getVariant());
-        this.addPersistentAngerSaveData(output);
-        this.getSoundVariant()
-            .unwrapKey()
-            .ifPresent(
-                p_421374_ -> output.store("sound_variant", ResourceKey.codec(Registries.WOLF_SOUND_VARIANT), (ResourceKey<WolfSoundVariant>)p_421374_)
-            );
-    }
+
 
     @Override
-    protected void readAdditionalSaveData(ValueInput input) {
-        super.readAdditionalSaveData(input);
-        VariantUtils.readVariant(input, Registries.WOLF_VARIANT).ifPresent(this::setVariant);
-        this.setCollarColor(input.read("CollarColor", DyeColor.LEGACY_ID_CODEC).orElse(DEFAULT_COLLAR_COLOR));
-        this.readPersistentAngerSaveData(this.level(), input);
-        input.read("sound_variant", ResourceKey.codec(Registries.WOLF_SOUND_VARIANT))
-            .flatMap(p_427093_ -> this.registryAccess().lookupOrThrow(Registries.WOLF_SOUND_VARIANT).get((ResourceKey<WolfSoundVariant>)p_427093_))
-            .ifPresent(this::setSoundVariant);
-    }
-
-    @Nullable
-    @Override
-    public SpawnGroupData finalizeSpawn(
-        ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnReason, @Nullable SpawnGroupData spawnGroupData
-    ) {
-        if (spawnGroupData instanceof Elephant.WolfPackData wolf$wolfpackdata) {
-            this.setVariant(wolf$wolfpackdata.type);
-        } else {
-            Optional<? extends Holder<WolfVariant>> optional = VariantUtils.selectVariantToSpawn(
-                SpawnContext.create(level, this.blockPosition()), Registries.WOLF_VARIANT
-            );
-            if (optional.isPresent()) {
-                this.setVariant((Holder<WolfVariant>)optional.get());
-                spawnGroupData = new Elephant.WolfPackData((Holder<WolfVariant>)optional.get());
-            }
-        }
-
-        this.setSoundVariant(WolfSoundVariants.pickRandomSoundVariant(this.registryAccess(), level.getRandom()));
-        return super.finalizeSpawn(level, difficulty, spawnReason, spawnGroupData);
-    }
-
-    @Override
-    protected SoundEvent getAmbientSound() {
-        if (this.isAngry()) {
-            return this.getSoundVariant().value().growlSound().value();
-        } else if (this.random.nextInt(3) == 0) {
-            return this.isTame() && this.getHealth() < 20.0F
-                ? this.getSoundVariant().value().whineSound().value()
-                : this.getSoundVariant().value().pantSound().value();
-        } else {
-            return this.getSoundVariant().value().ambientSound().value();
-        }
-    }
-
-    @Override
-    protected SoundEvent getHurtSound(DamageSource damageSource) {
-        return this.canArmorAbsorb(damageSource) ? SoundEvents.WOLF_ARMOR_DAMAGE : this.getSoundVariant().value().hurtSound().value();
-    }
-
-    @Override
-    protected SoundEvent getDeathSound() {
-        return this.getSoundVariant().value().deathSound().value();
+    protected SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
+        return SoundEvents.WOLF_ARMOR_DAMAGE;
     }
 
     @Override
@@ -282,12 +102,6 @@ public class Elephant extends TamableAnimal implements NeutralMob {
     @Override
     public void aiStep() {
         super.aiStep();
-        if (!this.level().isClientSide && this.isWet && !this.isShaking && !this.isPathFinding() && this.onGround()) {
-            this.isShaking = true;
-            this.shakeAnim = 0.0F;
-            this.shakeAnimO = 0.0F;
-            this.level().broadcastEntityEvent(this, (byte)8);
-        }
 
         if (!this.level().isClientSide) {
             this.updatePersistentAnger((ServerLevel)this.level(), true);
@@ -297,54 +111,15 @@ public class Elephant extends TamableAnimal implements NeutralMob {
     @Override
     public void tick() {
         super.tick();
-        if (this.isAlive()) {
-            this.interestedAngleO = this.interestedAngle;
-            if (this.isInterested()) {
-                this.interestedAngle = this.interestedAngle + (1.0F - this.interestedAngle) * 0.4F;
-            } else {
-                this.interestedAngle = this.interestedAngle + (0.0F - this.interestedAngle) * 0.4F;
-            }
-
-            if (this.isInWaterOrRain()) {
-                this.isWet = true;
-                if (this.isShaking && !this.level().isClientSide) {
-                    this.level().broadcastEntityEvent(this, (byte)56);
-                    this.cancelShake();
-                }
-            } else if ((this.isWet || this.isShaking) && this.isShaking) {
-                if (this.shakeAnim == 0.0F) {
-                    this.playSound(SoundEvents.WOLF_SHAKE, this.getSoundVolume(), (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
-                    this.gameEvent(GameEvent.ENTITY_ACTION);
-                }
-
-                this.shakeAnimO = this.shakeAnim;
-                this.shakeAnim += 0.05F;
-                if (this.shakeAnimO >= 2.0F) {
-                    this.isWet = false;
-                    this.isShaking = false;
-                    this.shakeAnimO = 0.0F;
-                    this.shakeAnim = 0.0F;
-                }
-
-                if (this.shakeAnim > 0.4F) {
-                    float f = (float)this.getY();
-                    int i = (int)(Mth.sin((this.shakeAnim - 0.4F) * (float) Math.PI) * 7.0F);
-                    Vec3 vec3 = this.getDeltaMovement();
-
-                    for (int j = 0; j < i; j++) {
-                        float f1 = (this.random.nextFloat() * 2.0F - 1.0F) * this.getBbWidth() * 0.5F;
-                        float f2 = (this.random.nextFloat() * 2.0F - 1.0F) * this.getBbWidth() * 0.5F;
-                        this.level().addParticle(ParticleTypes.SPLASH, this.getX() + f1, f + 0.8F, this.getZ() + f2, vec3.x, vec3.y, vec3.z);
-                    }
-                }
+        if (!this.isAlive()) {
+            return;
+        }
+        if(!level().isClientSide){
+            if(tickCount%20 == 0 && getRandom().nextFloat() < 0.3){
+                this.level().broadcastEntityEvent(this, (byte)(60 + getRandom().nextInt(3)));
             }
         }
-    }
 
-    private void cancelShake() {
-        this.isShaking = false;
-        this.shakeAnim = 0.0F;
-        this.shakeAnimO = 0.0F;
     }
 
     /**
@@ -352,42 +127,21 @@ public class Elephant extends TamableAnimal implements NeutralMob {
      */
     @Override
     public void die(DamageSource cause) {
-        this.isWet = false;
-        this.isShaking = false;
-        this.shakeAnimO = 0.0F;
-        this.shakeAnim = 0.0F;
         super.die(cause);
     }
 
-    public float getWetShade(float partialTick) {
-        return !this.isWet ? 1.0F : Math.min(0.75F + Mth.lerp(partialTick, this.shakeAnimO, this.shakeAnim) / 2.0F * 0.25F, 1.0F);
-    }
-
-    public float getShakeAnim(float partialTick) {
-        return Mth.lerp(partialTick, this.shakeAnimO, this.shakeAnim);
-    }
-
-    public float getHeadRollAngle(float partialTick) {
-        return Mth.lerp(partialTick, this.interestedAngleO, this.interestedAngle) * 0.15F * (float) Math.PI;
-    }
 
     @Override
-    public int getMaxHeadXRot() {
-        return this.isInSittingPose() ? 20 : super.getMaxHeadXRot();
-    }
-
-    @Override
-    public boolean hurtServer(ServerLevel level, DamageSource damageSource, float amount) {
+    public boolean hurtServer(@NotNull ServerLevel level, @NotNull DamageSource damageSource, float amount) {
         if (this.isInvulnerableTo(level, damageSource)) {
             return false;
         } else {
-            this.setOrderedToSit(false);
             return super.hurtServer(level, damageSource, amount);
         }
     }
 
     @Override
-    protected void actuallyHurt(ServerLevel level, DamageSource damageSource, float amount) {
+    protected void actuallyHurt(@NotNull ServerLevel level, @NotNull DamageSource damageSource, float amount) {
         if (!this.canArmorAbsorb(damageSource)) {
             super.actuallyHurt(level, damageSource, amount);
         } else {
@@ -416,124 +170,26 @@ public class Elephant extends TamableAnimal implements NeutralMob {
         return this.getBodyArmorItem().is(Items.WOLF_ARMOR) && !damageSource.is(DamageTypeTags.BYPASSES_WOLF_ARMOR);
     }
 
-    @Override
-    protected void applyTamingSideEffects() {
-        if (this.isTame()) {
-            this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(40.0);
-            this.setHealth(40.0F);
-        } else {
-            this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(8.0);
-        }
-    }
 
     @Override
-    protected void hurtArmor(DamageSource damageSource, float damageAmount) {
-        this.doHurtEquipment(damageSource, damageAmount, new EquipmentSlot[]{EquipmentSlot.BODY});
+    protected void hurtArmor(@NotNull DamageSource damageSource, float damageAmount) {
+        this.doHurtEquipment(damageSource, damageAmount, EquipmentSlot.BODY);
     }
 
-    @Override
-    protected boolean canShearEquipment(Player player) {
-        return this.isOwnedBy(player);
-    }
-
-    @Override
-    public InteractionResult mobInteract(Player player, InteractionHand hand) {
-        ItemStack itemstack = player.getItemInHand(hand);
-        Item item = itemstack.getItem();
-        if (this.isTame()) {
-            if (this.isFood(itemstack) && this.getHealth() < this.getMaxHealth()) {
-                FoodProperties foodproperties = itemstack.get(DataComponents.FOOD);
-                float f = foodproperties != null ? foodproperties.nutrition() : 1.0F;
-                this.heal(2.0F * f);
-                this.usePlayerItem(player, hand, itemstack);
-                this.gameEvent(GameEvent.EAT); // Neo: add EAT game event
-                return InteractionResult.SUCCESS;
-            }
-
-            if (!(item instanceof DyeItem dyeitem && this.isOwnedBy(player))) {
-                if (this.isEquippableInSlot(itemstack, EquipmentSlot.BODY) && !this.isWearingBodyArmor() && this.isOwnedBy(player) && !this.isBaby()) {
-                    this.setBodyArmorItem(itemstack.copyWithCount(1));
-                    itemstack.consume(1, player);
-                    return InteractionResult.SUCCESS;
-                }
-
-                if (this.isInSittingPose()
-                    && this.isWearingBodyArmor()
-                    && this.isOwnedBy(player)
-                    && this.getBodyArmorItem().isDamaged()
-                    && this.getBodyArmorItem().isValidRepairItem(itemstack)) {
-                    itemstack.shrink(1);
-                    this.playSound(SoundEvents.WOLF_ARMOR_REPAIR);
-                    ItemStack itemstack1 = this.getBodyArmorItem();
-                    int i = (int)(itemstack1.getMaxDamage() * 0.125F);
-                    itemstack1.setDamageValue(Math.max(0, itemstack1.getDamageValue() - i));
-                    return InteractionResult.SUCCESS;
-                }
-
-                InteractionResult interactionresult = super.mobInteract(player, hand);
-                if (!interactionresult.consumesAction() && this.isOwnedBy(player)) {
-                    this.setOrderedToSit(!this.isOrderedToSit());
-                    this.jumping = false;
-                    this.navigation.stop();
-                    this.setTarget(null);
-                    return InteractionResult.SUCCESS.withoutItem();
-                }
-
-                return interactionresult;
-            }
-
-            DyeColor dyecolor = dyeitem.getDyeColor();
-            if (dyecolor != this.getCollarColor()) {
-                this.setCollarColor(dyecolor);
-                itemstack.consume(1, player);
-                return InteractionResult.SUCCESS;
-            }
-        } else if (!this.level().isClientSide && itemstack.is(Items.BONE) && !this.isAngry()) {
-            itemstack.consume(1, player);
-            this.tryToTame(player);
-            return InteractionResult.SUCCESS_SERVER;
-        }
-
-        return super.mobInteract(player, hand);
-    }
-
-    private void tryToTame(Player player) {
-        if (this.random.nextInt(3) == 0  && !net.neoforged.neoforge.event.EventHooks.onAnimalTame(this, player)) {
-            this.tame(player);
-            this.navigation.stop();
-            this.setTarget(null);
-            this.setOrderedToSit(true);
-            this.level().broadcastEntityEvent(this, (byte)7);
-        } else {
-            this.level().broadcastEntityEvent(this, (byte)6);
-        }
-    }
 
 
     @Override
     public void handleEntityEvent(byte id) {
-        if (id == 8) {
-            this.isShaking = true;
-            this.shakeAnim = 0.0F;
-            this.shakeAnimO = 0.0F;
-        } else if (id == 56) {
-            this.cancelShake();
-        } else {
-            super.handleEntityEvent(id);
+        //不要使用63
+        switch (id){
+            case 60 -> earFlapAnimationState.start(this.tickCount);
+            case 61 -> tailFlickAnimationState.start(this.tickCount);
+            case 62 -> trunkCurlAnimationState.start(this.tickCount);
+            default -> super.handleEntityEvent(id);
         }
     }
 
-    public float getTailAngle() {
-        if (this.isAngry()) {
-            return 1.5393804F;
-        } else if (this.isTame()) {
-            float f = this.getMaxHealth();
-            float f1 = (f - this.getHealth()) / f;
-            return (0.55F - f1 * 0.4F) * (float) Math.PI;
-        } else {
-            return (float) (Math.PI / 5);
-        }
-    }
+
 
     /**
      * Checks if the parameter is an item which this animal can be fed to breed it (wheat, carrots or seeds depending on the animal type)
@@ -574,78 +230,18 @@ public class Elephant extends TamableAnimal implements NeutralMob {
         this.persistentAngerTarget = persistentAngerTarget;
     }
 
-    public DyeColor getCollarColor() {
-        return DyeColor.byId(this.entityData.get(DATA_COLLAR_COLOR));
-    }
-
-    private void setCollarColor(DyeColor color) {
-        this.entityData.set(DATA_COLLAR_COLOR, color.getId());
-    }
 
     @Nullable
-    public Elephant getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
-        Elephant wolf = ModEntityTypes.ELEPHANT.get().create(level, EntitySpawnReason.BREEDING);
-        if (wolf != null && otherParent instanceof Elephant wolf1) {
-            if (this.random.nextBoolean()) {
-                wolf.setVariant(this.getVariant());
-            } else {
-                wolf.setVariant(wolf1.getVariant());
-            }
-
-            if (this.isTame()) {
-                wolf.setOwnerReference(this.getOwnerReference());
-                wolf.setTame(true, true);
-                DyeColor dyecolor = this.getCollarColor();
-                DyeColor dyecolor1 = wolf1.getCollarColor();
-                wolf.setCollarColor(DyeColor.getMixedColor(level, dyecolor, dyecolor1));
-            }
-
-            wolf.setSoundVariant(WolfSoundVariants.pickRandomSoundVariant(this.registryAccess(), this.random));
-        }
-
-        return wolf;
+    public Elephant getBreedOffspring(@NotNull ServerLevel level, @NotNull AgeableMob otherParent) {
+        return ModEntityTypes.ELEPHANT.get().create(level, EntitySpawnReason.BREEDING);
     }
 
-    public void setIsInterested(boolean isInterested) {
-        this.entityData.set(DATA_INTERESTED_ID, isInterested);
-    }
 
     /**
      * Returns {@code true} if the mob is currently able to mate with the specified mob.
      */
-    @Override
-    public boolean canMate(Animal otherAnimal) {
-        if (otherAnimal == this) {
-            return false;
-        } else if (!this.isTame()) {
-            return false;
-        } else if (!(otherAnimal instanceof Elephant wolf)) {
-            return false;
-        } else if (!wolf.isTame()) {
-            return false;
-        } else {
-            return wolf.isInSittingPose() ? false : this.isInLove() && wolf.isInLove();
-        }
-    }
 
-    public boolean isInterested() {
-        return this.entityData.get(DATA_INTERESTED_ID);
-    }
 
-    @Override
-    public boolean wantsToAttack(LivingEntity target, LivingEntity owner) {
-        if (target instanceof Creeper || target instanceof Ghast || target instanceof ArmorStand) {
-            return false;
-        } else if (target instanceof Elephant wolf) {
-            return !wolf.isTame() || wolf.getOwner() != owner;
-        } else if (target instanceof Player player && owner instanceof Player player1 && !player1.canHarmPlayer(player)) {
-            return false;
-        } else {
-            return target instanceof AbstractHorse abstracthorse && abstracthorse.isTamed()
-                ? false
-                : !(target instanceof TamableAnimal tamableanimal && tamableanimal.isTame());
-        }
-    }
 
     @Override
     public boolean canBeLeashed() {
@@ -657,48 +253,6 @@ public class Elephant extends TamableAnimal implements NeutralMob {
         return new Vec3(0.0, 0.6F * this.getEyeHeight(), this.getBbWidth() * 0.4F);
     }
 
-    public static boolean checkWolfSpawnRules(
-            EntityType<Elephant> entityType, LevelAccessor level, EntitySpawnReason spawnReason, BlockPos pos, RandomSource random
-    ) {
-        return level.getBlockState(pos.below()).is(BlockTags.WOLVES_SPAWNABLE_ON) && isBrightEnoughToSpawn(level, pos);
-    }
 
-    class WolfAvoidEntityGoal<T extends LivingEntity> extends AvoidEntityGoal<T> {
-        private final Elephant wolf;
 
-        public WolfAvoidEntityGoal(Elephant wolf, Class<T> avoidClass, float maxDistance, double walkSpeedModifier, double sprintSpeedModifier) {
-            super(wolf, avoidClass, maxDistance, walkSpeedModifier, sprintSpeedModifier);
-            this.wolf = wolf;
-        }
-
-        @Override
-        public boolean canUse() {
-            return super.canUse() && this.toAvoid instanceof Llama ? !this.wolf.isTame() && this.avoidLlama((Llama)this.toAvoid) : false;
-        }
-
-        private boolean avoidLlama(Llama llama) {
-            return llama.getStrength() >= Elephant.this.random.nextInt(5);
-        }
-
-        @Override
-        public void start() {
-            Elephant.this.setTarget(null);
-            super.start();
-        }
-
-        @Override
-        public void tick() {
-            Elephant.this.setTarget(null);
-            super.tick();
-        }
-    }
-
-    public static class WolfPackData extends AgeableMobGroupData {
-        public final Holder<WolfVariant> type;
-
-        public WolfPackData(Holder<WolfVariant> type) {
-            super(false);
-            this.type = type;
-        }
-    }
 }

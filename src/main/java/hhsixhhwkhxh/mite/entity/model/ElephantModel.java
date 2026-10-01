@@ -3,13 +3,16 @@
 // Paste this class into your mod and generate all required imports
 package hhsixhhwkhxh.mite.entity.model;
 
+import hhsixhhwkhxh.mite.entity.animation.ElephantAnimation;
 import hhsixhhwkhxh.mite.entity.renderer.ElephantRenderState;
+import net.minecraft.client.animation.KeyframeAnimation;
 import net.minecraft.client.model.BabyModelTransform;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
@@ -17,7 +20,14 @@ public class ElephantModel extends EntityModel<ElephantRenderState>{
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final MeshTransformer BABY_TRANSFORMER = new BabyModelTransform(Set.of("head"));
 	private final ModelPart head;
+	private final ModelPart left_ear;
+	private final ModelPart right_ear;
 	private final ModelPart trunk;
+	private final ModelPart part1;
+	private final ModelPart part2;
+	private final ModelPart part3;
+	private final ModelPart part4;
+	private final ModelPart part5;
 	private final ModelPart Ivory;
 	private final ModelPart right;
 	private final ModelPart left;
@@ -29,10 +39,22 @@ public class ElephantModel extends EntityModel<ElephantRenderState>{
 	private final ModelPart rightHindLeg;
 	private final ModelPart tail;
 
+
+	private final KeyframeAnimation earFlapAnimation;
+	private final KeyframeAnimation tailFlickAnimation;
+	private final KeyframeAnimation trunkCurlAnimation;
+
 	public ElephantModel(ModelPart root) {
         super(root);
-        this.head = root.getChild("head");
+		this.head = root.getChild("head");
+		this.left_ear = this.head.getChild("left_ear");
+		this.right_ear = this.head.getChild("right_ear");
 		this.trunk = this.head.getChild("trunk");
+		this.part1 = this.trunk.getChild("part1");
+		this.part2 = this.part1.getChild("part2");
+		this.part3 = this.part2.getChild("part3");
+		this.part4 = this.part3.getChild("part4");
+		this.part5 = this.part4.getChild("part5");
 		this.Ivory = this.head.getChild("Ivory");
 		this.right = this.Ivory.getChild("right");
 		this.left = this.Ivory.getChild("left");
@@ -43,6 +65,11 @@ public class ElephantModel extends EntityModel<ElephantRenderState>{
 		this.rightFrontLeg = this.limb.getChild("right_front");
 		this.rightHindLeg = this.limb.getChild("right_hind");
 		this.tail = this.body.getChild("tail");
+
+		earFlapAnimation = ElephantAnimation.ELEPHANT_EAR_FLAP.bake(root);
+		tailFlickAnimation = ElephantAnimation.ELEPHANT_TAIL_FLICK.bake(root);
+		trunkCurlAnimation = ElephantAnimation.ELEPHANT_TRUNK_CURL.bake(root);
+
 	}
 
 	public static MeshDefinition createMeshDefinition(CubeDeformation cubeDeformation) {
@@ -51,21 +78,35 @@ public class ElephantModel extends EntityModel<ElephantRenderState>{
 
 		PartDefinition head = partdefinition.addOrReplaceChild("head", CubeListBuilder.create().texOffs(60, 0).addBox(-5.5F, -7.4749F, -10.7918F, 11.0F, 15.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -11.0F, -9.5F, -0.1745F, 0.0F, 0.0F));
 
-		PartDefinition left_ear_r1 = head.addOrReplaceChild("left_ear_r1", CubeListBuilder.create().texOffs(102, 0).mirror().addBox(2.3599F, -0.2797F, -5.4683F, 8.0F, 10.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, 1.5251F, -2.7918F, 0.195F, -0.4891F, -0.9215F));
+		PartDefinition left_ear = head.addOrReplaceChild("left_ear", CubeListBuilder.create(), PartPose.offset(3.0F, -1.0F, -6.0F));
 
-		PartDefinition right_ear_r1 = head.addOrReplaceChild("right_ear_r1", CubeListBuilder.create().texOffs(102, 0).addBox(-10.3599F, -0.2797F, -5.4683F, 8.0F, 10.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 1.5251F, -2.7918F, 0.195F, 0.4891F, 0.9215F));
+		PartDefinition cube_r1 = left_ear.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(102, 0).mirror().addBox(-0.3137F, -0.151F, -1.1284F, 8.0F, 10.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, -0.4749F, 0.2082F, 0.175F, -0.1888F, -0.8621F));
+
+		PartDefinition right_ear = head.addOrReplaceChild("right_ear", CubeListBuilder.create(), PartPose.offset(-3.0F, -1.4749F, -5.7918F));
+
+		PartDefinition cube_r2 = right_ear.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(102, 0).addBox(-7.6863F, -0.151F, -1.1284F, 8.0F, 10.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.175F, 0.1888F, 0.8621F));
 
 		PartDefinition trunk = head.addOrReplaceChild("trunk", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 7.3055F, -10.1391F, 0.1745F, 0.0F, 0.0F));
 
-		PartDefinition part5_r1 = trunk.addOrReplaceChild("part5_r1", CubeListBuilder.create().texOffs(0, 122).addBox(-1.5F, -25.259F, -20.1787F, 3.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -6.4167F, 8.2394F, 2.5307F, 0.0F, 0.0F));
+		PartDefinition part1 = trunk.addOrReplaceChild("part1", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0833F, -0.2606F));
 
-		PartDefinition part4_r1 = trunk.addOrReplaceChild("part4_r1", CubeListBuilder.create().texOffs(0, 114).addBox(-2.0F, -19.57F, -23.7601F, 4.0F, 3.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -6.4167F, 8.2394F, 2.2166F, 0.0F, 0.0F));
+		PartDefinition cube1_r1 = part1.addOrReplaceChild("cube1_r1", CubeListBuilder.create().texOffs(0, 76).addBox(-4.0F, -7.0F, -9.5F, 8.0F, 7.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 7.0F, 1.5708F, 0.0F, 0.0F));
 
-		PartDefinition part3_r1 = trunk.addOrReplaceChild("part3_r1", CubeListBuilder.create().texOffs(0, 105).addBox(-2.5F, -13.3938F, -23.7265F, 5.0F, 4.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -6.4167F, 8.2394F, 1.9199F, 0.0F, 0.0F));
+		PartDefinition part2 = part1.addOrReplaceChild("part2", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 9.5F, 0.75F, 0.1745F, 0.0F, 0.0F));
 
-		PartDefinition part2_r1 = trunk.addOrReplaceChild("part2_r1", CubeListBuilder.create().texOffs(0, 93).addBox(-3.0F, -8.909F, -21.9166F, 6.0F, 5.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -6.4167F, 8.2394F, 1.6581F, 0.0F, 0.0F));
+		PartDefinition cube2_r1 = part2.addOrReplaceChild("cube2_r1", CubeListBuilder.create().texOffs(0, 93).addBox(-3.0F, -0.5412F, -6.5876F, 6.0F, 5.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.75F, 1.5708F, 0.0F, 0.0F));
 
-		PartDefinition part1_r1 = trunk.addOrReplaceChild("part1_r1", CubeListBuilder.create().texOffs(0, 76).addBox(-4.0F, -7.0F, -9.5F, 8.0F, 7.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0833F, 6.7394F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition part3 = part2.addOrReplaceChild("part3", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 7.0F, 1.0F, 0.1745F, 0.0F, 0.0F));
+
+		PartDefinition cube3_r1 = part3.addOrReplaceChild("cube3_r1", CubeListBuilder.create().texOffs(0, 105).addBox(-2.5F, -0.2312F, -5.1053F, 5.0F, 4.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -1.0F, -0.25F, 1.5708F, 0.0F, 0.0F));
+
+		PartDefinition part4 = part3.addOrReplaceChild("part4", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 4.0F, 0.0F, 0.2967F, 0.0F, 0.0F));
+
+		PartDefinition cube4_r1 = part4.addOrReplaceChild("cube4_r1", CubeListBuilder.create().texOffs(0, 114).addBox(-2.0F, 0.1224F, -5.1047F, 4.0F, 3.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -0.0549F, -0.3574F, 1.5708F, 0.0F, 0.0F));
+
+		PartDefinition part5 = part4.addOrReplaceChild("part5", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 5.0F, 0.125F, 0.3142F, 0.0F, 0.0F));
+
+		PartDefinition cube5_r1 = part5.addOrReplaceChild("cube5_r1", CubeListBuilder.create().texOffs(0, 122).addBox(-1.5F, 0.0326F, -3.9953F, 3.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -0.2151F, -0.002F, 1.5708F, 0.0F, 0.0F));
 
 		PartDefinition Ivory = head.addOrReplaceChild("Ivory", CubeListBuilder.create(), PartPose.offset(0.0F, 11.5251F, -19.2918F));
 
@@ -107,11 +148,10 @@ public class ElephantModel extends EntityModel<ElephantRenderState>{
 		PartDefinition middle_r1 = tail.addOrReplaceChild("middle_r1", CubeListBuilder.create().texOffs(20, 117).addBox(-1.5F, 0.0F, -0.5F, 2.0F, 6.0F, 2.0F, new CubeDeformation(0.01F)), PartPose.offsetAndRotation(0.5F, 9.8042F, -0.4872F, -0.1309F, 0.0F, 0.0F));
 
 		return meshdefinition;
-		//return LayerDefinition.create(meshdefinition, 128, 256);
 	}
 
 	@Override
-	public void setupAnim(ElephantRenderState renderState) {
+	public void setupAnim(@NotNull ElephantRenderState renderState) {
 		super.setupAnim(renderState);
 
 		float walkAnimationPos = renderState.walkAnimationPos;
@@ -124,11 +164,17 @@ public class ElephantModel extends EntityModel<ElephantRenderState>{
 
 		//this.realHead.zRot = renderState.headRollAngle + renderState.getBodyRollAngle(0.0F);
 		//this.upperBody.zRot = renderState.getBodyRollAngle(-0.08F);
-		this.body.zRot = renderState.getBodyRollAngle(-0.16F);
+		//this.body.zRot = renderState.getBodyRollAngle(-0.16F);
 		//this.tail.zRot = renderState.getBodyRollAngle(-0.2F);
 		this.head.xRot = renderState.xRot * (float) (Math.PI / 180.0);
 		this.head.yRot = renderState.yRot * (float) (Math.PI / 180.0);
 		//this.tail.xRot = renderState.tailAngle;
+
+		earFlapAnimation.apply(renderState.earFlapAnimationState, renderState.ageInTicks);
+		tailFlickAnimation.apply(renderState.tailFlickAnimationState, renderState.ageInTicks);
+		trunkCurlAnimation.apply(renderState.trunkCurlAnimationState, renderState.ageInTicks);
+
+
 	}
 
 //	@Override

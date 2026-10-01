@@ -3,11 +3,10 @@ package hhsixhhwkhxh.mite.entity.renderer;
 import hhsixhhwkhxh.mite.entity.Elephant;
 import hhsixhhwkhxh.mite.entity.model.ElephantModel;
 import hhsixhhwkhxh.mite.entity.model.ModModelLayers;
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.AgeableMobRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ARGB;
+import org.jetbrains.annotations.NotNull;
 
 //@OnlyIn(Dist.CLIENT)
 public class ElephantRenderer extends AgeableMobRenderer<Elephant, ElephantRenderState, ElephantModel> {
@@ -17,26 +16,24 @@ public class ElephantRenderer extends AgeableMobRenderer<Elephant, ElephantRende
         //this.addLayer(new WolfCollarLayer(this));
     }
 
-    protected int getModelTint(ElephantRenderState renderState) {
-        float f = renderState.wetShade;
-        return f == 1.0F ? -1 : ARGB.colorFromFloat(1.0F, f, f, f);
+    protected int getModelTint(@NotNull ElephantRenderState renderState) {
+        return -1;
     }
 
-    public ResourceLocation getTextureLocation(ElephantRenderState renderState) {
+    public @NotNull ResourceLocation getTextureLocation(ElephantRenderState renderState) {
         return renderState.texture;
     }
 
-    public ElephantRenderState createRenderState() {
+    public @NotNull ElephantRenderState createRenderState() {
         return new ElephantRenderState();
     }
 
-    public void extractRenderState(Elephant elephant, ElephantRenderState renderState, float p_362105_) {
-        super.extractRenderState(elephant, renderState, p_362105_);
+    public void extractRenderState(@NotNull Elephant elephant, @NotNull ElephantRenderState renderState, float partialTick) {
+        super.extractRenderState(elephant, renderState, partialTick);
         renderState.isAngry = elephant.isAngry();
-        renderState.tailAngle = elephant.getTailAngle();
-        renderState.headRollAngle = elephant.getHeadRollAngle(p_362105_);
-        renderState.shakeAnim = elephant.getShakeAnim(p_362105_);
-        //renderState.texture = elephant.getTexture();
-        renderState.wetShade = elephant.getWetShade(p_362105_);
+
+        renderState.earFlapAnimationState.copyFrom(elephant.earFlapAnimationState);
+        renderState.tailFlickAnimationState.copyFrom(elephant.tailFlickAnimationState);
+        renderState.trunkCurlAnimationState.copyFrom(elephant.trunkCurlAnimationState);
     }
 }
