@@ -12,8 +12,6 @@ import org.jetbrains.annotations.NotNull;
 public class ElephantRenderer extends AgeableMobRenderer<Elephant, ElephantRenderState, ElephantModel> {
     public ElephantRenderer(EntityRendererProvider.Context context) {
         super(context, new ElephantModel(context.bakeLayer(ModModelLayers.ELEPHANT)), new ElephantModel(context.bakeLayer(ModModelLayers.ELEPHANT_BABY)), 0.5F);
-        //this.addLayer(new WolfArmorLayer(this, context.getModelSet(), context.getEquipmentRenderer()));
-        //this.addLayer(new WolfCollarLayer(this));
     }
 
     protected int getModelTint(@NotNull ElephantRenderState renderState) {
@@ -35,5 +33,10 @@ public class ElephantRenderer extends AgeableMobRenderer<Elephant, ElephantRende
         renderState.earFlapAnimationState.copyFrom(elephant.earFlapAnimationState);
         renderState.tailFlickAnimationState.copyFrom(elephant.tailFlickAnimationState);
         renderState.trunkCurlAnimationState.copyFrom(elephant.trunkCurlAnimationState);
+    }
+
+    @Override
+    protected float getShadowRadius(ElephantRenderState renderState) {
+        return super.getShadowRadius(renderState) * 2.4F;
     }
 }
