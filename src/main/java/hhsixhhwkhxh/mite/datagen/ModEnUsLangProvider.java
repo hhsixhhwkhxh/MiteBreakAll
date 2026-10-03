@@ -286,5 +286,17 @@ public class ModEnUsLangProvider extends LanguageProvider {
         add("subtitles.entity.elephant.death","Elephants dies");
         add("subtitles.entity.elephant.hurt","Elephant hurts");
         add("subtitles.entity.elephant.idle","Elephant mutters");
+
+        add(ModEntityTypes.COUGAR.get(),"Cougar");
+
+        add("subtitles.entity.cougar.ambient","Cougar growls");
+        add("subtitles.entity.cougar.attack","Cougar attacks");
+        add("subtitles.entity.cougar.death","Cougar dies");
+        add("subtitles.entity.cougar.hurt","Cougar hurts");
+
+        add(ModItems.RAW_LION_MEAT.get(),"Raw Lion Meat");
+        add(ModItems.COOKED_LION_MEAT.get(),"Cooked Lion Meat");
+        add(ModItems.BURNT_LION_MEAT.get(),"Burnt Lion Meat");
+        add(ModItems.COUGAR_SPAWN_EGG.get(), "Cougar Spawn Egg");
     }
 }

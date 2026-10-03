@@ -1,4 +1,31 @@
 {
+  "cougar_ambient": {
+    "sounds": [
+      "mite_break_all:cougar/ambient1",
+      "mite_break_all:cougar/ambient2",
+      "mite_break_all:cougar/ambient3"
+    ],
+    "subtitle": "subtitles.entity.cougar.ambient"
+  },
+  "cougar_attack": {
+    "sounds": [
+      "mite_break_all:cougar/attack"
+    ],
+    "subtitle": "subtitles.entity.cougar.attack"
+  },
+  "cougar_death": {
+    "sounds": [
+      "mite_break_all:cougar/death"
+    ],
+    "subtitle": "subtitles.entity.cougar.death"
+  },
+  "cougar_hurt": {
+    "sounds": [
+      "mite_break_all:cougar/hurt1",
+      "mite_break_all:cougar/hurt2"
+    ],
+    "subtitle": "subtitles.entity.cougar.hurt"
+  },
   "elephant_baby_idle": {
     "sounds": [
       "mite_break_all:elephant/baby_idle1",

@@ -283,6 +283,21 @@ public class ModItems {
 
     public static final DeferredItem<Item> ELEPHANT_SPAWN_EGG = ITEMS.registerItem("elephant_spawn_egg", properties -> new SpawnEggItem(ModEntityTypes.ELEPHANT.get(), properties));
 
+    public static final DeferredItem<Item> RAW_LION_MEAT = ITEMS.registerItem("raw_lion_meat",Item::new,new Item.Properties().food(new FoodProperties.Builder().nutrition(5).saturationModifier(0.5F).build()));
+    public static final DeferredItem<Item> COOKED_LION_MEAT = ITEMS.registerItem("cooked_lion_meat",Item::new,new Item.Properties().food(
+            new FoodProperties.Builder().nutrition(10).saturationModifier(0.5F).build(),
+            defaultFood().onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.RESISTANCE, 200, 0), 1.0F)).build()
+    ));
+    public static final DeferredItem<Item> BURNT_LION_MEAT = ITEMS.registerItem("burnt_lion_meat",Item::new,new Item.Properties().food(
+            new FoodProperties.Builder().nutrition(1).saturationModifier(0.5F).build(),
+            defaultFood().onConsume(new ApplyStatusEffectsConsumeEffect(
+                            new MobEffectInstance(MobEffects.SPEED, 300, 0), 0.5F)
+                    )
+                    .build()
+    ));
+
+    public static final DeferredItem<Item> COUGAR_SPAWN_EGG = ITEMS.registerItem("cougar_spawn_egg", properties -> new SpawnEggItem(ModEntityTypes.COUGAR.get(), properties));
+
 
     public static final Map<Item, DeferredItem<Item>> proxyItemMap = Map.ofEntries(
             Map.entry(Items.WOODEN_SHOVEL,

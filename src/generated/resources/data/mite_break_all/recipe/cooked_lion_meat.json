@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "cookingtime": 200,
+  "experience": 0.35,
+  "ingredient": "mite_break_all:raw_lion_meat",
+  "result": {
+    "count": 1,
+    "id": "mite_break_all:cooked_lion_meat"
+  }
+}

@@ -19,10 +19,13 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.ai.goal.target.*;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
@@ -31,8 +34,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class Elephant extends Animal implements NeutralMob {
-    private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Elephant.class, EntityDataSerializers.INT);
+public class Cougar extends Animal implements NeutralMob {
+    private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Cougar.class, EntityDataSerializers.INT);
 
 
     private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
@@ -44,7 +47,7 @@ public class Elephant extends Animal implements NeutralMob {
     public AnimationState trunkCurlAnimationState = new AnimationState();
 
 
-    public Elephant(EntityType<? extends Elephant> entityType, Level level) {
+    public Cougar(EntityType<? extends Cougar> entityType, Level level) {
         super(entityType, level);
         this.setPathfindingMalus(PathType.POWDER_SNOW, -1.0F);
         this.setPathfindingMalus(PathType.DANGER_POWDER_SNOW, -1.0F);
@@ -72,30 +75,35 @@ public class Elephant extends Animal implements NeutralMob {
 
 
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false,
-                (entity,level)-> isAngryAt(entity,level) || distanceTo(entity) < 2));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false,null));
 
         this.targetSelector.addGoal(3, new ResetUniversalAngerTargetGoal<>(this, true));
     }
 
 
     public static AttributeSupplier.Builder createAttributes() {
-        return Animal.createAnimalAttributes().add(Attributes.MOVEMENT_SPEED, 0.2F).add(Attributes.MAX_HEALTH, 60.0).add(Attributes.ATTACK_DAMAGE, 4.0);
+        return Animal.createAnimalAttributes().add(Attributes.MOVEMENT_SPEED, 0.3F).add(Attributes.MAX_HEALTH, 30.0).add(Attributes.ATTACK_DAMAGE, 4.0);
     }
 
     @Override
     protected @org.jetbrains.annotations.Nullable SoundEvent getAmbientSound() {
-        return isBaby()?ModSoundEvents.ELEPHANT_BABY_IDLE.get():ModSoundEvents.ELEPHANT_IDLE.get();
+        return ModSoundEvents.COUGAR_AMBIENT.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return ModSoundEvents.ELEPHANT_HURT.get();
+        return ModSoundEvents.COUGAR_HURT.get();
     }
 
     @Override
     protected @org.jetbrains.annotations.Nullable SoundEvent getDeathSound() {
-        return ModSoundEvents.ELEPHANT_DEATH.get();
+        return ModSoundEvents.COUGAR_DEATH.get();
+    }
+
+    @Override
+    public boolean doHurtTarget(@NotNull ServerLevel level, @NotNull Entity source) {
+        this.playSound(ModSoundEvents.COUGAR_ATTACK.get(), getSoundVolume(), this.getVoicePitch());
+        return super.doHurtTarget(level, source);
     }
 
     @Override
@@ -143,8 +151,6 @@ public class Elephant extends Animal implements NeutralMob {
             return super.hurtServer(level, damageSource, amount);
         }
     }
-
-
 
 
     @Override
@@ -201,8 +207,8 @@ public class Elephant extends Animal implements NeutralMob {
 
 
     @Nullable
-    public Elephant getBreedOffspring(@NotNull ServerLevel level, @NotNull AgeableMob otherParent) {
-        return ModEntityTypes.ELEPHANT.get().create(level, EntitySpawnReason.BREEDING);
+    public Cougar getBreedOffspring(@NotNull ServerLevel level, @NotNull AgeableMob otherParent) {
+        return ModEntityTypes.COUGAR.get().create(level, EntitySpawnReason.BREEDING);
     }
 
 

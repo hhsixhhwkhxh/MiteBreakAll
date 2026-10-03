@@ -72,7 +72,7 @@ public class ElephantModel extends EntityModel<ElephantRenderState>{
 
 	}
 
-	public static MeshDefinition createMeshDefinition(CubeDeformation cubeDeformation) {
+	public static MeshDefinition createMeshDefinition() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 

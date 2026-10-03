@@ -7,9 +7,11 @@ import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
 import hhsixhhwkhxh.mite.datacomponent.Moisture;
 import hhsixhhwkhxh.mite.datacomponent.ReachBonus;
 import hhsixhhwkhxh.mite.entity.BrownBear;
+import hhsixhhwkhxh.mite.entity.Cougar;
 import hhsixhhwkhxh.mite.entity.Elephant;
 import hhsixhhwkhxh.mite.entity.ModEntityTypes;
 import hhsixhhwkhxh.mite.entity.model.BrownBearModel;
+import hhsixhhwkhxh.mite.entity.model.CougarModel;
 import hhsixhhwkhxh.mite.entity.model.ElephantModel;
 import hhsixhhwkhxh.mite.entity.model.ModModelLayers;
 import hhsixhhwkhxh.mite.item.ModCreativeModeTabs;
@@ -229,6 +231,7 @@ public class MiteBreakAll {
     private void onEntityAttributeCreation(EntityAttributeCreationEvent event) {
         event.put(ModEntityTypes.BROWN_BEAR.get(), BrownBear.createAttributes().build());
         event.put(ModEntityTypes.ELEPHANT.get(), Elephant.createAttributes().build());
+        event.put(ModEntityTypes.COUGAR.get(), Cougar.createAttributes().build());
 
     }
 
@@ -245,12 +248,22 @@ public class MiteBreakAll {
 
         event.registerLayerDefinition(
                 ModModelLayers.ELEPHANT,
-                ()->LayerDefinition.create(ElephantModel.createMeshDefinition(CubeDeformation.NONE), 128, 256)
+                ()->LayerDefinition.create(ElephantModel.createMeshDefinition(), 128, 256)
         );
 
         event.registerLayerDefinition(
                 ModModelLayers.ELEPHANT_BABY,
-                ()->LayerDefinition.create(ElephantModel.createMeshDefinition(CubeDeformation.NONE).apply(ElephantModel.BABY_TRANSFORMER), 128, 256)
+                ()->LayerDefinition.create(ElephantModel.createMeshDefinition().apply(ElephantModel.BABY_TRANSFORMER), 128, 256)
+        );
+
+        event.registerLayerDefinition(
+                ModModelLayers.COUGAR,
+                ()->LayerDefinition.create(CougarModel.createMeshDefinition(), 64, 64)
+        );
+
+        event.registerLayerDefinition(
+                ModModelLayers.COUGAR_BABY,
+                ()->LayerDefinition.create(CougarModel.createMeshDefinition().apply(CougarModel.BABY_TRANSFORMER), 64, 64)
         );
 
     }

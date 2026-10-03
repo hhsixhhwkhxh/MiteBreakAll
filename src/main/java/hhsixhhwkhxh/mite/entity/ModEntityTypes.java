@@ -24,6 +24,11 @@ public class ModEntityTypes {
             .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID, "elephant")
     )));
 
+    public static final Supplier<EntityType<Cougar>> COUGAR = ENTITY_TYPES.register("cougar",()->EntityType.Builder.of(Cougar::new, MobCategory.CREATURE)
+            .sized(1F, 1F).clientTrackingRange(10)
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID, "cougar")
+            )));
+
     public static void register(IEventBus eventBus){
         ENTITY_TYPES.register(eventBus);
     }

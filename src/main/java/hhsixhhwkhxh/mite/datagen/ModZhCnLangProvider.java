@@ -286,5 +286,17 @@ public class ModZhCnLangProvider extends LanguageProvider {
         add("subtitles.entity.elephant.death","大象：死亡");
         add("subtitles.entity.elephant.hurt","大象：受伤");
         add("subtitles.entity.elephant.idle","大象：低语");
+
+        add(ModEntityTypes.COUGAR.get(),"山狮");
+
+        add("subtitles.entity.cougar.ambient","山狮：咆哮");
+        add("subtitles.entity.cougar.attack","山狮：攻击");
+        add("subtitles.entity.cougar.death","山狮：死亡");
+        add("subtitles.entity.cougar.hurt","山狮：受伤");
+
+        add(ModItems.RAW_LION_MEAT.get(),"生狮子肉");
+        add(ModItems.COOKED_LION_MEAT.get(),"熟狮子肉");
+        add(ModItems.BURNT_LION_MEAT.get(),"烧糊的狮子肉");
+        add(ModItems.COUGAR_SPAWN_EGG.get(), "山狮刷怪蛋");
     }
 }

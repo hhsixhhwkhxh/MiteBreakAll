@@ -30,6 +30,25 @@ public class ModSoundEvents {
             SoundEvent::createVariableRangeEvent
     );
 
+    public static final Supplier<SoundEvent> COUGAR_DEATH = SOUND_EVENTS.register(
+            "cougar_death",
+            SoundEvent::createVariableRangeEvent
+    );
+
+    public static final Supplier<SoundEvent> COUGAR_HURT = SOUND_EVENTS.register(
+            "cougar_hurt",
+            SoundEvent::createVariableRangeEvent
+    );
+
+    public static final Supplier<SoundEvent> COUGAR_ATTACK = SOUND_EVENTS.register(
+            "cougar_attack",
+            SoundEvent::createVariableRangeEvent
+    );
+    public static final Supplier<SoundEvent> COUGAR_AMBIENT = SOUND_EVENTS.register(
+            "cougar_ambient",
+            SoundEvent::createVariableRangeEvent
+    );
+
     public static void register(IEventBus eventBus){
         SOUND_EVENTS.register(eventBus);
     }

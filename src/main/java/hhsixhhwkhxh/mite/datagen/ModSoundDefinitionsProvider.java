@@ -51,6 +51,37 @@ public class ModSoundDefinitionsProvider extends SoundDefinitionsProvider {
                 )
                 .subtitle("subtitles.entity.elephant.idle")
         );
+
+        add(ModSoundEvents.COUGAR_AMBIENT, SoundDefinition.definition()
+                .with(
+                        sound(modRL("cougar/ambient1")),
+                        sound(modRL("cougar/ambient2")),
+                        sound(modRL("cougar/ambient3"))
+                )
+                .subtitle("subtitles.entity.cougar.ambient")
+        );
+
+        add(ModSoundEvents.COUGAR_ATTACK, SoundDefinition.definition()
+                .with(
+                        sound(modRL("cougar/attack"))
+                )
+                .subtitle("subtitles.entity.cougar.attack")
+        );
+
+        add(ModSoundEvents.COUGAR_DEATH, SoundDefinition.definition()
+                .with(
+                        sound(modRL("cougar/death"))
+                )
+                .subtitle("subtitles.entity.cougar.death")
+        );
+
+        add(ModSoundEvents.COUGAR_HURT, SoundDefinition.definition()
+                .with(
+                        sound(modRL("cougar/hurt1")),
+                        sound(modRL("cougar/hurt2"))
+                )
+                .subtitle("subtitles.entity.cougar.hurt")
+        );
     }
 
     private static ResourceLocation modRL(String path){

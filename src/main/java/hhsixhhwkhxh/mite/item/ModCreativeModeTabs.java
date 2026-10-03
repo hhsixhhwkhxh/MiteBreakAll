@@ -263,6 +263,11 @@ public class ModCreativeModeTabs {
             output.accept(ModItems.BURNT_ELEPHANT_MEAT);
             output.accept(ModItems.ELEPHANT_SPAWN_EGG);
 
+            output.accept(ModItems.RAW_LION_MEAT);
+            output.accept(ModItems.COOKED_LION_MEAT);
+            output.accept(ModItems.BURNT_LION_MEAT);
+            output.accept(ModItems.COUGAR_SPAWN_EGG);
+
         }).build();
     });
 
