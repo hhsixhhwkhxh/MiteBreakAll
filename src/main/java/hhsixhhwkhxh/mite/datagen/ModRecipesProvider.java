@@ -104,6 +104,14 @@ public class ModRecipesProvider extends RecipeProvider {
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(ModItems.RAW_LION_MEAT), RecipeCategory.FOOD, ModItems.COOKED_LION_MEAT, 0.35F, 200)
                 .unlockedBy("has_raw_lion_meat", this.has(ModItems.RAW_LION_MEAT))
                 .save(this.output);
+
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(ModItems.RAW_MALLARD_MEAT), RecipeCategory.FOOD, ModItems.COOKED_MALLARD_MEAT, 0.35F, 200)
+                .unlockedBy("has_raw_mallard_meat", this.has(ModItems.RAW_MALLARD_MEAT))
+                .save(this.output);
+
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(ModItems.RAW_MALLARD_HEAD_MEAT), RecipeCategory.FOOD, ModItems.COOKED_MALLARD_HEAD_MEAT, 0.35F, 200)
+                .unlockedBy("has_raw_mallard_head_meat", this.has(ModItems.RAW_MALLARD_HEAD_MEAT))
+                .save(this.output);
     }
 
     public LargeFurnaceCraftingRecipeBuilder addFurnaceCraftingRecipe(RecipeCategory category, ItemLike result, int craftTime){

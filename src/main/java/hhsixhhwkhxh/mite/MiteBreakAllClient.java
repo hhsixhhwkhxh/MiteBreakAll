@@ -6,6 +6,7 @@ import hhsixhhwkhxh.mite.entity.ModEntityTypes;
 import hhsixhhwkhxh.mite.entity.renderer.BrownBearRenderer;
 import hhsixhhwkhxh.mite.entity.renderer.CougarRenderer;
 import hhsixhhwkhxh.mite.entity.renderer.ElephantRenderer;
+import hhsixhhwkhxh.mite.entity.renderer.MallardRenderer;
 import hhsixhhwkhxh.mite.packet.ModClientPayloadHandler;
 import hhsixhhwkhxh.mite.packet.ClientboundSetVitalStatMaxValuePacket;
 import hhsixhhwkhxh.mite.packet.ClientboundSetWaterLevelPacket;
@@ -80,6 +81,7 @@ public class MiteBreakAllClient {
         event.registerEntityRenderer(ModEntityTypes.BROWN_BEAR.get(), BrownBearRenderer::new);
         event.registerEntityRenderer(ModEntityTypes.ELEPHANT.get(), ElephantRenderer::new);
         event.registerEntityRenderer(ModEntityTypes.COUGAR.get(), CougarRenderer::new);
+        event.registerEntityRenderer(ModEntityTypes.MALLARD.get(), MallardRenderer::new);
     }
 
 }

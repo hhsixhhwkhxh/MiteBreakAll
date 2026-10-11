@@ -140,6 +140,44 @@ public class ModEntityLootTablesProvider extends EntityLootSubProvider {
                                         )
                         )
         );
+
+
+        this.add(
+                ModEntityTypes.MALLARD.get(),
+                LootTable.lootTable()
+                        .withPool(
+                                LootPool.lootPool()
+                                        .setRolls(ConstantValue.exactly(1.0F))
+                                        .add(
+                                                LootItem.lootTableItem(ModItems.RAW_MALLARD_HEAD_MEAT)
+                                                        .apply(SmeltItemFunction.smelted().when(this.shouldSmeltLoot()))
+                                                        .setWeight(3)
+                                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
+                                                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
+                                        )
+                        )
+                        .withPool(
+                                LootPool.lootPool()
+                                        .setRolls(ConstantValue.exactly(1.0F))
+                                        .add(
+                                                LootItem.lootTableItem(ModItems.RAW_MALLARD_MEAT)
+                                                        .apply(SmeltItemFunction.smelted().when(this.shouldSmeltLoot()))
+                                                        .setWeight(3)
+                                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
+                                                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
+                                        )
+                        )
+                        .withPool(
+                                LootPool.lootPool()
+                                        .setRolls(ConstantValue.exactly(1.0F))
+                                        .add(
+                                                LootItem.lootTableItem(Items.FEATHER)
+                                                        .apply(SmeltItemFunction.smelted().when(this.shouldSmeltLoot()))
+                                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 5.0F)))
+                                                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
+                                        )
+                        )
+        );
     }
 
     @Override

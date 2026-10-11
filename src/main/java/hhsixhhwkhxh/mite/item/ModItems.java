@@ -297,6 +297,35 @@ public class ModItems {
     ));
 
     public static final DeferredItem<Item> COUGAR_SPAWN_EGG = ITEMS.registerItem("cougar_spawn_egg", properties -> new SpawnEggItem(ModEntityTypes.COUGAR.get(), properties));
+    
+    public static final DeferredItem<Item> RAW_MALLARD_MEAT = ITEMS.registerItem("raw_mallard_meat",Item::new,new Item.Properties().food(new FoodProperties.Builder().nutrition(3).saturationModifier(0.5F).build()));
+    public static final DeferredItem<Item> COOKED_MALLARD_MEAT = ITEMS.registerItem("cooked_mallard_meat",Item::new,new Item.Properties().food(
+            new FoodProperties.Builder().nutrition(6).saturationModifier(0.5F).build()));
+    public static final DeferredItem<Item> BURNT_MALLARD_MEAT = ITEMS.registerItem("burnt_mallard_meat",Item::new,new Item.Properties().food(
+            new FoodProperties.Builder().nutrition(1).saturationModifier(0.5F).build(),
+            defaultFood().onConsume(new ApplyStatusEffectsConsumeEffect(
+                            new MobEffectInstance(MobEffects.POISON, 200, 0), 0.5F)
+                    )
+                    .build()
+    ));
+
+    public static final DeferredItem<Item> RAW_MALLARD_HEAD_MEAT = ITEMS.registerItem("raw_mallard_head_meat",Item::new,new Item.Properties().food(
+            new FoodProperties.Builder().nutrition(2).saturationModifier(0.25F).build(),
+            defaultFood().onConsume(new ApplyStatusEffectsConsumeEffect(
+                            new MobEffectInstance(MobEffects.POISON, 400, 0), 0.8F)
+                    )
+                    .build()
+    ));
+    public static final DeferredItem<Item> COOKED_MALLARD_HEAD_MEAT = ITEMS.registerItem("cooked_mallard_head_meat",Item::new,new Item.Properties().food(new FoodProperties.Builder().nutrition(6).saturationModifier(0.5F).build()));
+    public static final DeferredItem<Item> BURNT_MALLARD_HEAD_MEAT = ITEMS.registerItem("burnt_mallard_head_meat",Item::new,new Item.Properties().food(
+            new FoodProperties.Builder().nutrition(1).saturationModifier(0.5F).build(),
+            defaultFood().onConsume(new ApplyStatusEffectsConsumeEffect(
+                            new MobEffectInstance(MobEffects.POISON, 200, 0), 0.8F)
+                    )
+                    .build()
+    ));
+
+    public static final DeferredItem<Item> MALLARD_SPAWN_EGG = ITEMS.registerItem("mallard_spawn_egg", properties -> new SpawnEggItem(ModEntityTypes.MALLARD.get(), properties));
 
 
     public static final Map<Item, DeferredItem<Item>> proxyItemMap = Map.ofEntries(

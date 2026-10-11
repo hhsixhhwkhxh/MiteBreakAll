@@ -29,6 +29,11 @@ public class ModEntityTypes {
             .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID, "cougar")
             )));
 
+    public static final Supplier<EntityType<Mallard>> MALLARD = ENTITY_TYPES.register("mallard",()->EntityType.Builder.of(Mallard::new, MobCategory.CREATURE)
+            .sized(0.4F, 0.7F).clientTrackingRange(10).eyeHeight(0.644F)
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID, "mallard")
+            )));
+
     public static void register(IEventBus eventBus){
         ENTITY_TYPES.register(eventBus);
     }

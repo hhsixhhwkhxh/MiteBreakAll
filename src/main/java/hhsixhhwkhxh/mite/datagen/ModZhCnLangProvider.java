@@ -298,5 +298,16 @@ public class ModZhCnLangProvider extends LanguageProvider {
         add(ModItems.COOKED_LION_MEAT.get(),"熟狮子肉");
         add(ModItems.BURNT_LION_MEAT.get(),"烧糊的狮子肉");
         add(ModItems.COUGAR_SPAWN_EGG.get(), "山狮刷怪蛋");
+
+        add(ModEntityTypes.MALLARD.get(),"绿头鸭");
+
+        add(ModItems.RAW_MALLARD_HEAD_MEAT.get(), "绿色鸭头");
+        add(ModItems.COOKED_MALLARD_HEAD_MEAT.get(), "熟鸭头");
+        add(ModItems.BURNT_MALLARD_HEAD_MEAT.get(), "烧糊的鸭头");
+        add(ModItems.RAW_MALLARD_MEAT.get(), "鸭肉");
+        add(ModItems.COOKED_MALLARD_MEAT.get(), "熟鸭肉");
+        add(ModItems.BURNT_MALLARD_MEAT.get(), "烧糊的鸭肉");
+
+        add(ModItems.MALLARD_SPAWN_EGG.get(), "绿头鸭刷怪蛋");
     }
 }

@@ -14,6 +14,8 @@ public class ModModelLayers {
     public static final ModelLayerLocation COUGAR = register("cougar");
     public static final ModelLayerLocation COUGAR_BABY = register("cougar_baby");
 
+    public static final ModelLayerLocation MALLARD = register("mallard");
+
     private static ModelLayerLocation register(String path){
         return new ModelLayerLocation(
                 ResourceLocation.fromNamespaceAndPath(MiteBreakAll.MOD_ID, path),

@@ -6,14 +6,8 @@ import hhsixhhwkhxh.mite.custom.PlayerWaterData;
 import hhsixhhwkhxh.mite.datacomponent.ModDataComponents;
 import hhsixhhwkhxh.mite.datacomponent.Moisture;
 import hhsixhhwkhxh.mite.datacomponent.ReachBonus;
-import hhsixhhwkhxh.mite.entity.BrownBear;
-import hhsixhhwkhxh.mite.entity.Cougar;
-import hhsixhhwkhxh.mite.entity.Elephant;
-import hhsixhhwkhxh.mite.entity.ModEntityTypes;
-import hhsixhhwkhxh.mite.entity.model.BrownBearModel;
-import hhsixhhwkhxh.mite.entity.model.CougarModel;
-import hhsixhhwkhxh.mite.entity.model.ElephantModel;
-import hhsixhhwkhxh.mite.entity.model.ModModelLayers;
+import hhsixhhwkhxh.mite.entity.*;
+import hhsixhhwkhxh.mite.entity.model.*;
 import hhsixhhwkhxh.mite.item.ModCreativeModeTabs;
 import hhsixhhwkhxh.mite.packet.ClientboundSetWaterLevelPacket;
 import hhsixhhwkhxh.mite.packet.ClientboundSetVitalStatMaxValuePacket;
@@ -232,6 +226,7 @@ public class MiteBreakAll {
         event.put(ModEntityTypes.BROWN_BEAR.get(), BrownBear.createAttributes().build());
         event.put(ModEntityTypes.ELEPHANT.get(), Elephant.createAttributes().build());
         event.put(ModEntityTypes.COUGAR.get(), Cougar.createAttributes().build());
+        event.put(ModEntityTypes.MALLARD.get(), Mallard.createAttributes().build());
 
     }
 
@@ -264,6 +259,11 @@ public class MiteBreakAll {
         event.registerLayerDefinition(
                 ModModelLayers.COUGAR_BABY,
                 ()->LayerDefinition.create(CougarModel.createMeshDefinition().apply(CougarModel.BABY_TRANSFORMER), 64, 64)
+        );
+
+        event.registerLayerDefinition(
+                ModModelLayers.MALLARD,
+                ()->LayerDefinition.create(MallardModel.createMeshDefinition(), 32, 32)
         );
 
     }

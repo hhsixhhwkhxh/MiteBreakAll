@@ -298,5 +298,17 @@ public class ModEnUsLangProvider extends LanguageProvider {
         add(ModItems.COOKED_LION_MEAT.get(),"Cooked Lion Meat");
         add(ModItems.BURNT_LION_MEAT.get(),"Burnt Lion Meat");
         add(ModItems.COUGAR_SPAWN_EGG.get(), "Cougar Spawn Egg");
+
+        add(ModEntityTypes.MALLARD.get(),"Mallard");
+
+        add(ModItems.RAW_MALLARD_HEAD_MEAT.get(), "Duck Head");
+        add(ModItems.COOKED_MALLARD_HEAD_MEAT.get(), "Cooked Duck Head");
+        add(ModItems.BURNT_MALLARD_HEAD_MEAT.get(), "Burnt Duck Head");
+        add(ModItems.RAW_MALLARD_MEAT.get(), "Duck Meat");
+        add(ModItems.COOKED_MALLARD_MEAT.get(), "Cooked Duck Meat");
+        add(ModItems.BURNT_MALLARD_MEAT.get(), "Burnt Duck Meat");
+
+        add(ModItems.MALLARD_SPAWN_EGG.get(), "Mallard Spawn Egg");
+
     }
 }
